@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "204328342410",
+    "firebase_url": "https://battle-connect.firebaseio.com",
+    "project_id": "battle-connect",
+    "storage_bucket": "battle-connect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204328342410:android:7bcbdd236f3d90a0",
+        "android_client_info": {
+          "package_name": "com.cs495.battleelite.battleelite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "204328342410-q126mf0s1bvsiocpeirao3u36igeklk1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsQsYBdwwXB3EGVgkB_ifpGrXBLINjuvg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
