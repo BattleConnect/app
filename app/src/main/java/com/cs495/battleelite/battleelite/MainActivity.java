@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent myIntent = new Intent(MainActivity.this, SensorActivity.class);
+        Intent myIntent = new Intent(MainActivity.this, home_screen.class);
         MainActivity.this.startActivity(myIntent);
     }
 }
