@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tagList">
+        <item>@string/TagPrompt</item>
+        <item>@string/Tag1</item>
+        <item>@string/Tag2</item>
+        <item>@string/Tag3</item>
+        <item>@string/Tag4</item>
+    </string-array>
+
+    <string-array name="conditionList">
+        <item>@string/ConditionPrompt</item>
+        <item>@string/Condition1</item>
+        <item>@string/Condition2</item>
+        <item>@string/Condition3</item>
+        <item>@string/Condition4</item>
+    </string-array>
+</resources>

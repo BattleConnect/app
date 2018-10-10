@@ -2,4 +2,21 @@
     <string name="app_name">BattleElite</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_sensor">SensorActivity</string>
+
+    <string name="InputTitle">Input</string>
+
+    <string name="TagPrompt">Enter Tag</string>
+    <string name="Tag1">Tag One</string>
+    <string name="Tag2">Tag Two</string>
+    <string name="Tag3">Tag Three</string>
+    <string name="Tag4">Tag Four</string>
+
+    <string name="ConditionPrompt">Enter Condition</string>
+    <string name="Condition1">Condition One</string>
+    <string name="Condition2">Condition Two</string>
+    <string name="Condition3">Condition Three</string>
+    <string name="Condition4">Condition Four</string>
+
+    <string name="CommentHint">Comment</string>
+
 </resources>

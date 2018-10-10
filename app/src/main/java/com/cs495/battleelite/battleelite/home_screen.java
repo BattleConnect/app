@@ -32,7 +32,7 @@ public class home_screen extends AppCompatActivity {
         inputButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(home_screen.this, SensorActivity.class));
+                startActivity(new Intent(home_screen.this, InputScreen.class));
             }
         });
 

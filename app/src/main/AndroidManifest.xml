@@ -23,7 +23,8 @@
             android:name=".SensorActivity"
             android:label="@string/title_activity_sensor"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".home_screen"></activity>
+        <activity android:name=".home_screen" />
+        <activity android:name=".InputScreen"></activity>
     </application>
 
 </manifest>
