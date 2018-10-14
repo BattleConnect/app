@@ -18,5 +18,7 @@
     <string name="Condition4">Condition Four</string>
 
     <string name="CommentHint">Comment</string>
+    <string name="title_activity_map_screen">MapScreen</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

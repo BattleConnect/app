@@ -39,7 +39,7 @@ public class home_screen extends AppCompatActivity {
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(home_screen.this, SensorActivity.class));
+                startActivity(new Intent(home_screen.this, MapsActivity.class));
             }
         });
 
