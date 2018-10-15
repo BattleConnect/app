@@ -7,7 +7,7 @@
     tools:context=".InputScreen">
 
     <Spinner
-        android:id="@+id/inputTagSpinner2"
+        android:id="@+id/inputTagSpinner"
         style="@android:style/Widget.Spinner"
         android:layout_width="322dp"
         android:layout_height="wrap_content"
@@ -17,11 +17,10 @@
         android:entries="@array/tagList"
         android:prompt="@string/TagPrompt"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="75dp">
-    </Spinner>
+        tools:layout_editor_absoluteY="75dp"></Spinner>
 
     <Spinner
-        android:id="@+id/inputTagSpinner"
+        android:id="@+id/inputConditionSpinner"
         style="@android:style/Widget.Spinner"
         android:layout_width="322dp"
         android:layout_height="wrap_content"
@@ -31,11 +30,10 @@
         android:entries="@array/conditionList"
         android:prompt="@string/ConditionPrompt"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="75dp">
-    </Spinner>
+        tools:layout_editor_absoluteY="75dp"></Spinner>
 
     <EditText
-        android:id="@+id/EditTextFeedbackBody"
+        android:id="@+id/inputComment"
         android:layout_width="322dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -56,7 +54,14 @@
         android:text="@string/InputTitle"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
-
+    <Button
+        android:id="@+id/inputSubmitButton"
+        android:layout_width="322dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="@string/submit_button" />
 
 
 </RelativeLayout>

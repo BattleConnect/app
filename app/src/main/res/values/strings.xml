@@ -4,6 +4,7 @@
     <string name="title_activity_sensor">SensorActivity</string>
 
     <string name="InputTitle">Input</string>
+    <string name="submit_button">Submit</string>
 
     <string name="TagPrompt">Enter Tag</string>
     <string name="Tag1">Tag One</string>
