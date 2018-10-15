@@ -10,6 +10,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,6 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Map;
 import java.util.HashMap;
 import javax.annotation.Nullable;
+import android.os.Handler;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -26,6 +29,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
     Map<Long, Marker> sensorMarkers;
+    LatLngBounds.Builder boundsBuilder;
+    LatLngBounds bounds = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +54,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        boundsBuilder = new LatLngBounds.Builder();
         getSensorData();
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    bounds = boundsBuilder.build();
+                    int padding = 0;
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                    mMap.moveCamera(cu);
+                }
+                catch (IllegalStateException e) { //not enough points to build boundsBuilder
+                    System.out.println("not enough sensors on map to determine camera boundsBuilder");
+                }
+            }
+        }, 2000);
     }
 
 
@@ -62,6 +83,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat, lng);
         Marker marker = mMap.addMarker(new MarkerOptions().position(pos).title(title));
         sensorMarkers.put(sensorID, marker);
+        if (bounds == null)
+            boundsBuilder.include(new LatLng(lat, lng));
+        else
+            bounds.including(new LatLng(lat, lng));
     }
 
     void getSensorData() {
