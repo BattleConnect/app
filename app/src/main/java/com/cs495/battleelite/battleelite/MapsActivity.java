@@ -9,14 +9,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
+import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Map;
-import android.os.Handler;
+import java.util.HashMap;
+import javax.annotation.Nullable;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private SensorDataManager sdm;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
+    Map<Long, Marker> sensorMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,31 +49,70 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        sdm = new SensorDataManager();
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                addSensorMarkers();
-                //Do something after 100ms
-            }
-        }, 30*1000);
+        getSensorData();
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
 
-    public void addSensorMarkers() {
-        if (sdm.sensors != null) {
-            System.out.println("Sensor count: " + sdm.sensors.size());
-            for (Map.Entry<Long, Map<String, Object>> kvp : sdm.sensors.entrySet()) {
-                Map<String, Object> value = kvp.getValue();
-                String title = (String) value.get("Sensor_Type");
-                Double lat = (Double) value.get("Lat");
-                Double lng = (Double) value.get("Long");
-                LatLng pos = new LatLng(lat, lng);
-                mMap.addMarker(new MarkerOptions().position(pos).title(title));
+    public void addSensorMarker(Map<String, Object> sensorData) {
+        Long sensorID = (Long) sensorData.get("Sensor_ID");
+        String title = (String) sensorData.get("Sensor_Type");
+        Double lat = (Double) sensorData.get("Lat");
+        Double lng = (Double) sensorData.get("Long");
+        LatLng pos = new LatLng(lat, lng);
+        Marker marker = mMap.addMarker(new MarkerOptions().position(pos).title(title));
+        sensorMarkers.put(sensorID, marker);
+    }
+
+    void getSensorData() {
+        sensors = new HashMap<Long, Map<String, Object>>();
+        sensorMarkers = new HashMap<Long, Marker>();
+        db.collection("sensors").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    System.err.println("Listen failed:" + e);
+                    return;
+                }
+
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    Long sensorID = (Long) dc.getDocument().get("Sensor_ID");
+                    switch (dc.getType()) {
+                        case ADDED:
+                        case MODIFIED:
+                            if (sensors.containsKey(sensorID)) {
+                                Map<String, Object> oldSensorData = sensors.get(sensorID);
+                                Map<String, Object> newSensorData = dc.getDocument().getData();
+                                Double oldDateTime = (Double) oldSensorData.get("Date_Time");
+                                Double newDateTime = (Double) newSensorData.get("Date_Time");
+                                if (newDateTime > oldDateTime) {
+                                    sensors.put(sensorID, newSensorData);
+                                    Double lat = (Double) newSensorData.get("Lat");
+                                    Double lng = (Double) newSensorData.get("Long");
+                                    LatLng newPos = new LatLng(lat, lng);
+                                    if (sensorMarkers.containsKey(sensorID)) {
+                                        if (sensorMarkers.get(sensorID).getPosition() != newPos)
+                                            sensorMarkers.get(sensorID).setPosition(newPos);
+                                    }
+                                    else {
+                                        addSensorMarker(newSensorData);
+                                    }
+                                }
+                            }
+                            else {
+                                sensors.put(sensorID, dc.getDocument().getData());
+                                addSensorMarker(dc.getDocument().getData());
+                            }
+                            break;
+                        case REMOVED:
+                            //TODO
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
-        }
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        });
     }
 }
