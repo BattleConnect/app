@@ -76,10 +76,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void addSensorMarker(Map<String, Object> sensorData) {
-        Long sensorID = (Long) sensorData.get("Sensor_ID");
+        long sensorID = (long) sensorData.get("Sensor_ID");
         String title = (String) sensorData.get("Sensor_Type");
-        Double lat = (Double) sensorData.get("Lat");
-        Double lng = (Double) sensorData.get("Long");
+        double lat = (double) sensorData.get("Lat");
+        double lng = (double) sensorData.get("Long");
         LatLng pos = new LatLng(lat, lng);
         Marker marker = mMap.addMarker(new MarkerOptions().position(pos).title(title));
         sensorMarkers.put(sensorID, marker);
@@ -102,19 +102,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    Long sensorID = (Long) dc.getDocument().get("Sensor_ID");
+                    long sensorID = (long) dc.getDocument().get("Sensor_ID");
                     switch (dc.getType()) {
                         case ADDED:
                         case MODIFIED:
                             if (sensors.containsKey(sensorID)) {
                                 Map<String, Object> oldSensorData = sensors.get(sensorID);
                                 Map<String, Object> newSensorData = dc.getDocument().getData();
-                                Double oldDateTime = (Double) oldSensorData.get("Date_Time");
-                                Double newDateTime = (Double) newSensorData.get("Date_Time");
+                                double oldDateTime = (double) oldSensorData.get("Date_Time");
+                                double newDateTime = (double) newSensorData.get("Date_Time");
                                 if (newDateTime > oldDateTime) {
                                     sensors.put(sensorID, newSensorData);
-                                    Double lat = (Double) newSensorData.get("Lat");
-                                    Double lng = (Double) newSensorData.get("Long");
+                                    double lat = (double) newSensorData.get("Lat");
+                                    double lng = (double) newSensorData.get("Long");
                                     LatLng newPos = new LatLng(lat, lng);
                                     if (sensorMarkers.containsKey(sensorID)) {
                                         if (sensorMarkers.get(sensorID).getPosition() != newPos)
