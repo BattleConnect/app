@@ -23,4 +23,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_notification">NotificationActivity</string>
 
+    <string name="default_notification_channel_id">169</string>
+    <string name="firebase_cloud_notification_message">Incoming alert!</string>
 </resources>
