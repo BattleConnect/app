@@ -41,6 +41,8 @@ dependencies {
     annotationProcessor 'com.google.auto.value:auto-value:1.1'
     implementation "android.arch.core:runtime:1.1.1"
     implementation "android.arch.core:common:1.1.1"
+    implementation 'com.google.firebase:firebase-messaging:17.3.3'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

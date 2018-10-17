@@ -1,52 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".home_screen">
 
-    <Button
-        android:id="@+id/view_button"
-        android:layout_width="175dp"
-        android:layout_height="175dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="121dp"
-        android:text="View"
-        android:background="#124679"
-        android:textColor="#FFFFFF"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:divider="@drawable/vertical_divider_1"
+    android:showDividers="middle">
 
-    <Button
-        android:id="@+id/input_button"
-        android:layout_width="175dp"
-        android:layout_height="175dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/view_button"
-        android:layout_marginEnd="24dp"
-        android:text="Input"
-        android:background="#124679"
-        android:textColor="#FFFFFF"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="0.5"
+        android:layout_height="fill_parent"
+        android:layout_width="0dp">
 
-    <Button
-        android:id="@+id/alerts_button"
-        android:layout_width="175dp"
-        android:layout_height="175dp"
-        android:layout_alignStart="@+id/input_button"
-        android:layout_alignTop="@+id/map_button"
-        android:text="Alerts"
-        android:background="#124679"
-        android:textColor="#FFFFFF"/>
+        <com.cs495.battleelite.battleelite.SquareButton
+            android:id="@+id/view_button"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:background="#86C745"
+            android:text="Explore Data"
+            android:textAllCaps="false"
+            android:textSize="25sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="#FFFFFF" />
 
-    <Button
-        android:id="@+id/map_button"
-        android:layout_width="175dp"
-        android:layout_height="175dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/view_button"
-        android:layout_marginBottom="120dp"
-        android:text="Map"
-        android:background="#124679"
-        android:textColor="#FFFFFF"/>
-</RelativeLayout>
+        <com.cs495.battleelite.battleelite.SquareButton
+            android:id="@+id/input_button"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:text="Report Info"
+            android:textAllCaps="false"
+            android:textSize="25sp"
+            android:background="#A436A5"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="0.5"
+        android:layout_height="fill_parent"
+        android:layout_width="0dp">
+
+        <com.cs495.battleelite.battleelite.SquareButton
+            android:id="@+id/alerts_button"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:text="Alerts"
+            android:textAllCaps="false"
+            android:textSize="25sp"
+            android:background="#F2612A"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="#FFFFFF"/>
+
+        <com.cs495.battleelite.battleelite.SquareButton
+            android:id="@+id/map_button"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:text="Map"
+            android:textAllCaps="false"
+            android:textSize="25sp"
+            android:background="#008DDE"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+
+</LinearLayout>
