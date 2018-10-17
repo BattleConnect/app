@@ -15,7 +15,11 @@ import android.util.Log;
 
 import com.cs495.battleelite.battleelite.MainActivity;
 import com.cs495.battleelite.battleelite.R;
+import com.cs495.battleelite.battleelite.Request;
+import com.cs495.battleelite.battleelite.holders.objects.Notification;
 import com.google.android.gms.common.internal.Constants;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -24,6 +28,11 @@ import java.util.Map;
 public class FireBaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    private static final String ID = "id";
+    private static final String PRIORITY = "priority";
+    private static final String MESSAGE = "message";
+    private static final String SENDER = "sender";
+    private FirebaseFirestore db;
 
     /**
      * Called when message is received.
@@ -57,14 +66,18 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-//            if (/* Check if data needs to be processed by long running job */ true) {
-//                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-//                scheduleJob();
-//            } else {
-//                // Handle message within 10 seconds
-//                handleNow();
-//            }
+            //store notification data in the db
+            db = FirebaseFirestore.getInstance();
 
+            String notificationID = remoteMessage.getData().get(ID);
+            String notificationSender = remoteMessage.getData().get(SENDER);
+            String notificationPriority = remoteMessage.getData().get(PRIORITY);
+            String notificationMessage = remoteMessage.getData().get(MESSAGE);
+
+            Notification notification = new Notification(notificationID, notificationSender, notificationPriority, notificationMessage);
+
+            DocumentReference newReq = db.collection("notifications").document();
+            newReq.set(notification);
         }
 
         // Check if message contains a notification payload.
