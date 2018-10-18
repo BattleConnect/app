@@ -28,7 +28,7 @@ import com.google.firebase.firestore.Query;
 
 public class SensorActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
     private static final String TAG = "SensorActivity";
-    private static final String SENSORS = "devices";
+    private static final String SENSORS = "sensors";
 
     //visual elements
     ProgressBar progressBar;
@@ -84,8 +84,14 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
 
     private void loadSensorList(String sensorFilter) {
         Query query = db.collection(SENSORS);
+
         if(sensorFilter != null){
-            query = query.whereEqualTo("sensor_type", sensorFilter);
+            if(sensorFilter.equals("none")){
+                query = db.collection(SENSORS);
+            }
+            else {
+                query = query.whereEqualTo("Sensor_Type", sensorFilter);
+            }
         }
         FirestoreRecyclerOptions<SensorResponse> response = new FirestoreRecyclerOptions.Builder<SensorResponse>()
                 .setQuery(query, SensorResponse.class)
@@ -97,14 +103,14 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
                 progressBar.setVisibility(View.GONE);
 
                 //create sensor objects in list
-                holder.date_time.setText(model.getDate_time().toString());
-                holder.latitude.setText(model.getLatitude());
-                holder.longitude.setText(model.getLongitude());
-                holder.sensor_battery.setText(model.getSensor_battery());
-                holder.sensor_health.setText(model.getSensor_health());
-                holder.sensor_id.setText(model.getSensor_id());
-                holder.sensor_type.setText(model.getSensor_type());
-                holder.sensor_value.setText(model.getSensor_value());
+                holder.Date_Time.setText(model.getDate_time().toString());
+                holder.Lat.setText(model.getLatitude());
+                holder.Long.setText(model.getLongitude());
+                holder.Battery.setText(model.getSensor_battery());
+                holder.SensorHealth.setText(model.getSensor_health());
+                holder.Sensor_ID.setText(model.getSensor_id());
+                holder.Sensor_Type.setText(model.getSensor_type());
+                holder.Sensor_Val.setText(model.getSensor_value());
             }
 
             @Override

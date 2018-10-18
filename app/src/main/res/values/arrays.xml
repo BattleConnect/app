@@ -21,5 +21,7 @@
         <item>@string/asset</item>
         <item>@string/heartbeat</item>
         <item>@string/vibration</item>
+        <item>@string/moisture</item>
+        <item>@string/temperature</item>
     </string-array>
 </resources>

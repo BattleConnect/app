@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 public class FilterDialogFragment extends DialogFragment {
@@ -21,15 +22,20 @@ public class FilterDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View v = inflater.inflate(R.layout.dialog_filter, null);
         builder.setView(v);
-        builder.setTitle(R.string.filterButton)
-                .setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.filterButton);
+        final Spinner sensorTypes = (Spinner) v.findViewById(R.id.sensorFilterSpinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.sensorTypeList));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sensorTypes.setAdapter(adapter);
+                builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Spinner sensorTypes = (Spinner) v.findViewById(R.id.sensorFilterSpinner);
                         mListener.getSelectedSensorTypeFilter(sensorTypes.getSelectedItem().toString());
 
                     }
-                })
-                .setNegativeButton(R.string.filterNegative, new DialogInterface.OnClickListener() {
+                });
+                builder.setNegativeButton(R.string.filterNegative, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
 
