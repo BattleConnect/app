@@ -15,4 +15,13 @@
         <item>@string/Condition3</item>
         <item>@string/Condition4</item>
     </string-array>
+
+    <string-array name="sensorTypeList">
+        <item>@string/none</item>
+        <item>@string/asset</item>
+        <item>@string/heartbeat</item>
+        <item>@string/vibration</item>
+        <item>@string/moisture</item>
+        <item>@string/temperature</item>
+    </string-array>
 </resources>

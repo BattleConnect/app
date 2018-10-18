@@ -5,6 +5,18 @@
 
     <string name="InputTitle">Input</string>
     <string name="submit_button">Submit</string>
+    <string name="filterButton">Filter</string>
+    <string name="filterPositive">Select</string>
+    <string name="filterNegative">Cancel</string>
+
+    <string name="sensor_type">Sensor Type</string>
+    <string name="none">none</string>
+    <string name="asset">asset</string>
+    <string name="heartbeat">HeartRate</string>
+    <string name="vibration">Vibration</string>
+    <string name="moisture">Moisture</string>
+    <string name="temperature">temp</string>
+
 
     <string name="TagPrompt">Enter Tag</string>
     <string name="Tag1">Tag One</string>

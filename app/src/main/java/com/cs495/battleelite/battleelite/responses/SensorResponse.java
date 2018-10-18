@@ -2,91 +2,93 @@ package com.cs495.battleelite.battleelite.responses;
 
 import com.google.firebase.Timestamp;
 
+import java.sql.Time;
+
 public class SensorResponse {
-    private Timestamp date_time;
-    private String latitude;
-    private String longitude;
-    private String sensor_battery;
-    private String sensor_health;
-    private String sensor_id;
-    private String sensor_type;
-    private String sensor_value;
+    private Timestamp Date_Time;
+    private String Lat;
+    private String Long;
+    private String Battery;
+    private String SensorHealth;
+    private String Sensor_ID;
+    private String Sensor_Type;
+    private String Sensor_Val;
 
     public SensorResponse() {
     }
 
     public SensorResponse(Timestamp date_time, String latitude, String longitude, String sensor_battery, String sensor_health, String sensor_id, String sensor_type, String sensor_value) {
-        this.date_time = date_time;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.sensor_battery = sensor_battery;
-        this.sensor_health = sensor_health;
-        this.sensor_id = sensor_id;
-        this.sensor_type = sensor_type;
-        this.sensor_value = sensor_value;
+        this.Date_Time = date_time;
+        this.Lat = latitude;
+        this.Long = longitude;
+        this.Battery = sensor_battery;
+        this.SensorHealth = sensor_health;
+        this.Sensor_ID = sensor_id;
+        this.Sensor_Type = sensor_type;
+        this.Sensor_Val = sensor_value;
     }
 
     public Timestamp getDate_time() {
-        return date_time;
+        return Date_Time;
     }
 
     public void setDate_time(Timestamp date_time) {
-        this.date_time = date_time;
+        this.Date_Time = date_time;
     }
 
     public String getLatitude() {
-        return latitude;
+        return Lat;
     }
 
     public void setLatitude(String latitude) {
-        this.latitude = latitude;
+        this.Lat = latitude;
     }
 
     public String getLongitude() {
-        return longitude;
+        return Long;
     }
 
     public void setLongitude(String longitude) {
-        this.longitude = longitude;
+        this.Long = longitude;
     }
 
     public String getSensor_battery() {
-        return sensor_battery;
+        return Battery;
     }
 
     public void setSensor_battery(String sensor_battery) {
-        this.sensor_battery = sensor_battery;
+        this.Battery = sensor_battery;
     }
 
     public String getSensor_health() {
-        return sensor_health;
+        return SensorHealth;
     }
 
     public void setSensor_health(String sensor_health) {
-        this.sensor_health = sensor_health;
+        this.SensorHealth = sensor_health;
     }
 
     public String getSensor_id() {
-        return sensor_id;
+        return Sensor_ID;
     }
 
     public void setSensor_id(String sensor_id) {
-        this.sensor_id = sensor_id;
+        this.Sensor_ID = sensor_id;
     }
 
     public String getSensor_type() {
-        return sensor_type;
+        return Sensor_Type;
     }
 
     public void setSensor_type(String sensor_type) {
-        this.sensor_type = sensor_type;
+        this.Sensor_Type = sensor_type;
     }
 
     public String getSensor_value() {
-        return sensor_value;
+        return Sensor_Val;
     }
 
     public void setSensor_value(String sensor_value) {
-        this.sensor_value = sensor_value;
+        this.Sensor_Val = sensor_value;
     }
 }
