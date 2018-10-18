@@ -42,6 +42,7 @@ dependencies {
     implementation "android.arch.core:runtime:1.1.1"
     implementation "android.arch.core:common:1.1.1"
     implementation 'com.google.firebase:firebase-messaging:17.3.3'
+    implementation 'com.google.firebase:firebase-auth:16.0.4'
 
 }
 
