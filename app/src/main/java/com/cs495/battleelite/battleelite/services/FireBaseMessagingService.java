@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -18,6 +19,9 @@ import com.cs495.battleelite.battleelite.R;
 import com.cs495.battleelite.battleelite.Request;
 import com.cs495.battleelite.battleelite.holders.objects.Notification;
 import com.google.android.gms.common.internal.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -32,7 +36,35 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
     private static final String PRIORITY = "priority";
     private static final String MESSAGE = "message";
     private static final String SENDER = "sender";
+    private static final String USERS = "users";
     private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+    @Override
+    public void onNewToken(String token) {
+        super.onNewToken(token);
+
+        db = FirebaseFirestore.getInstance();
+
+        //store the new token in the database
+        if(firebaseAuth.getCurrentUser() != null) {
+            String uuid = firebaseAuth.getCurrentUser().getUid();
+            db.collection(USERS).document(uuid)
+                    .update("id", token)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "Updated device id!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating device id!", e);
+                        }
+                    });
+        }
+    }
 
     /**
      * Called when message is received.

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,16 +14,26 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+    private static final String TAG = "LoginActivity";
+    private static final String USERS = "users";
     private  Button loginB;
     private EditText editTextEmail;
     private  EditText editTextPassword;
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         loginB.setOnClickListener(this);
+
+        db = FirebaseFirestore.getInstance();
     }
 
     private void  login(){
@@ -72,6 +85,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent resultIntent = new Intent();
         resultIntent.putExtra("resultCode", 0);
         setResult(0, resultIntent);
+
+        //store the user id for notification purposes
+        storeUUID();
+    }
+
+    private void storeUUID() {
+        //store the new token in the database
+        if(firebaseAuth.getCurrentUser() != null) {
+            Map<String, Object> data = new HashMap<>();
+            String uuid = firebaseAuth.getCurrentUser().getUid();
+            data.put("id", uuid);
+
+            db.collection(USERS).document(uuid)
+                    .set(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "Updated device id!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating device id!", e);
+                        }
+                    });
+        }
     }
     private void fail(){
         Toast.makeText(this, "Invalid email or password.", Toast.LENGTH_SHORT).show();
