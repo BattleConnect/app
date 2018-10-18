@@ -41,6 +41,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginB.setOnClickListener(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        firebaseAuth.signOut();
+        super.onDestroy();
+
+    }
+
     private void  login(){
        String email = editTextEmail.getText().toString().trim();
        String password = editTextPassword.getText().toString().trim();
@@ -72,6 +79,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent resultIntent = new Intent();
         resultIntent.putExtra("resultCode", 0);
         setResult(0, resultIntent);
+        firebaseAuth.signOut();
+        Intent myIntent = new Intent(LoginActivity.this, home_screen.class);
+
+        LoginActivity.this.startActivity(myIntent);
+
     }
     private void fail(){
         Toast.makeText(this, "Invalid email or password.", Toast.LENGTH_SHORT).show();

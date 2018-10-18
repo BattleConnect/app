@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -25,6 +27,17 @@ public class MainActivity extends AppCompatActivity {
 //        Intent myIntent = new Intent(MainActivity.this, home_screen.class);
 //        MainActivity.this.startActivity(myIntent);
     }
+    private FirebaseAuth firebaseAuth;
+    public void setAuth( FirebaseAuth x){
+        this.firebaseAuth = x;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //this.firebaseAuth.signOut();
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
@@ -32,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 if(resultCode == 1){
                     Intent myIntent = new Intent(MainActivity.this, home_screen.class);
                     MainActivity.this.startActivity(myIntent);
+
                 }
                 break;
             case 1:
