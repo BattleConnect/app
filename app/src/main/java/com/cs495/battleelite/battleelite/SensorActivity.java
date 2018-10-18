@@ -9,9 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
@@ -22,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
-public class SensorActivity extends AppCompatActivity {
+public class SensorActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
     private static final String TAG = "SensorActivity";
     private static final String SENSORS = "devices";
 
@@ -47,7 +51,28 @@ public class SensorActivity extends AppCompatActivity {
         init();
 
         //get sensor data
-        loadSensorList();
+        loadSensorList(null);
+        configureFilterButton();
+    }
+
+    private void configureFilterButton(){
+        final Button filterButton = (Button) findViewById(R.id.filterButton);
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FilterDialogFragment filter = new FilterDialogFragment();
+                filter.show(getFragmentManager(), "FilterDialogFragment");
+
+            }
+
+        });
+    }
+
+    @Override
+    public void getSelectedSensorTypeFilter(String type){
+        Log.i("getSelectedSensor", "returns " + type);
+        loadSensorList(type);
     }
 
     private void init() {
@@ -57,9 +82,11 @@ public class SensorActivity extends AppCompatActivity {
 
     }
 
-    private void loadSensorList() {
+    private void loadSensorList(String sensorFilter) {
         Query query = db.collection(SENSORS);
-
+        if(sensorFilter != null){
+            query = query.whereEqualTo("sensor_type", sensorFilter);
+        }
         FirestoreRecyclerOptions<SensorResponse> response = new FirestoreRecyclerOptions.Builder<SensorResponse>()
                 .setQuery(query, SensorResponse.class)
                 .build();
