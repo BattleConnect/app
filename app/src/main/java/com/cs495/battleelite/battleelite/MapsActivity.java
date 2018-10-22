@@ -1,8 +1,10 @@
 package com.cs495.battleelite.battleelite;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,18 +19,25 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 import android.os.Handler;
+import android.widget.TextView;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener {
 
     private GoogleMap mMap;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
-    Map<Long, Marker> sensorMarkers;
+    BiMap<Long, Marker> sensorMarkers;
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
 
@@ -54,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
         getSensorData();
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -74,6 +84,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }, 2000);
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        long sensorID = sensorMarkers.inverse().get(marker);
+        Map<String, Object> sensorData = sensors.get(sensorID);
+
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((long) sensorData.get("Date_Time")));
+
+        String message =
+                "ID: " + sensorData.get("Sensor_ID") + "\n" +
+                "Type: " + sensorData.get("Sensor_Type") + "\n" +
+                "Value: " + sensorData.get("Sensor_Val") + "\n" +
+                "Timestamp: " + timestamp + "\n" +
+                "Health: " + sensorData.get("SensorHealth") + "\n" +
+                "Battery: " + sensorData.get("Battery") + "%";
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setMessage(message);
+        builder1.setCancelable(true);
+
+        builder1.setNegativeButton(
+                "Close",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+
+        return true;
+    }
 
     public void addSensorMarker(Map<String, Object> sensorData) {
         long sensorID = (long) sensorData.get("Sensor_ID");
@@ -91,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     void getSensorData() {
         sensors = new HashMap<Long, Map<String, Object>>();
-        sensorMarkers = new HashMap<Long, Marker>();
+        sensorMarkers = HashBiMap.create();
         db.collection("sensors").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -109,8 +151,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (sensors.containsKey(sensorID)) {
                                 Map<String, Object> oldSensorData = sensors.get(sensorID);
                                 Map<String, Object> newSensorData = dc.getDocument().getData();
-                                double oldDateTime = (double) oldSensorData.get("Date_Time");
-                                double newDateTime = (double) newSensorData.get("Date_Time");
+                                System.out.println(oldSensorData.get("Date_Time"));
+                                long oldDateTime = (long) oldSensorData.get("Date_Time");
+                                long newDateTime = (long) newSensorData.get("Date_Time");
                                 if (newDateTime > oldDateTime) {
                                     sensors.put(sensorID, newSensorData);
                                     double lat = (double) newSensorData.get("Lat");
