@@ -2,7 +2,6 @@ package com.cs495.battleelite.battleelite;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -109,8 +108,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (sensors.containsKey(sensorID)) {
                                 Map<String, Object> oldSensorData = sensors.get(sensorID);
                                 Map<String, Object> newSensorData = dc.getDocument().getData();
-                                double oldDateTime = (double) oldSensorData.get("Date_Time");
-                                double newDateTime = (double) newSensorData.get("Date_Time");
+                                System.out.println(oldSensorData.get("Date_Time"));
+                                long oldDateTime = (long) oldSensorData.get("Date_Time");
+                                long newDateTime = (long) newSensorData.get("Date_Time");
                                 if (newDateTime > oldDateTime) {
                                     sensors.put(sensorID, newSensorData);
                                     double lat = (double) newSensorData.get("Lat");

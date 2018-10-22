@@ -26,6 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SensorActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
     private static final String TAG = "SensorActivity";
     private static final String SENSORS = "sensors";
@@ -103,14 +106,14 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
                 progressBar.setVisibility(View.GONE);
 
                 //create sensor objects in list
-                holder.Date_Time.setText(model.getDate_time().toString());
-                holder.Lat.setText(model.getLatitude());
-                holder.Long.setText(model.getLongitude());
-                holder.Battery.setText(model.getSensor_battery());
-                holder.SensorHealth.setText(model.getSensor_health());
-                holder.Sensor_ID.setText(model.getSensor_id());
-                holder.Sensor_Type.setText(model.getSensor_type());
-                holder.Sensor_Val.setText(model.getSensor_value());
+                holder.Date_Time.setText("Last update: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(model.getDate_Time())));
+                holder.Lat.setText("Latitude: " + String.valueOf(model.getLat()));
+                holder.Long.setText("Longitude: " + String.valueOf(model.getLong()));
+                holder.Battery.setText("Battery: " + String.valueOf(model.getBattery()) + "%");
+                holder.SensorHealth.setText("Health: " + model.getSensorHealth());
+                holder.Sensor_ID.setText("ID: " + String.valueOf(model.getSensor_ID()));
+                holder.Sensor_Type.setText("Type: " + model.getSensor_Type());
+                holder.Sensor_Val.setText("Value: " + String.valueOf(model.getSensor_Val()));
             }
 
             @Override
