@@ -39,8 +39,8 @@ public class NotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.);
+        //setSupportActionBar(toolbar);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         notificationList = (RecyclerView) findViewById(R.id.notification_list);

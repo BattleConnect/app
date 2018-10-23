@@ -45,8 +45,8 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         sensorList = (RecyclerView) findViewById(R.id.sensor_list);

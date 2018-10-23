@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //configureButtons();
         firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null) {//already logged in
-            success();
+           success();
         }
 
         loginB.setOnClickListener(this);
@@ -43,7 +43,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onDestroy() {
-        firebaseAuth.signOut();
+        Intent returnIntent = new Intent();
+        setResult(0, returnIntent);
         super.onDestroy();
 
     }
@@ -66,7 +67,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     success();
-
+                    Intent returnIntent = new Intent();
+                    setResult(1, returnIntent);
+                    finish();
+                    return;
                 }
                 else{
                     fail();
@@ -75,14 +79,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
     private void success(){
-        Toast.makeText(this, "You have successfully logged in.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You have successfully logged in." + firebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
         Intent resultIntent = new Intent();
         resultIntent.putExtra("resultCode", 0);
         setResult(0, resultIntent);
-        firebaseAuth.signOut();
-        Intent myIntent = new Intent(LoginActivity.this, home_screen.class);
 
-        LoginActivity.this.startActivity(myIntent);
+        firebaseAuth.signOut();
+
 
     }
     private void fail(){
