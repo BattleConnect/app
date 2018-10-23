@@ -11,11 +11,11 @@
 
     <string name="sensor_type">Sensor Type</string>
     <string name="none">none</string>
-    <string name="asset">asset</string>
+    <string name="asset">Asset</string>
     <string name="heartbeat">HeartRate</string>
     <string name="vibration">Vibration</string>
     <string name="moisture">Moisture</string>
-    <string name="temperature">temp</string>
+    <string name="temperature">Temp</string>
 
 
     <string name="TagPrompt">Enter Tag</string>
