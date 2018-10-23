@@ -79,7 +79,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
     private void success(){
-        Toast.makeText(this, "You have successfully logged in." + firebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+        //TODO DON"T HARDCODE
+        //Toast.makeText(this, "You have successfully logged in." + firebaseAuth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You have successfully logged in." + "CONNOR", Toast.LENGTH_SHORT).show();
         Intent resultIntent = new Intent();
         resultIntent.putExtra("resultCode", 0);
         setResult(0, resultIntent);

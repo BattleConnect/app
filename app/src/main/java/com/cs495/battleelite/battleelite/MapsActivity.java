@@ -82,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("not enough sensors on map to determine camera boundsBuilder");
                 }
             }
-        }, 2000);
+        }, 5000);
     }
 
     @Override
@@ -153,6 +153,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Map<String, Object> oldSensorData = sensors.get(sensorID);
                                 Map<String, Object> newSensorData = dc.getDocument().getData();
                                 System.out.println(oldSensorData.get("Date_Time"));
+                                System.out.println(newSensorData.get("Date_Time"));
+
                                 long oldDateTime = (long) oldSensorData.get("Date_Time");
                                 long newDateTime = (long) newSensorData.get("Date_Time");
                                 if (newDateTime > oldDateTime) {
