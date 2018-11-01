@@ -6,6 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+
+import com.cs495.battleelite.battleelite.fragments.MapFilterFragment;
+import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,22 +26,27 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
 
     private GoogleMap mMap;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
     BiMap<Long, Marker> sensorMarkers;
+    HashMap<String, Marker> markerList = new HashMap<>();
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
 
@@ -50,6 +58,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        configureFilterButton();
+    }
+
+    private void configureFilterButton(){
+        final Button filterButton = (Button) findViewById(R.id.filterButton);
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapFilterFragment filter = new MapFilterFragment();
+                filter.show(getFragmentManager(), "MapFilterFragment");
+
+            }
+
+        });
+    }
+
+    @Override
+    public void getSelectedSensorTypeFilter(String type){
+        Log.i("getSelectedSensorTypes", "returns " + type);
+        //getSensorData(type);
+        removeNonTypedSensors(type);
+    }
+
+    private void removeNonTypedSensors(String sensorFilter) {
+        for (Map.Entry<String, Marker> entry : markerList.entrySet()) {
+            String key = entry.getKey();
+            Marker marker = entry.getValue();
+
+            marker.setVisible(false);
+            marker.remove();
+
+            Log.d("Test", key + " ---- key");
+            Log.d("Test", "size: " + markerList.size());
+
+            if(!key.equals(sensorFilter)) {
+                marker.setVisible(false);
+                marker.remove();
+            }
+        }
     }
 
     /**
@@ -67,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
-        getSensorData();
+        getSensorData(null);
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         new Handler().postDelayed(new Runnable() {
@@ -119,7 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-    public void addSensorMarker(Map<String, Object> sensorData) {
+    public void addSensorMarker(Map<String, Object> sensorData, String sensorFilter) {
         long sensorID = (long) sensorData.get("Sensor_ID");
 
         double lat = (double) sensorData.get("Lat");
@@ -129,20 +178,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Marker marker = null;
 
         String type = (String) sensorData.get("Sensor_Type");
-        if (type.equals("HeartRate"))
-            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
-        else if (type.equals("Asset"))
-            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
-        else if (type.equals("Vibration"))
-            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
-        else if (type.equals("Temp"))
-            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
-        else if (type.equals("Moisture"))
-            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
-        else
-            System.out.println(type + "this shouldn't happen");
 
-        sensorMarkers.put(sensorID, marker);
+        if(sensorFilter != null){
+            if(sensorFilter.equals(type)){
+                if (type.equals("HeartRate"))
+                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
+                else if (type.equals("Asset"))
+                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
+                else if (type.equals("Vibration"))
+                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
+                else if (type.equals("Temp"))
+                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
+                else if (type.equals("Moisture"))
+                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
+                else
+                    System.out.println(type + "this shouldn't happen");
+
+                sensorMarkers.put(sensorID, marker);
+                markerList.put(type, marker);
+            }
+            else {
+                //do nothing we don't wanna see that sensor
+            }
+        }
+        else {
+            if (type.equals("HeartRate"))
+                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
+            else if (type.equals("Asset"))
+                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
+            else if (type.equals("Vibration"))
+                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
+            else if (type.equals("Temp"))
+                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
+            else if (type.equals("Moisture"))
+                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
+            else
+                System.out.println(type + "this shouldn't happen");
+
+            sensorMarkers.put(sensorID, marker);
+            markerList.put(type, marker);
+        }
+
 
         if (bounds == null)
             boundsBuilder.include(new LatLng(lat, lng));
@@ -156,7 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return resizedBitmap;
     }
 
-    void getSensorData() {
+    void getSensorData(final String sensorFilter) {
         sensors = new HashMap<Long, Map<String, Object>>();
         sensorMarkers = HashBiMap.create();
         db.collection("sensors").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -193,13 +269,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         }
                                     }
                                     else {
-                                        addSensorMarker(newSensorData);
+                                        addSensorMarker(newSensorData, sensorFilter);
                                     }
                                 }
                             }
                             else {
                                 sensors.put(sensorID, dc.getDocument().getData());
-                                addSensorMarker(dc.getDocument().getData());
+                                addSensorMarker(dc.getDocument().getData(), sensorFilter);
                             }
                             break;
                         case REMOVED:
