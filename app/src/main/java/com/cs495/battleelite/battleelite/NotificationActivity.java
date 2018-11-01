@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
 import com.cs495.battleelite.battleelite.holders.NotificationHolder;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.NotificationResponse;
@@ -23,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
-public class NotificationActivity extends AppCompatActivity {
+public class NotificationActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
     private static final String TAG = "NotificationActivity";
     private static final String NOTIFICATIONS = "notifications";
 
@@ -48,7 +50,8 @@ public class NotificationActivity extends AppCompatActivity {
         init();
 
         //get notification data
-        loadNotificationData();
+        loadNotificationData(null);
+        configureFilterButton();
     }
 
     private void init() {
@@ -58,8 +61,17 @@ public class NotificationActivity extends AppCompatActivity {
 
     }
 
-    private void loadNotificationData() {
+    private void loadNotificationData(String sensorFilter) {
         Query query = db.collection(NOTIFICATIONS);
+
+        if(sensorFilter != null){
+            if(sensorFilter.equals("none")){
+                query = db.collection(NOTIFICATIONS);
+            }
+            else {
+                query = query.whereEqualTo("priority", sensorFilter);
+            }
+        }
 
         FirestoreRecyclerOptions<NotificationResponse> response = new FirestoreRecyclerOptions.Builder<NotificationResponse>()
                 .setQuery(query, NotificationResponse.class)
@@ -99,6 +111,26 @@ public class NotificationActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         notificationList.setAdapter(adapter);
         adapter.startListening();
+    }
+
+    private void configureFilterButton(){
+        final Button filterButton = (Button) findViewById(R.id.filterButton);
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationFilterFragment filter = new NotificationFilterFragment();
+                filter.show(getFragmentManager(), "NotificationFilterFragment");
+
+            }
+
+        });
+    }
+
+    @Override
+    public void getSelectedSensorTypeFilter(String type){
+        Log.i("getSelectedNotification", "returns " + type);
+        loadNotificationData(type);
     }
 
     @Override

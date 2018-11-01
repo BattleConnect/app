@@ -17,6 +17,10 @@
     <string name="moisture">Moisture</string>
     <string name="temperature">Temp</string>
 
+    <string name="low">LOW</string>
+    <string name="medium">MEDIUM</string>
+    <string name="high">HIGH</string>
+    <string name="critical">CRITICAL</string>
 
     <string name="TagPrompt">Enter Tag</string>
     <string name="Tag1">Health</string>

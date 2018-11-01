@@ -66,7 +66,7 @@ public class home_screen extends AppCompatActivity {
             firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null) { //already logged in
             Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
-            firebaseAuth.updateCurrentUser(null);
+            firebaseAuth.updateCurrentUser(firebaseAuth.getCurrentUser());
             firebaseAuth.signOut();
             return true;
         }
