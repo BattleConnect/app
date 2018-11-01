@@ -1,14 +1,16 @@
 package com.cs495.battleelite.battleelite;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
@@ -26,7 +28,6 @@ import java.util.Map;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 import android.os.Handler;
-import android.widget.TextView;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -120,16 +121,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addSensorMarker(Map<String, Object> sensorData) {
         long sensorID = (long) sensorData.get("Sensor_ID");
-        String title = (String) sensorData.get("Sensor_Type");
+
         double lat = (double) sensorData.get("Lat");
         double lng = (double) sensorData.get("Long");
         LatLng pos = new LatLng(lat, lng);
-        Marker marker = mMap.addMarker(new MarkerOptions().position(pos).title(title));
+
+        Marker marker = null;
+
+        String type = (String) sensorData.get("Sensor_Type");
+        if (type.equals("HeartRate"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
+        else if (type.equals("Asset"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
+        else if (type.equals("Vibration"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
+        else if (type.equals("Temp"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
+        else if (type.equals("Moisture"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
+        else
+            System.out.println(type + "this shouldn't happen");
+
         sensorMarkers.put(sensorID, marker);
+
         if (bounds == null)
             boundsBuilder.include(new LatLng(lat, lng));
         else
             bounds.including(new LatLng(lat, lng));
+    }
+
+    public Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
     }
 
     void getSensorData() {
@@ -163,8 +187,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     double lng = (double) newSensorData.get("Long");
                                     LatLng newPos = new LatLng(lat, lng);
                                     if (sensorMarkers.containsKey(sensorID)) {
-                                        if (sensorMarkers.get(sensorID).getPosition() != newPos)
+                                        if (sensorMarkers.get(sensorID).getPosition() != newPos) {
+                                            System.out.println("changing marker location");
                                             sensorMarkers.get(sensorID).setPosition(newPos);
+                                        }
                                     }
                                     else {
                                         addSensorMarker(newSensorData);
