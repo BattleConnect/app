@@ -25,15 +25,26 @@ public class MapFilterFragment extends DialogFragment {
         final View v = inflater.inflate(R.layout.dialog_filter, null);
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
+
         final Spinner sensorTypes = (Spinner) v.findViewById(R.id.sensorFilterSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+        final Spinner forceTypes = (Spinner) v.findViewById(R.id.forceFilterSpinner);
+
+        ArrayAdapter<String> sensorAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item,
                 getResources().getStringArray(R.array.sensorTypeList));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sensorTypes.setAdapter(adapter);
+        sensorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sensorTypes.setAdapter(sensorAdapter);
+
+        ArrayAdapter<String> forceAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.forceTypeList));
+        forceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        forceTypes.setAdapter(forceAdapter);
+
         builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 mListener.getSelectedSensorTypeFilter(sensorTypes.getSelectedItem().toString());
+                mListener.getSelectedForceTypeFilter(forceTypes.getSelectedItem().toString());
 
             }
         });
@@ -49,7 +60,7 @@ public class MapFilterFragment extends DialogFragment {
 
     public interface MapFilterFragmentListener{
         public void getSelectedSensorTypeFilter(String type);
-
+        public void getSelectedForceTypeFilter(String type);
     }
 
     @Override

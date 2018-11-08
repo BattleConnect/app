@@ -86,6 +86,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    public void getSelectedForceTypeFilter(String type) {
+        Log.i("getSelectedSensorTypes", "returns " + type);
+        //TODO: Filter forces
+        filterForces(type);
+    }
+
+    private void filterForces(String forceFilter) {
+        for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
+            ForceMarker forceMarker = entry.getValue();
+
+            if(forceFilter.equalsIgnoreCase(forceMarker.getType())) {
+                forceMarker.getMarker().setVisible(true);
+            }
+            else if(forceFilter.equalsIgnoreCase(NONE)) {
+                forceMarker.getMarker().setVisible(true);
+            }
+            else if(!forceFilter.equalsIgnoreCase(forceMarker.getType())) {
+                forceMarker.getMarker().setVisible(false);
+            }
+        }
+    }
+
+    @Override
     public void getSelectedSensorTypeFilter(String type){
         Log.i("getSelectedSensorTypes", "returns " + type);
         filterSensors(type);
