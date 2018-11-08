@@ -15,7 +15,7 @@ import com.cs495.battleelite.battleelite.FilterDialogFragment;
 import com.cs495.battleelite.battleelite.R;
 
 public class NotificationFilterFragment extends DialogFragment {
-        com.cs495.battleelite.battleelite.FilterDialogFragment.FilterDialogFragmentListener mListener;
+    NotificationFilterFragment.NotificationFilterFragmentListener mListener;
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class NotificationFilterFragment extends DialogFragment {
             notificationTypes.setAdapter(adapter);
             builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    mListener.getSelectedSensorTypeFilter(notificationTypes.getSelectedItem().toString());
+                    mListener.getSelectedNotificationPriorityFilter(notificationTypes.getSelectedItem().toString());
 
                 }
             });
@@ -48,8 +48,8 @@ public class NotificationFilterFragment extends DialogFragment {
             return builder.create();
         }
 
-        public interface FilterDialogFragmentListener{
-            public void getSelectedSensorTypeFilter(String type);
+        public interface NotificationFilterFragmentListener{
+            public void getSelectedNotificationPriorityFilter(String type);
 
         }
 
@@ -57,7 +57,7 @@ public class NotificationFilterFragment extends DialogFragment {
         public void onAttach(Context context){
             super.onAttach(context);
             try{
-                mListener = (com.cs495.battleelite.battleelite.FilterDialogFragment.FilterDialogFragmentListener) context;
+                mListener = (NotificationFilterFragment.NotificationFilterFragmentListener) context;
             } catch (ClassCastException e){
                 throw new ClassCastException(getActivity().toString() + " must implement FilterDialogFragmentListener");
             }
