@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.cs495.battleelite.battleelite.fragments.MapFilterFragment;
 import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
+import com.cs495.battleelite.battleelite.holders.objects.SensorMarker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,12 +43,13 @@ import com.google.common.collect.HashBiMap;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
 
+    private static final String NONE = "none";
     private GoogleMap mMap;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
     BiMap<Long, Marker> sensorMarkers;
-    HashMap<String, Marker> markerList = new HashMap<>();
+    HashMap<Long, SensorMarker> markerList = new HashMap<>();
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
 
@@ -79,24 +82,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void getSelectedSensorTypeFilter(String type){
         Log.i("getSelectedSensorTypes", "returns " + type);
-        //getSensorData(type);
-        removeNonTypedSensors(type);
+        filterSensors(type);
     }
 
-    private void removeNonTypedSensors(String sensorFilter) {
-        for (Map.Entry<String, Marker> entry : markerList.entrySet()) {
-            String key = entry.getKey();
-            Marker marker = entry.getValue();
+    private void filterSensors(String sensorFilter) {
+        for (Map.Entry<Long, SensorMarker> entry : markerList.entrySet()) {
+            SensorMarker sensorMarker = entry.getValue();
 
-            marker.setVisible(false);
-            marker.remove();
-
-            Log.d("Test", key + " ---- key");
-            Log.d("Test", "size: " + markerList.size());
-
-            if(!key.equals(sensorFilter)) {
-                marker.setVisible(false);
-                marker.remove();
+            if(sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
+                sensorMarker.getMarker().setVisible(true);
+            }
+            else if(sensorFilter.equalsIgnoreCase(NONE)) {
+                sensorMarker.getMarker().setVisible(true);
+            }
+            else if(!sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
+                sensorMarker.getMarker().setVisible(false);
             }
         }
     }
@@ -195,7 +195,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println(type + "this shouldn't happen");
 
                 sensorMarkers.put(sensorID, marker);
-                markerList.put(type, marker);
+                SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
+                markerList.put(sensorID, sensorMarker);
             }
             else {
                 //do nothing we don't wanna see that sensor
@@ -216,7 +217,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println(type + "this shouldn't happen");
 
             sensorMarkers.put(sensorID, marker);
-            markerList.put(type, marker);
+            SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
+            markerList.put(sensorID, sensorMarker);
         }
 
 
@@ -266,6 +268,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         if (sensorMarkers.get(sensorID).getPosition() != newPos) {
                                             System.out.println("changing marker location");
                                             sensorMarkers.get(sensorID).setPosition(newPos);
+                                            markerList.get(sensorID).setMarker(sensorMarkers.get(sensorID));
                                         }
                                     }
                                     else {
@@ -287,5 +290,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+        System.out.println("Test------: " + markerList.size());
     }
 }
