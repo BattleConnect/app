@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.cs495.battleelite.battleelite.fragments.MapFilterFragment;
 import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
+import com.cs495.battleelite.battleelite.holders.objects.SensorData;
 import com.cs495.battleelite.battleelite.holders.objects.SensorMarker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,10 +23,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import java.text.SimpleDateFormat;
@@ -47,9 +52,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
-    BiMap<Long, Marker> sensorMarkers;
-    HashMap<Long, SensorMarker> markerList = new HashMap<>();
+    BiMap<Long, SensorData> dataList = HashBiMap.create();
+    BiMap<Long, Marker> markerList = HashBiMap.create();
+    BiMap<Long, SensorMarker> sensorMarkerList = HashBiMap.create();
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
 
@@ -86,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void filterSensors(String sensorFilter) {
-        for (Map.Entry<Long, SensorMarker> entry : markerList.entrySet()) {
+        for (Map.Entry<Long, SensorMarker> entry : sensorMarkerList.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 
             if(sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
@@ -137,18 +142,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        long sensorID = sensorMarkers.inverse().get(marker);
-        Map<String, Object> sensorData = sensors.get(sensorID);
+        Long sensorID = markerList.inverse().get(marker);
+        SensorData sensorData = dataList.get(sensorID);
 
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((long) sensorData.get("Date_Time")));
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((Long) sensorData.getDate_Time()));
 
         String message =
-                "ID: " + sensorData.get("Sensor_ID") + "\n" +
-                "Type: " + sensorData.get("Sensor_Type") + "\n" +
-                "Value: " + sensorData.get("Sensor_Val") + "\n" +
+                "ID: " + sensorData.getSensor_ID() + "\n" +
+                "Type: " + sensorData.getSensor_Type() + "\n" +
+                "Value: " + sensorData.getSensor_Val() + "\n" +
                 "Timestamp: " + timestamp + "\n" +
-                "Health: " + sensorData.get("SensorHealth") + "\n" +
-                "Battery: " + sensorData.get("Battery") + "%";
+                "Health: " + sensorData.getSensorHealth()+ "\n" +
+                "Battery: " + sensorData.getBattery() + "%";
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
         builder1.setMessage(message);
@@ -168,64 +173,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-    public void addSensorMarker(Map<String, Object> sensorData, String sensorFilter) {
-        long sensorID = (long) sensorData.get("Sensor_ID");
+    public void addSensorMarker(SensorData sensorData, String sensorFilter) {
+        Long sensorID = sensorData.getSensor_ID();
+        Double latitude = sensorData.getLat();
+        Double longitude = sensorData.getLong();
+        LatLng position = new LatLng(latitude, longitude);
+        String type = sensorData.getSensor_Type();
 
-        double lat = (double) sensorData.get("Lat");
-        double lng = (double) sensorData.get("Long");
-        LatLng pos = new LatLng(lat, lng);
+        //create the google maps marker with the correct symbol
+        Marker marker = createSensorMarker(position, type);
+        markerList.put(sensorID, marker);
 
-        Marker marker = null;
-
-        String type = (String) sensorData.get("Sensor_Type");
-
-        if(sensorFilter != null){
-            if(sensorFilter.equals(type)){
-                if (type.equals("HeartRate"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
-                else if (type.equals("Asset"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
-                else if (type.equals("Vibration"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
-                else if (type.equals("Temp"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
-                else if (type.equals("Moisture"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
-                else
-                    System.out.println(type + "this shouldn't happen");
-
-                sensorMarkers.put(sensorID, marker);
-                SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
-                markerList.put(sensorID, sensorMarker);
-            }
-            else {
-                //do nothing we don't wanna see that sensor
-            }
+        //if the type of the newly added marker is currently filtered out
+        if(sensorFilter != null && !type.equalsIgnoreCase(sensorFilter)) {
+            marker.setVisible(false);
         }
-        else {
-            if (type.equals("HeartRate"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
-            else if (type.equals("Asset"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
-            else if (type.equals("Vibration"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
-            else if (type.equals("Temp"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
-            else if (type.equals("Moisture"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
-            else
-                System.out.println(type + "this shouldn't happen");
 
-            sensorMarkers.put(sensorID, marker);
-            SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
-            markerList.put(sensorID, sensorMarker);
-        }
+        SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
+        sensorMarkerList.put(sensorID, sensorMarker);
 
 
         if (bounds == null)
-            boundsBuilder.include(new LatLng(lat, lng));
+            boundsBuilder.include(new LatLng(latitude, longitude));
         else
-            bounds.including(new LatLng(lat, lng));
+            bounds.including(new LatLng(latitude, longitude));
+    }
+
+    public Marker createSensorMarker(LatLng position, String type) {
+        Marker marker = null;
+
+        if (type.equals("HeartRate"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
+        else if (type.equals("Asset"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
+        else if (type.equals("Vibration"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
+        else if (type.equals("Temp"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
+        else if (type.equals("Moisture"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
+        else
+            System.out.println(type + "this shouldn't happen");
+
+        return marker;
     }
 
     public Bitmap resizeMapIcons(String iconName, int width, int height){
@@ -235,62 +225,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     void getSensorData(final String sensorFilter) {
-        sensors = new HashMap<Long, Map<String, Object>>();
-        sensorMarkers = HashBiMap.create();
-        db.collection("sensors").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("sensors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    System.err.println("Listen failed:" + e);
-                    return;
-                }
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        SensorData sensorData = documentSnapshot.toObject(SensorData.class);
 
-                for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    long sensorID = (long) dc.getDocument().get("Sensor_ID");
-                    switch (dc.getType()) {
-                        case ADDED:
-                        case MODIFIED:
-                            if (sensors.containsKey(sensorID)) {
-                                Map<String, Object> oldSensorData = sensors.get(sensorID);
-                                Map<String, Object> newSensorData = dc.getDocument().getData();
-                                System.out.println(oldSensorData.get("Date_Time"));
-                                System.out.println(newSensorData.get("Date_Time"));
+                        Long sensorID = sensorData.getSensor_ID();
 
-                                long oldDateTime = (long) oldSensorData.get("Date_Time");
-                                long newDateTime = (long) newSensorData.get("Date_Time");
-                                if (newDateTime > oldDateTime) {
-                                    sensors.put(sensorID, newSensorData);
-                                    double lat = (double) newSensorData.get("Lat");
-                                    double lng = (double) newSensorData.get("Long");
-                                    LatLng newPos = new LatLng(lat, lng);
-                                    if (sensorMarkers.containsKey(sensorID)) {
-                                        if (sensorMarkers.get(sensorID).getPosition() != newPos) {
-                                            System.out.println("changing marker location");
-                                            sensorMarkers.get(sensorID).setPosition(newPos);
-                                            markerList.get(sensorID).setMarker(sensorMarkers.get(sensorID));
-                                        }
-                                    }
-                                    else {
-                                        addSensorMarker(newSensorData, sensorFilter);
-                                    }
-                                }
-                            }
-                            else {
-                                sensors.put(sensorID, dc.getDocument().getData());
-                                addSensorMarker(dc.getDocument().getData(), sensorFilter);
-                            }
-                            break;
-                        case REMOVED:
-                            //TODO
-                            break;
-                        default:
-                            break;
+                        if(dataList.containsKey(sensorID)) {
+                            dataList.get(sensorID).setAll(sensorData);
+                            markerList.get(sensorID).setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
+                            sensorMarkerList.get(sensorID).getMarker().setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
+                        }
+                        else {
+                            dataList.put(sensorID, sensorData);
+
+                            addSensorMarker(sensorData, sensorFilter);
+                        }
                     }
                 }
             }
         });
-
-        System.out.println("Test------: " + markerList.size());
     }
 }
