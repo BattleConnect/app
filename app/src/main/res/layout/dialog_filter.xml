@@ -23,4 +23,13 @@
         android:layout_marginBottom="5dp"
         android:entries="@array/sensorTypeList"
         android:prompt="@string/sensor_type" />
+
+    <ExpandableListView
+        android:id="@+id/expandableFilter"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
+        android:divider="#A4C739"
+        android:dividerHeight="0.5dp"
+        android:layout_weight="1" />
 </LinearLayout>
