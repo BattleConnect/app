@@ -37,8 +37,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
+    Map<String, Map<String, Object>> forces; //key = internally used unique ID, object = most recent force data entry
+
     BiMap<Long, Marker> sensorMarkers;
+    BiMap<String, Marker> forceMarkers;
+
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
 
@@ -68,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
         getSensorData();
+        getForceTrackingData();
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         new Handler().postDelayed(new Runnable() {
@@ -150,6 +156,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             bounds.including(new LatLng(lat, lng));
     }
 
+    public void addForceMarker(Map<String, Object> forceTrackingData) {
+        String ID = (String) forceTrackingData.get("ID");
+
+        double lat = (double) forceTrackingData.get("Lat");
+        double lng = (double) forceTrackingData.get("Long");
+        LatLng pos = new LatLng(lat, lng);
+
+        Marker marker = null;
+
+        String type = (String) forceTrackingData.get("Type");
+        if (type.equals("Company HQ"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("company_hq",100,150))));
+        else if (type.equals("Platoon"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("platoon",150,130))));
+        else if (type.equals("Squad"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("squad",150,130))));
+        else if (type.equals("Enemy Unit"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("enemy_unit",128,128))));
+        else if (type.equals("Preplanned Target"))
+            marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("target",128,128))));
+        else
+            System.out.println(type + "this shouldn't happen");
+
+        forceMarkers.put(ID, marker);
+
+        if (bounds == null)
+            boundsBuilder.include(new LatLng(lat, lng));
+        else
+            bounds.including(new LatLng(lat, lng));
+    }
+
     public Bitmap resizeMapIcons(String iconName, int width, int height){
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
@@ -200,6 +237,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             else {
                                 sensors.put(sensorID, dc.getDocument().getData());
                                 addSensorMarker(dc.getDocument().getData());
+                            }
+                            break;
+                        case REMOVED:
+                            //TODO
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    void getForceTrackingData() {
+        forces = new HashMap<String, Map<String, Object>>();
+        forceMarkers = HashBiMap.create();
+        db.collection("forces").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    System.err.println("Listen failed:" + e);
+                    return;
+                }
+
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    String ID = (String) dc.getDocument().get("ID");
+                    switch (dc.getType()) {
+                        case ADDED:
+                        case MODIFIED:
+                            if (forces.containsKey(ID)) {
+                                Map<String, Object> oldForceTrackingData = forces.get(ID);
+                                Map<String, Object> newForceTrackingData = dc.getDocument().getData();
+
+                                long oldDateTime = (long) oldForceTrackingData.get("Date_Time");
+                                long newDateTime = (long) newForceTrackingData.get("Date_Time");
+                                if (newDateTime > oldDateTime) {
+                                    forces.put(ID, newForceTrackingData);
+                                    double lat = (double) newForceTrackingData.get("Lat");
+                                    double lng = (double) newForceTrackingData.get("Long");
+                                    LatLng newPos = new LatLng(lat, lng);
+                                    if (forceMarkers.containsKey(ID)) {
+                                        if (forceMarkers.get(ID).getPosition() != newPos) {
+                                            System.out.println("changing marker location");
+                                            forceMarkers.get(ID).setPosition(newPos);
+                                        }
+                                    }
+                                    else {
+                                        addForceMarker(newForceTrackingData);
+                                    }
+                                }
+                            }
+                            else {
+                                forces.put(ID, dc.getDocument().getData());
+                                addForceMarker(dc.getDocument().getData());
                             }
                             break;
                         case REMOVED:
