@@ -28,6 +28,7 @@ import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class SensorActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
     private static final String TAG = "SensorActivity";
@@ -40,6 +41,8 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
     private FirebaseFirestore db;
     private FirestoreRecyclerAdapter adapter;
     LinearLayoutManager linearLayoutManager;
+    boolean[] filterIndices;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,7 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FilterDialogFragment filter = new FilterDialogFragment();
+                FilterDialogFragment filter = FilterDialogFragment.newInstance(filterIndices);
                 filter.show(getFragmentManager(), "FilterDialogFragment");
 
             }
@@ -76,6 +79,17 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
     public void getSelectedSensorTypeFilter(String type){
         Log.i("getSelectedSensor", "returns " + type);
         loadSensorList(type);
+    }
+
+    @Override
+    public void getMultipleSelectedSensorFilters(List<String> filters){
+        Log.i("getMultipleSelectedSens", " returns " + filters);
+    }
+
+    @Override
+    public void getSelectedFilterIndicesBoolean(boolean[] indices){
+        filterIndices = indices;
+        Log.i("getIndices ", " returns " + indices);
     }
 
     private void init() {

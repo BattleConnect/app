@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
+import java.util.List;
+
 public class NotificationActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
     private static final String TAG = "NotificationActivity";
     private static final String NOTIFICATIONS = "notifications";
@@ -131,6 +133,14 @@ public class NotificationActivity extends AppCompatActivity implements FilterDia
     public void getSelectedSensorTypeFilter(String type){
         Log.i("getSelectedNotification", "returns " + type);
         loadNotificationData(type);
+    }
+    @Override
+    public void getMultipleSelectedSensorFilters(List<String> filters){
+        Log.i("getMultipleSelectedSens", " returns " + filters);
+    }
+    @Override
+    public void getSelectedFilterIndicesBoolean(boolean[] indices){
+        Log.i("getIndices ", " returns " + indices);
     }
 
     @Override
