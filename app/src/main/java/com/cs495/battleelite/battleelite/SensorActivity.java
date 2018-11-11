@@ -98,15 +98,12 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
 
     @Override
     public void getMultipleSelectedSensorFilters(List<String> filters){
-        Log.i("getMultipleSelectedSens", " returns " + filters);
         adapter.filter(filters);
-        //loadSensorList(filters);
     }
 
     @Override
     public void getSelectedFilterIndicesBoolean(boolean[] indices){
         filterIndices = indices;
-        Log.i("getIndices ", " returns " + indices);
     }
 
     private void init() {
@@ -127,18 +124,10 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
                 }
                 List<SensorResponse> response = new ArrayList<>();
                 for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                    Log.i(TAG, " doc date is " + doc.get("Date_Time"));
-                    Log.i(TAG, " doc lat is " + doc.get("Lat"));
-                    Log.i(TAG, " doc long is " + doc.get("Long"));
-                    Log.i(TAG, " doc battery is " + doc.get("Battery"));
-                    Log.i(TAG, " doc health is " + doc.get("SensorHealth"));
-                    Log.i(TAG, " doc id is " + doc.get("Sensor_ID"));
-                    Log.i(TAG, " doc type is " + doc.get("Sensor_Type"));
-                    Log.i(TAG, " doc val is " + doc.get("Sensor_Val"));
+
                     SensorResponse addToList = new SensorResponse(Long.valueOf(doc.get("Date_Time").toString()), Double.valueOf(doc.get("Lat").toString()), Double.valueOf(doc.get("Long").toString()), Long.valueOf(doc.get("Battery").toString()), doc.get("SensorHealth").toString(), Long.valueOf(doc.get("Sensor_ID").toString()), doc.get("Sensor_Type").toString(), Double.valueOf(doc.get("Sensor_Val").toString()));
                    response.add(addToList);
                 }
-                Log.i(TAG, " responses was: " + response);
                 sensorData.addAll(response);
                 adapter = new FilterAdapter(SensorActivity.this, sensorData);
                 sensorList.setAdapter(adapter);
@@ -146,13 +135,6 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
             }
         });
 
-
-
-        Log.i("Sensor Data ", " is: " + sensorData);
-        //adapter = new FilterAdapter(this, sensorData);
-        //sensorList.setAdapter(adapter);
-
-        Log.i(TAG, "END");
 
         //Query query = db.collection(SENSORS);
         /*if(filters == null){

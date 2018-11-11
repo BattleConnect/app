@@ -64,6 +64,9 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     public void filter(List<String> filters){
         filteredList.clear();
+        if(filters == null || filters.size() == 0){
+            filteredList = sensorList;
+        }
         for(int i=0; i<sensorList.size(); i++) {
             for (int j = 0; j < filters.size(); j++) {
                 if(sensorList.get(i).getSensor_Type().equals(filters.get(j))){
