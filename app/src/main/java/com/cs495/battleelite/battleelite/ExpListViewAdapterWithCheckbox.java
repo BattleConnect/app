@@ -260,13 +260,11 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
                 filters.add(getChild(groupPosition, i));
             }
         }
-        Log.i("filters ", "returns " + filters);
         return filters;
     }
 
     public boolean[] getSelectedFilterIndicesBoolean(int groupPosition){
         boolean getChecked[] = mChildCheckStates.get(groupPosition);
-        Log.i("filterIndices ", "returns " + getChecked);
         return getChecked;
     }
 

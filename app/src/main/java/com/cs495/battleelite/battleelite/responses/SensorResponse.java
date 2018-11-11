@@ -8,12 +8,12 @@ public class SensorResponse {
     private String SensorHealth;
     private long Sensor_ID;
     private String Sensor_Type;
-    private long Sensor_Val;
+    private double Sensor_Val;
 
     public SensorResponse() {
     }
 
-    public SensorResponse(long date_time, double latitude, double longitude, long sensor_battery, String sensor_health, long sensor_id, String sensor_type, long sensor_val) {
+    public SensorResponse(long date_time, double latitude, double longitude, long sensor_battery, String sensor_health, long sensor_id, String sensor_type, double sensor_val) {
         this.Date_Time = date_time;
         this.Lat = latitude;
         this.Long = longitude;
@@ -76,7 +76,7 @@ public class SensorResponse {
         this.Sensor_Type = sensor_type;
     }
 
-    public long getSensor_Val() {
+    public double getSensor_Val() {
         return Sensor_Val;
     }
 
