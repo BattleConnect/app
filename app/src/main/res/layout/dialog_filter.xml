@@ -24,6 +24,27 @@
         android:entries="@array/sensorTypeList"
         android:prompt="@string/sensor_type" />
 
+    <TextView
+        android:id="@+id/forceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/force_type" />
+
+    <Spinner
+        android:id="@+id/forceFilterSpinner"
+        style="@android:style/Widget.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:entries="@array/forceTypeList"
+        android:prompt="@string/force_type" />
+
     <ExpandableListView
         android:id="@+id/expandableFilter"
         android:layout_height="match_parent"
