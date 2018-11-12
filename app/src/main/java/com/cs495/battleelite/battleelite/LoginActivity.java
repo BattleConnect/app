@@ -99,8 +99,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         resultIntent.putExtra("resultCode", 0);
         setResult(0, resultIntent);
 
-        //firebaseAuth.signOut();
-
         //store the user id for notification purposes
         storeUUID();
     }
