@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -20,6 +21,8 @@ public class home_screen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home_screen);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
 
 
@@ -67,7 +70,7 @@ public class home_screen extends AppCompatActivity {
         if(firebaseAuth.getCurrentUser() != null) { //already logged in
             Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
             firebaseAuth.updateCurrentUser(firebaseAuth.getCurrentUser());
-            firebaseAuth.signOut();
+           // firebaseAuth.signOut();
             return true;
         }
         Intent myIntent = new Intent(home_screen.this, LoginActivity.class);

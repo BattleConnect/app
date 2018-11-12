@@ -43,7 +43,8 @@ dependencies {
     implementation "android.arch.core:common:1.1.1"
     implementation 'com.google.firebase:firebase-messaging:17.3.3'
     implementation 'com.google.firebase:firebase-auth:16.0.4'
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
 //    implementation 'com.google.firebase:firebase-auth:16.0.1:15.0.0'
 }
 
