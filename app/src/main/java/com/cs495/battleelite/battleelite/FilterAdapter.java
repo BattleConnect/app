@@ -74,6 +74,48 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 }
             }
         }
+        if(filters == null || filters.size() == 0){
+
+
+        }
+        else{
+            removeDuplicates();
+        }
+
+        notifyDataSetChanged();
+    }
+
+    private void swap( int i, int j) {
+        SensorResponse temp = filteredList.get(i);
+        filteredList.set(i,filteredList.get(j));
+        filteredList.set(j, temp);
+    }
+
+    public void removeDuplicates(){
+
+        for(int i=0; i<filteredList.size(); i++) {
+            SensorResponse x = filteredList.get(i);
+            for(int j = i + 1; j < filteredList.size(); j++) {
+                long xID = x.getSensor_ID(); long tempID = filteredList.get(j).getSensor_ID();
+                if(xID == tempID) {
+                   long xDT = x.getDate_Time(); long tempDT = filteredList.get(j).getDate_Time();
+
+                   try {
+                       if (xDT > tempDT) {
+                           filteredList.remove(j);
+                       } else {
+                           swap(i, j);
+                           filteredList.remove(j);
+                       }
+                   } catch (Exception e) {
+
+
+                   }
+                }
+            }
+        }
+        int g = filteredList.size();
+        g++;
         notifyDataSetChanged();
     }
 

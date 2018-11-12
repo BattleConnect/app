@@ -112,7 +112,7 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
         db = FirebaseFirestore.getInstance();
 
     }
-
+    private int h = 0;
     private void loadSensorList() {
         Log.i(TAG, "START");
         db.collection(SENSORS).addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -131,6 +131,9 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
                 sensorData.addAll(response);
                 adapter = new FilterAdapter(SensorActivity.this, sensorData);
                 sensorList.setAdapter(adapter);
+
+               // adapter.removeDuplicates();
+
 
             }
         });

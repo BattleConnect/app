@@ -104,7 +104,7 @@ public class home_screen extends AppCompatActivity {
     private  boolean checkLoginStatus(){
             firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null) { //already logged in
-            Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
             firebaseAuth.updateCurrentUser(firebaseAuth.getCurrentUser());
             return true;
         }
@@ -115,7 +115,9 @@ public class home_screen extends AppCompatActivity {
 
     private void logout(){
 
-        firebaseAuth.signOut();;
+        firebaseAuth.signOut();
+        checkLoginStatus();
+
     }
     private void clearCache(){
         try {
