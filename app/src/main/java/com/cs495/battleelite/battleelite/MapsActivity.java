@@ -1,17 +1,19 @@
 package com.cs495.battleelite.battleelite;
 
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.renderscript.Sampler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
-
 import com.cs495.battleelite.battleelite.fragments.MapFilterFragment;
 import com.cs495.battleelite.battleelite.holders.objects.ForceData;
 import com.cs495.battleelite.battleelite.holders.objects.ForceMarker;
@@ -30,14 +32,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.Distribution;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
@@ -54,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     BiMap<String, ForceData> forceDataList = HashBiMap.create();
     BiMap<String, Marker> forceMarkerList = HashBiMap.create();
+    Map<Marker, ValueAnimator> animatedSensorList = new HashMap();
     BiMap<String, ForceMarker> forceObjectMarkerList = HashBiMap.create();
 
     LatLngBounds.Builder boundsBuilder;
@@ -228,6 +232,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return message;
     }
 
+    private boolean isTrippedVibrationSensor(SensorData sensorData) {
+        if (sensorData.getSensor_Type().equals("Vibration") && sensorData.getSensor_Val() > 0)
+            return true;
+        return false;
+    }
+
+    private boolean isDeadHeartRateSensor(SensorData sensorData) {
+        if (sensorData.getSensor_Type().equals("HeartRate") && sensorData.getSensor_Val() == 0)
+            return true;
+        return false;
+    }
+
+
     public void addSensorMarker(SensorData sensorData, String sensorFilter) {
         Long sensorID = sensorData.getSensor_ID();
         Double latitude = sensorData.getLat();
@@ -236,7 +253,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String type = sensorData.getSensor_Type();
 
         //create the google maps marker with the correct symbol
-        Marker marker = createSensorMarker(position, type);
+        Marker marker = createSensorMarker(position, sensorData);
         sensorMarkerList.put(sensorID, marker);
 
         //if the type of the newly added marker is currently filtered out
@@ -254,19 +271,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             bounds.including(new LatLng(latitude, longitude));
     }
 
-    public Marker createSensorMarker(LatLng position, String type) {
+    public Marker createSensorMarker(LatLng position, SensorData sensorData) {
+        String type = sensorData.getSensor_Type();
         Marker marker = null;
 
-        if (type.equals("HeartRate"))
-            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
+        if (type.equals("HeartRate")) {
+            if (isDeadHeartRateSensor(sensorData)) {
+                marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("dead_heartrate", 128, 128))).anchor(0.5f, 0.5f));
+            }
+            else {
+                marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))).anchor(0.5f, 0.5f));
+            }
+        }
         else if (type.equals("Asset"))
-            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
-        else if (type.equals("Vibration"))
-            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))).anchor(0.5f, 0.5f));
+        else if (type.equals("Vibration")) {
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))).anchor(0.5f, 0.5f));
+            if (isTrippedVibrationSensor(sensorData))
+                setMarkerWobble(marker);
+        }
         else if (type.equals("Temp"))
-            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))).anchor(0.5f, 0.5f));
         else if (type.equals("Moisture"))
-            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))).anchor(0.5f, 0.5f));
         else
             System.out.println(type + "this shouldn't happen");
 
@@ -324,6 +351,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return resizedBitmap;
     }
 
+    public void setMarkerWobble(final Marker marker) {
+        if (marker != null) {
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, -0.25f, 0.2f, -0.15f, 0.1f, 0.05f, 0f);
+            valueAnimator.setDuration(1000); // duration 1 second
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.setRepeatCount(-1);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override public void onAnimationUpdate(ValueAnimator animation) {
+                    try {
+                        float v = (float) animation.getAnimatedValue();
+                        marker.setAnchor(0.5f + v, 0.5f);
+                        //marker.setRotation(computeRotation(v, startRotation, destination.getBearing()));
+                    } catch (Exception ex) {
+                        // I don't care atm..
+                    }
+                }
+            });
+            animatedSensorList.put(marker, valueAnimator);
+            valueAnimator.start();
+        }
+    }
+
+    private void updateSensorMarker(Marker marker, SensorData sensorData) {
+        LatLng newPosition = new LatLng(sensorData.getLat(), sensorData.getLong());
+        marker.setPosition(newPosition);
+
+        if (sensorData.getSensor_Type().equals("HeartRate")) {
+            if (isDeadHeartRateSensor(sensorData)) {
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("dead_heartrate",128,128)));
+            }
+            else {
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128)));
+            }
+        }
+        else if (sensorData.getSensor_Type() == "Vibration") {
+            ValueAnimator valueAnimator = animatedSensorList.get(marker);
+            if (valueAnimator != null) {
+                if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
+                    valueAnimator.pause();
+                if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
+                    valueAnimator.resume();
+                //paused and not tripped, do nothing
+                //running and tripped, do nothing
+            }
+        }
+    }
+
+
     void getSensorData(final String sensorFilter) {
         db.collection("sensors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -335,9 +410,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Long sensorID = sensorData.getSensor_ID();
 
                         if(sensorDataList.containsKey(sensorID)) {
-                            sensorDataList.get(sensorID).setAll(sensorData);
-                            sensorMarkerList.get(sensorID).setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
-                            sensorObjectMarkerList.get(sensorID).getMarker().setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
+                            if (sensorData.getDate_Time() > sensorDataList.get(sensorID).getDate_Time()) {
+                                sensorDataList.get(sensorID).setAll(sensorData);
+                                sensorMarkerList.get(sensorID).setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
+                                updateSensorMarker(sensorObjectMarkerList.get(sensorID).getMarker(), sensorData);
+                            }
                         }
                         else {
                             sensorDataList.put(sensorID, sensorData);
@@ -361,9 +438,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         String forceID = forceData.getID();
 
                         if(forceDataList.containsKey(forceID)) {
-                            forceDataList.get(forceID).setAll(forceData);
-                            forceMarkerList.get(forceID).setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
-                            forceObjectMarkerList.get(forceID).getMarker().setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
+                            if (forceData.getDate_Time() > forceDataList.get(forceID).getDate_Time()) {
+                                forceDataList.get(forceID).setAll(forceData);
+                                forceMarkerList.get(forceID).setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
+                                forceObjectMarkerList.get(forceID).getMarker().setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
+                            }
                         }
                         else {
                             forceDataList.put(forceID, forceData);
