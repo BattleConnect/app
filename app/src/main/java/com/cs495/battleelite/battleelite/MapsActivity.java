@@ -41,6 +41,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
@@ -59,6 +60,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     BiMap<String, Marker> forceMarkerList = HashBiMap.create();
     Map<Marker, ValueAnimator> animatedSensorList = new HashMap();
     BiMap<String, ForceMarker> forceObjectMarkerList = HashBiMap.create();
+
+    boolean[] sensorFilterIndices;
+    boolean[] forceFilterIndices;
 
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
@@ -81,57 +85,67 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapFilterFragment filter = new MapFilterFragment();
+                MapFilterFragment filter = MapFilterFragment.newInstance(sensorFilterIndices, forceFilterIndices);
                 filter.show(getFragmentManager(), "MapFilterFragment");
 
             }
 
         });
+
     }
 
     @Override
-    public void getSelectedForceTypeFilter(String type) {
-        Log.i("getSelectedSensorTypes", "returns " + type);
-        //TODO: Filter forces
-        filterForces(type);
+    public void getSelectedForceTypeFilter(List<String> filters) {
+        //Log.i("getSelectedSensorTypes", "returns " + type);
+        filterForces(filters);
     }
 
-    private void filterForces(String forceFilter) {
+    private void filterForces(List<String> forceFilter) {
         for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
 
-            if(forceFilter.equalsIgnoreCase(forceMarker.getType())) {
+            if(forceFilter.contains(forceMarker.getType())) {
                 forceMarker.getMarker().setVisible(true);
             }
-            else if(forceFilter.equalsIgnoreCase(NONE)) {
+            else if(forceFilter.contains(NONE)) {
                 forceMarker.getMarker().setVisible(true);
             }
-            else if(!forceFilter.equalsIgnoreCase(forceMarker.getType())) {
+            else if(!forceFilter.contains(forceMarker.getType())) {
                 forceMarker.getMarker().setVisible(false);
             }
         }
     }
 
     @Override
-    public void getSelectedSensorTypeFilter(String type){
-        Log.i("getSelectedSensorTypes", "returns " + type);
-        filterSensors(type);
+    public void getSelectedSensorTypeFilter(List<String> filters){
+        //Log.i("getSelectedSensorTypes", "returns " + type);
+        filterSensors(filters);
     }
 
-    private void filterSensors(String sensorFilter) {
+    private void filterSensors(List<String> sensorFilter) {
         for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 
-            if(sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
+            if(sensorFilter.contains(sensorMarker.getType())) {
                 sensorMarker.getMarker().setVisible(true);
             }
-            else if(sensorFilter.equalsIgnoreCase(NONE)) {
+            else if(sensorFilter.contains(NONE)) {
                 sensorMarker.getMarker().setVisible(true);
             }
-            else if(!sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
+            else if(!sensorFilter.contains(sensorMarker.getType())) {
                 sensorMarker.getMarker().setVisible(false);
             }
         }
+    }
+
+    @Override
+    public void getSelectedSensorFilterIndicesBoolean(boolean[] indices){
+        sensorFilterIndices = indices;
+    }
+
+    @Override
+    public void getSelectedForceFilterIndicesBoolean(boolean[] indices){
+        forceFilterIndices = indices;
     }
 
     /**
