@@ -17,6 +17,13 @@
     <string name="moisture">Moisture</string>
     <string name="temperature">Temp</string>
 
+    <string name="force_type">Force Type</string>
+    <string name="company">Company HQ</string>
+    <string name="platoon">Platoon</string>
+    <string name="squad">Squad</string>
+    <string name="enemy">Enemy Unit</string>
+    <string name="target">Preplanned Target</string>
+
     <string name="low">LOW</string>
     <string name="medium">MEDIUM</string>
     <string name="high">HIGH</string>

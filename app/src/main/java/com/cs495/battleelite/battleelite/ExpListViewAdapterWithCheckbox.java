@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     /*  Here's the constructor we'll use to pass in our calling
      *  activity's context, group items, and child items
      */
-    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup,          HashMap<String, List<String>> listDataChild){
+    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, boolean[] checkedStates){
 
         mContext = context;
         mListDataGroup = listDataGroup;
@@ -61,6 +62,13 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
 
         // Initialize our hashmap containing our check states here
         mChildCheckStates = new HashMap<Integer, boolean[]>();
+        if(checkedStates != null) {
+            mChildCheckStates.put(0, checkedStates);
+        }
+        else{
+            Log.i("this ", " means checked is null");
+        }
+
     }
 
     public int getNumberOfCheckedItemsInGroup(int mGroupPosition)
@@ -242,6 +250,22 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         });
 
         return convertView;
+    }
+
+    public List<String> getSelectedItems(int groupPosition){
+        List<String> filters = new ArrayList<>();
+        boolean getChecked[] = mChildCheckStates.get(groupPosition);
+        for(int i = 0; i < getChildrenCount(groupPosition); i++){
+            if(getChecked[i] == true){
+                filters.add(getChild(groupPosition, i));
+            }
+        }
+        return filters;
+    }
+
+    public boolean[] getSelectedFilterIndicesBoolean(int groupPosition){
+        boolean getChecked[] = mChildCheckStates.get(groupPosition);
+        return getChecked;
     }
 
     @Override

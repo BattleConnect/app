@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -20,11 +21,25 @@ public class FilterDialogFragment extends DialogFragment {
     FilterDialogFragmentListener mListener;
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    boolean[] checkedStates;
+
+    public static FilterDialogFragment newInstance(boolean[] checkedStatesFromActivity){
+         FilterDialogFragment f = new FilterDialogFragment();
+         Bundle args = new Bundle();
+         args.putBooleanArray("checkedStatesFromActivity", checkedStatesFromActivity);
+         f.setArguments(args);
+
+         return f;
+    }
+
+    public boolean[] getCheckedStatesFromActivity(){
+        return getArguments().getBooleanArray("checkedStatesFromActivity");
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        ExpListViewAdapterWithCheckbox listAdapter;
-        ExpandableListView expListView;
+        final ExpListViewAdapterWithCheckbox listAdapter;
+        final ExpandableListView expListView;
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
@@ -45,13 +60,16 @@ public class FilterDialogFragment extends DialogFragment {
 
         loadListData();
         expListView = (ExpandableListView) v.findViewById(R.id.expandableFilter);
-        listAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), listDataHeader, listDataChild);
+        checkedStates = getCheckedStatesFromActivity();
+        listAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), listDataHeader, listDataChild, checkedStates);
         expListView.setAdapter(listAdapter);
 
 
                 builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mListener.getSelectedSensorTypeFilter(sensorTypes.getSelectedItem().toString());
+                        mListener.getMultipleSelectedSensorFilters(listAdapter.getSelectedItems(0));
+                        mListener.getSelectedFilterIndicesBoolean(listAdapter.getSelectedFilterIndicesBoolean(0));
 
                     }
                 });
@@ -67,6 +85,8 @@ public class FilterDialogFragment extends DialogFragment {
 
     public interface FilterDialogFragmentListener{
         public void getSelectedSensorTypeFilter(String type);
+        public void getMultipleSelectedSensorFilters(List<String> filters);
+        public void getSelectedFilterIndicesBoolean(boolean[] indices);
 
     }
 
