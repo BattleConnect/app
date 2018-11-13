@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.SensorResponse;
@@ -74,6 +75,48 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 }
             }
         }
+        if(filters == null || filters.size() == 0){
+
+
+        }
+        else{
+            removeDuplicates();
+        }
+
+        notifyDataSetChanged();
+    }
+
+    private void swap( int i, int j) {
+        SensorResponse temp = filteredList.get(i);
+        filteredList.set(i,filteredList.get(j));
+        filteredList.set(j, temp);
+    }
+
+    public void removeDuplicates(){//takes 1st thing, compares to rest, if id match, check date, swap if needed then delete second item
+
+        for(int i=0; i<filteredList.size(); i++) {
+            SensorResponse x = filteredList.get(i);
+            for(int j = i + 1; j < filteredList.size(); j++) {
+                long xID = x.getSensor_ID(); long tempID = filteredList.get(j).getSensor_ID();
+                if(xID == tempID) {
+                   long xDT = x.getDate_Time(); long tempDT = filteredList.get(j).getDate_Time();
+
+                   try {
+                       if (xDT > tempDT) {
+                           filteredList.remove(j);
+                       } else {
+                           swap(i, j);
+                           filteredList.remove(j);
+                       }
+                   } catch (Exception e) {
+                       //Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                   }
+                   j--;//if match, it deletes the element and put another in its place, so need to check that one too dy decrementing, which the loop will increment, re evaluating the same index
+                }
+            }
+        }
+        int g = filteredList.size();
+        g++;
         notifyDataSetChanged();
     }
 
