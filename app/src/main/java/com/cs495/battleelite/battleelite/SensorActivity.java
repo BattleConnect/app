@@ -131,6 +131,7 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
                 sensorData.addAll(response);
                 adapter = new FilterAdapter(SensorActivity.this, sensorData);
                 sensorList.setAdapter(adapter);
+                adapter.removeDuplicates();
 
             }
         });

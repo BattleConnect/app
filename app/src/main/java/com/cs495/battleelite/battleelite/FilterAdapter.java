@@ -75,14 +75,6 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 }
             }
         }
-        if(filters == null || filters.size() == 0){
-
-
-        }
-        else{
-            removeDuplicates();
-        }
-
         notifyDataSetChanged();
     }
 
@@ -115,8 +107,7 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 }
             }
         }
-        int g = filteredList.size();
-        g++;
+
         notifyDataSetChanged();
     }
 
