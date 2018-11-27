@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.Filterable;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -51,6 +53,7 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
     //visual elements
     ProgressBar progressBar;
     RecyclerView sensorList;
+    SearchView sensorSearch;
 
     private FirebaseFirestore db;
     //private FirestoreRecyclerAdapter adapter;
@@ -68,12 +71,14 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         sensorList = (RecyclerView) findViewById(R.id.sensor_list);
+        sensorSearch = (SearchView) findViewById(R.id.sensor_search);
 
         init();
 
         //get sensor data
         loadSensorList();
         configureFilterButton();
+
     }
 
     private void configureFilterButton(){
@@ -90,11 +95,28 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
         });
     }
 
-    @Override
-    public void getSelectedSensorTypeFilter(String type){
-        Log.i("getSelectedSensor", "returns " + type);
-        //loadSensorList(type);
+    private void configureSearch(){
+        sensorSearch.setIconifiedByDefault(false);
+        sensorSearch.setOnQueryTextListener(searchQueryListener);
+        sensorSearch.setSubmitButtonEnabled(true);
     }
+
+    private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            adapter.search(query);
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            adapter.search(newText);
+            return false;
+        }
+
+    };
+
+
 
     @Override
     public void getMultipleSelectedSensorFilters(List<String> filters){
@@ -130,9 +152,10 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
                 }
                 sensorData.addAll(response);
                 adapter = new FilterAdapter(SensorActivity.this, sensorData);
+                progressBar.setVisibility(View.GONE);
                 sensorList.setAdapter(adapter);
                 adapter.removeDuplicates();
-
+                configureSearch();
             }
         });
 
