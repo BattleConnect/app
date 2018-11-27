@@ -92,7 +92,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
                 switch (model.getPriority()) {
                     case "LOW":
                                 holder.parentLayout.setBackgroundColor(Color.GREEN);
-                                holder.message
                                 break;
                     case "MEDIUM": holder.parentLayout.setBackgroundColor(Color.YELLOW);
                                 break;
