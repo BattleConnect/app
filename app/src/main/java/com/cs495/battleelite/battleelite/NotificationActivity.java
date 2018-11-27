@@ -91,13 +91,13 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
                 switch (model.getPriority()) {
                     case "LOW":
-                                holder.parentLayout.setBackgroundColor(Color.GREEN);
+                                holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_low));
                                 break;
-                    case "MEDIUM": holder.parentLayout.setBackgroundColor(Color.YELLOW);
+                    case "MEDIUM": holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_medium));
                                 break;
-                    case "HIGH": holder.parentLayout.setBackgroundColor(Color.BLUE);
+                    case "HIGH": holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_high));
                                 break;
-                    case "CRITICAL": holder.parentLayout.setBackgroundColor(Color.RED);
+                    case "CRITICAL": holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_critical));
                                 break;
                 }
             }

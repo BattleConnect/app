@@ -62,7 +62,7 @@ public class MapFilterFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
-        ExpandableListView sensorListView = (ExpandableListView) v.findViewById(R.id.sensorFilter);
+        final ExpandableListView sensorListView = (ExpandableListView) v.findViewById(R.id.sensorFilter);
         ExpandableListView forceListView = (ExpandableListView) v.findViewById(R.id.forceFilter);
         ExpandableListView otherListView = (ExpandableListView) v.findViewById(R.id.otherFilter);
 
@@ -86,14 +86,17 @@ public class MapFilterFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 if(sensorAdapter != null && sensorAdapter.getGroupCount() != 0 && sensorAdapter.getSelectedItems(0) != null) {
                     mListener.getSelectedSensorTypeFilter(sensorAdapter.getSelectedItems(0));
+                    mListener.getSelectedSensorFilterIndicesBoolean(sensorAdapter.getSelectedFilterIndicesBoolean(0));
                 }
 
                 if(forceAdapter != null && forceAdapter.getGroupCount() != 0 && forceAdapter.getSelectedItems(0) != null) {
                     mListener.getSelectedForceTypeFilter(forceAdapter.getSelectedItems(0));
+                    mListener.getSelectedForceFilterIndicesBoolean(forceAdapter.getSelectedFilterIndicesBoolean(0));
                 }
 
                 if(otherAdapter != null && otherAdapter.getGroupCount() != 0 && otherAdapter.getSelectedItems(0) != null) {
                     mListener.getSelectedOtherFilter(otherAdapter.getSelectedItems(0));
+                    mListener.getSelectedOtherFilterIndicesBoolean(otherAdapter.getSelectedFilterIndicesBoolean(0));
                 }
             }
         });
@@ -125,6 +128,8 @@ public class MapFilterFragment extends DialogFragment {
 
         List<String> sensorType = new ArrayList<>();
         sensorType.add(getResources().getString(R.string.heartbeat_zero));
+        sensorType.add(getResources().getString(R.string.tripped_vibration));
+        sensorType.add(getResources().getString(R.string.dead_battery));
 
         otherDataChild.put(otherDataHeader.get(0), sensorType);
     }

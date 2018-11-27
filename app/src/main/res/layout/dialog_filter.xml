@@ -3,48 +3,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/sensor_type" />
-
-    <Spinner
-        android:id="@+id/sensorFilterSpinner"
-        style="@android:style/Widget.Spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:entries="@array/sensorTypeList"
-        android:prompt="@string/sensor_type" />
-
-    <TextView
-        android:id="@+id/forceTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/force_type" />
-
-    <Spinner
-        android:id="@+id/forceFilterSpinner"
-        style="@android:style/Widget.Spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:entries="@array/forceTypeList"
-        android:prompt="@string/force_type" />
-
     <ExpandableListView
         android:id="@+id/expandableFilter"
         android:layout_height="match_parent"
@@ -52,5 +10,7 @@
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
         android:divider="#A4C739"
         android:dividerHeight="0.5dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
         android:layout_weight="1" />
 </LinearLayout>

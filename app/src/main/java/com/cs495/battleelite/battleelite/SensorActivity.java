@@ -91,12 +91,6 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     @Override
-    public void getSelectedSensorTypeFilter(String type){
-        Log.i("getSelectedSensor", "returns " + type);
-        //loadSensorList(type);
-    }
-
-    @Override
     public void getMultipleSelectedSensorFilters(List<String> filters){
         adapter.filter(filters);
     }

@@ -49,15 +49,6 @@ public class FilterDialogFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
-
-        final Spinner sensorTypes = (Spinner) v.findViewById(R.id.sensorFilterSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.sensorTypeList));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sensorTypes.setAdapter(adapter);
-
-
         loadListData();
         expListView = (ExpandableListView) v.findViewById(R.id.expandableFilter);
         checkedStates = getCheckedStatesFromActivity();
@@ -67,7 +58,6 @@ public class FilterDialogFragment extends DialogFragment {
 
                 builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.getSelectedSensorTypeFilter(sensorTypes.getSelectedItem().toString());
                         mListener.getMultipleSelectedSensorFilters(listAdapter.getSelectedItems(0));
                         mListener.getSelectedFilterIndicesBoolean(listAdapter.getSelectedFilterIndicesBoolean(0));
 
@@ -84,7 +74,6 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     public interface FilterDialogFragmentListener{
-        public void getSelectedSensorTypeFilter(String type);
         public void getMultipleSelectedSensorFilters(List<String> filters);
         public void getSelectedFilterIndicesBoolean(boolean[] indices);
 
