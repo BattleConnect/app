@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+
     <ExpandableListView
         android:id="@+id/expandableFilter"
         android:layout_height="match_parent"
@@ -10,7 +11,5 @@
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
         android:divider="#A4C739"
         android:dividerHeight="0.5dp"
-        android:paddingBottom="8dp"
-        android:clipToPadding="false"
         android:layout_weight="1" />
 </LinearLayout>

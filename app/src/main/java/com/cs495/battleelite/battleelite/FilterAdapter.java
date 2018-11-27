@@ -2,6 +2,7 @@ package com.cs495.battleelite.battleelite;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +19,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import io.opencensus.tags.Tag;
+
 
 public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
-    List<SensorResponse> sensorList, filteredList;
+    List<SensorResponse> sensorList, filteredList, filteredListForSearch;
     private Context mContext;
 
     public FilterAdapter(Context context, List<SensorResponse> sensorList){
@@ -29,6 +32,8 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         this.sensorList = sensorList;
         this.filteredList = new ArrayList<>();
         this.filteredList.addAll(sensorList);
+        this.filteredListForSearch = new ArrayList<>();
+        this.filteredListForSearch.addAll(sensorList);
     }
 
     @Override
@@ -75,6 +80,29 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 }
             }
         }
+        filteredListForSearch.clear();
+        filteredListForSearch.addAll(filteredList);
+        notifyDataSetChanged();
+    }
+
+    public void search(String text){
+        filteredList.clear();
+
+        if(TextUtils.isEmpty(text)){
+            filteredList.addAll(filteredListForSearch);
+        }
+
+        else{
+            String query = text.toLowerCase();
+            for(SensorResponse item : filteredListForSearch){
+                if(item.getSensor_Type().toLowerCase().contains(query) || Long.toString(item.getBattery()).toLowerCase().contains(query)
+                        || Long.toString(item.getDate_Time()).toLowerCase().contains(query) || Double.toString(item.getLat()).toLowerCase().contains(query)
+                        || Double.toString(item.getLong()).toLowerCase().contains(query) || item.getSensorHealth().toLowerCase().contains(query)
+                        || Long.toString(item.getSensor_ID()).toLowerCase().contains(query) || Double.toString(item.getSensor_Val()).toLowerCase().contains(query)){
+                    filteredList.add(item);
+                }
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -111,15 +139,5 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         notifyDataSetChanged();
     }
 
-
-
-    /*@Override
-    public void onDataChanged() {sensorList.getLayoutManager().scrollToPosition(getItemCount() - 1);
-    }
-
-    @Override
-    public void onError(FirebaseFirestoreException e) {
-        Log.e("error", e.getMessage());
-    }*/
 
 }

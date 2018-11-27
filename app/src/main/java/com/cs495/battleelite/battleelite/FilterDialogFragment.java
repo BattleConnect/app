@@ -49,6 +49,10 @@ public class FilterDialogFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
+
+        
+
+
         loadListData();
         expListView = (ExpandableListView) v.findViewById(R.id.expandableFilter);
         checkedStates = getCheckedStatesFromActivity();
