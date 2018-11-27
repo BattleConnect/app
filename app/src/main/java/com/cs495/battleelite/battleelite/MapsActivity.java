@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.Toast;
+
 import com.cs495.battleelite.battleelite.fragments.MapFilterFragment;
 import com.cs495.battleelite.battleelite.holders.objects.ForceData;
 import com.cs495.battleelite.battleelite.holders.objects.ForceMarker;
@@ -58,11 +60,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     BiMap<String, ForceData> forceDataList = HashBiMap.create();
     BiMap<String, Marker> forceMarkerList = HashBiMap.create();
-    Map<Marker, ValueAnimator> animatedSensorList = new HashMap();
     BiMap<String, ForceMarker> forceObjectMarkerList = HashBiMap.create();
+    Map<Marker, ValueAnimator> animatedSensorList = new HashMap();
 
     boolean[] sensorFilterIndices;
     boolean[] forceFilterIndices;
+    boolean[] otherFilterIndices;
 
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
@@ -85,7 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapFilterFragment filter = MapFilterFragment.newInstance(sensorFilterIndices, forceFilterIndices);
+                MapFilterFragment filter = MapFilterFragment.newInstance(sensorFilterIndices, forceFilterIndices, otherFilterIndices);
                 filter.show(getFragmentManager(), "MapFilterFragment");
 
             }
@@ -97,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void getSelectedForceTypeFilter(List<String> filters) {
         //Log.i("getSelectedSensorTypes", "returns " + type);
-        filterForces(filters);
+        if(filters.size() !=0) filterForces(filters);
     }
 
     private void filterForces(List<String> forceFilter) {
@@ -119,7 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void getSelectedSensorTypeFilter(List<String> filters){
         //Log.i("getSelectedSensorTypes", "returns " + type);
-        filterSensors(filters);
+        if(filters.size() !=0) filterSensors(filters);
     }
 
     private void filterSensors(List<String> sensorFilter) {
@@ -139,6 +142,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    public void getSelectedOtherFilter(List<String> filters) {
+        if(filters.size() != 0) filterOthers(filters);
+    }
+
+    private void filterOthers(List<String> otherFilters) {
+        for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
+            SensorMarker sensorMarker = entry.getValue();
+
+            if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.heartbeat))) {
+                showHeartbeatZero(sensorMarker);
+            }
+        }
+
+        for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
+            ForceMarker forceMarker = entry.getValue();
+
+
+
+        }
+    }
+
+    private void showHeartbeatZero(SensorMarker sensorMarker) {
+        Long sensorID = sensorMarkerList.inverse().get(sensorMarker.getMarker());
+        SensorData sensorData = sensorDataList.get(sensorID);
+
+        if(sensorData.getSensor_Val() != 0) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+
+    }
+
+    @Override
     public void getSelectedSensorFilterIndicesBoolean(boolean[] indices){
         sensorFilterIndices = indices;
     }
@@ -146,6 +181,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void getSelectedForceFilterIndicesBoolean(boolean[] indices){
         forceFilterIndices = indices;
+    }
+
+    @Override
+    public void getSelectedOtherFilterIndicesBoolean(boolean[] indices) {
+        otherFilterIndices = indices;
     }
 
     /**

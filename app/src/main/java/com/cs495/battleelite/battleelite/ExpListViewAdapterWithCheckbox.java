@@ -256,7 +256,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
         List<String> filters = new ArrayList<>();
         boolean getChecked[] = mChildCheckStates.get(groupPosition);
         for(int i = 0; i < getChildrenCount(groupPosition); i++){
-            if(getChecked[i] == true){
+            if(getChecked != null && getChecked.length != 0 && getChecked[i] == true){
                 filters.add(getChild(groupPosition, i));
             }
         }

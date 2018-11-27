@@ -48,4 +48,6 @@
 
     <string name="default_notification_channel_id">169</string>
     <string name="firebase_cloud_notification_message">Incoming alert!</string>
+    <string name="notification_type">Notification Type</string>
+    <string name="heartbeat_zero">Heartbeat=0</string>
 </resources>

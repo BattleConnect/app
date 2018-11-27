@@ -8,12 +8,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
-import android.widget.Spinner;
 
 import com.cs495.battleelite.battleelite.ExpListViewAdapterWithCheckbox;
-import com.cs495.battleelite.battleelite.ExpandableListAdapter;
 import com.cs495.battleelite.battleelite.R;
 
 import java.util.ArrayList;
@@ -24,16 +21,20 @@ public class MapFilterFragment extends DialogFragment {
     MapFilterFragment.MapFilterFragmentListener mListener;
     ArrayList<String> sensorDataHeader;
     ArrayList<String> forceDataHeader;
+    ArrayList<String> otherDataHeader;
     HashMap<String, List<String>> sensorDataChild;
     HashMap<String, List<String>> forceDataChild;
+    HashMap<String, List<String>> otherDataChild;
     boolean[] sensorCheckedStates;
     boolean[] forceCheckedStates;
+    boolean[] otherCheckedStates;
 
-    public static MapFilterFragment newInstance(boolean[] sensorCheckedStates, boolean[] forceCheckedStates) {
+    public static MapFilterFragment newInstance(boolean[] sensorCheckedStates, boolean[] forceCheckedStates, boolean[] otherCheckedStates) {
         MapFilterFragment f = new MapFilterFragment();
         Bundle args = new Bundle();
         args.putBooleanArray("sensorCheckedStates", sensorCheckedStates);
         args.putBooleanArray("forceCheckedStates", forceCheckedStates);
+        args.putBooleanArray("otherCheckedStates", otherCheckedStates);
         f.setArguments(args);
 
         return f;
@@ -45,6 +46,10 @@ public class MapFilterFragment extends DialogFragment {
 
     public boolean[] getForceCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("forceCheckedStates");
+    }
+
+    public boolean[] getOtherCheckedStatesFromActivity(){
+        return getArguments().getBooleanArray("otherCheckedStates");
     }
 
     @Override
@@ -59,18 +64,23 @@ public class MapFilterFragment extends DialogFragment {
 
         ExpandableListView sensorListView = (ExpandableListView) v.findViewById(R.id.sensorFilter);
         ExpandableListView forceListView = (ExpandableListView) v.findViewById(R.id.forceFilter);
+        ExpandableListView otherListView = (ExpandableListView) v.findViewById(R.id.otherFilter);
 
         loadSensorData();
         loadForceData();
+        loadOtherData();
 
         sensorCheckedStates = getSensorCheckedStatesFromActivity();
         forceCheckedStates = getForceCheckedStatesFromActivity();
+        otherCheckedStates = getOtherCheckedStatesFromActivity();
 
         final ExpListViewAdapterWithCheckbox sensorAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), sensorDataHeader, sensorDataChild, sensorCheckedStates);
         final ExpListViewAdapterWithCheckbox forceAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), forceDataHeader, forceDataChild, forceCheckedStates);
+        final ExpListViewAdapterWithCheckbox otherAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), otherDataHeader, otherDataChild, otherCheckedStates);
 
         sensorListView.setAdapter(sensorAdapter);
         forceListView.setAdapter(forceAdapter);
+        otherListView.setAdapter(otherAdapter);
 
         builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -80,6 +90,10 @@ public class MapFilterFragment extends DialogFragment {
 
                 if(forceAdapter != null && forceAdapter.getGroupCount() != 0 && forceAdapter.getSelectedItems(0) != null) {
                     mListener.getSelectedForceTypeFilter(forceAdapter.getSelectedItems(0));
+                }
+
+                if(otherAdapter != null && otherAdapter.getGroupCount() != 0 && otherAdapter.getSelectedItems(0) != null) {
+                    mListener.getSelectedOtherFilter(otherAdapter.getSelectedItems(0));
                 }
             }
         });
@@ -97,8 +111,22 @@ public class MapFilterFragment extends DialogFragment {
     public interface MapFilterFragmentListener{
         public void getSelectedSensorTypeFilter(List<String> filters);
         public void getSelectedForceTypeFilter(List<String> filters);
+        public void getSelectedOtherFilter(List<String> filters);
         public void getSelectedSensorFilterIndicesBoolean(boolean[] indices);
         public void getSelectedForceFilterIndicesBoolean(boolean[] indices);
+        public void getSelectedOtherFilterIndicesBoolean(boolean[] indices);
+    }
+
+    private void loadOtherData() {
+        otherDataHeader = new ArrayList<String>();
+        otherDataChild = new HashMap<String, List<String>>();
+
+        otherDataHeader.add("Other Filter");
+
+        List<String> sensorType = new ArrayList<>();
+        sensorType.add(getResources().getString(R.string.heartbeat_zero));
+
+        otherDataChild.put(otherDataHeader.get(0), sensorType);
     }
 
     private void loadSensorData() {
