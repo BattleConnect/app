@@ -10,6 +10,8 @@
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
         android:divider="#A4C739"
         android:dividerHeight="0.5dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
         android:layout_weight="1" />
 
     <ExpandableListView
@@ -19,6 +21,8 @@
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
         android:divider="#A4C739"
         android:dividerHeight="0.5dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
         android:layout_weight="1" />
 
     <ExpandableListView
@@ -28,5 +32,7 @@
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
         android:divider="#A4C739"
         android:dividerHeight="0.5dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
         android:layout_weight="1" />
 </LinearLayout>

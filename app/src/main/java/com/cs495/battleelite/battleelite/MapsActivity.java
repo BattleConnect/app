@@ -100,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void getSelectedForceTypeFilter(List<String> filters) {
         //Log.i("getSelectedSensorTypes", "returns " + type);
-        if(filters.size() !=0) filterForces(filters);
+        filterForces(filters);
     }
 
     private void filterForces(List<String> forceFilter) {
@@ -116,13 +116,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             else if(!forceFilter.contains(forceMarker.getType())) {
                 forceMarker.getMarker().setVisible(false);
             }
+
+            if(forceFilter.size() == 0) {
+                forceMarker.getMarker().setVisible(true);
+            }
         }
     }
 
     @Override
     public void getSelectedSensorTypeFilter(List<String> filters){
         //Log.i("getSelectedSensorTypes", "returns " + type);
-        if(filters.size() !=0) filterSensors(filters);
+        filterSensors(filters);
     }
 
     private void filterSensors(List<String> sensorFilter) {
@@ -138,12 +142,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             else if(!sensorFilter.contains(sensorMarker.getType())) {
                 sensorMarker.getMarker().setVisible(false);
             }
+
+            if(sensorFilter.size() == 0) {
+                sensorMarker.getMarker().setVisible(true);
+            }
         }
     }
 
     @Override
     public void getSelectedOtherFilter(List<String> filters) {
-        if(filters.size() != 0) filterOthers(filters);
+        filterOthers(filters);
     }
 
     private void filterOthers(List<String> otherFilters) {
@@ -153,13 +161,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.heartbeat))) {
                 showHeartbeatZero(sensorMarker);
             }
+
+            if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.vibration))) {
+                showTrippedVibration(sensorMarker);
+            }
+
+            if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
+                showDeadBattery(sensorMarker);
+            }
+
+            if(otherFilters.size() == 0) {
+                sensorMarker.getMarker().setVisible(true);
+            }
         }
 
         for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
 
 
-
+            if(otherFilters.size() == 0) {
+                forceMarker.getMarker().setVisible(true);
+            }
         }
     }
 
@@ -170,7 +192,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(sensorData.getSensor_Val() != 0) {
             sensorMarker.getMarker().setVisible(false);
         }
+    }
 
+    private void showTrippedVibration(SensorMarker sensorMarker) {
+        Long sensorID = sensorMarkerList.inverse().get(sensorMarker.getMarker());
+        SensorData sensorData = sensorDataList.get(sensorID);
+
+        if(sensorData.getSensor_Val() < 1) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+    }
+
+    private void showDeadBattery(SensorMarker sensorMarker) {
+        Long sensorID = sensorMarkerList.inverse().get(sensorMarker.getMarker());
+        SensorData sensorData = sensorDataList.get(sensorID);
+
+        if(sensorData.getBattery() != 0) {
+            sensorMarker.getMarker().setVisible(false);
+        }
     }
 
     @Override
@@ -441,14 +480,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else if (sensorData.getSensor_Type() == "Vibration") {
             ValueAnimator valueAnimator = animatedSensorList.get(marker);
-            if (valueAnimator != null) {
-                if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
-                    valueAnimator.pause();
-                if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
-                    valueAnimator.resume();
-                //paused and not tripped, do nothing
-                //running and tripped, do nothing
-            }
+//            if (valueAnimator != null) {
+//                if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
+//                    valueAnimator.pause();
+//                if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
+//                    valueAnimator.resume();
+//                //paused and not tripped, do nothing
+//                //running and tripped, do nothing
+//            }
+//            else if(isTrippedVibrationSensor(sensorData)) {
+//                setMarkerWobble(marker);
+//            }
         }
     }
 

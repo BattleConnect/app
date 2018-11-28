@@ -1,35 +1,31 @@
-package com.cs495.battleelite.battleelite.adapters;
+package com.cs495.battleelite.battleelite;
 
+import android.os.Bundle;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.cs495.battleelite.battleelite.R;
+import com.cs495.battleelite.battleelite.fragments.SensorHistoryFragment;
+import com.cs495.battleelite.battleelite.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.SensorResponse;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import io.opencensus.tags.Tag;
 
 
 public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     List<SensorResponse> sensorList, filteredList, filteredListForSearch;
-    private Context mContext;
+    private SensorRecyclerViewFragment mFragment;
 
-    public FilterAdapter(Context context, List<SensorResponse> sensorList){
-        this.mContext = context;
+    public FilterAdapter(SensorRecyclerViewFragment fragment, List<SensorResponse> sensorList){
+        this.mFragment = fragment;
         this.sensorList = sensorList;
         this.filteredList = new ArrayList<>();
         this.filteredList.addAll(sensorList);
@@ -39,8 +35,10 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     @Override
     public void onBindViewHolder(SensorHolder holder, int position) {
+        //progressBar.setVisibility(View.GONE);
+
         //create sensor objects in list
-        SensorResponse currentItem = filteredList.get(position);
+        final SensorResponse currentItem = filteredList.get(position);
 
 
         holder.Date_Time.setText("Last update: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(currentItem.getDate_Time())));
@@ -52,6 +50,21 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         holder.Sensor_Type.setText("Type: " + currentItem.getSensor_Type());
         holder.Sensor_Val.setText("Value: " + String.valueOf(currentItem.getSensor_Val()));
 
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong("SENSOR_ID", currentItem.getSensor_ID());
+                SensorHistoryFragment fragment = new SensorHistoryFragment();
+                fragment.setArguments(bundle);
+
+                FragmentManager manager = mFragment.getFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.frameLayout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
     }
 
     @Override
