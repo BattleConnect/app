@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 
-import com.cs495.battleelite.battleelite.adapters.FilterAdapter;
+//import com.cs495.battleelite.battleelite.adapters.FilterAdapter;
 import com.cs495.battleelite.battleelite.adapters.NotificationAdapter;
 import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
 import com.cs495.battleelite.battleelite.responses.NotificationResponse;
@@ -55,7 +55,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         init();
 
         //get notification data
-        loadNotificationData(null);
+        loadNotificationData();
         configureFilterButton();
     }
 
@@ -89,7 +89,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     };
 
 
-    private void loadNotificationData(String sensorFilter) {
+    private void loadNotificationData() {
 
         db.collection(NOTIFICATIONS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -130,7 +130,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     @Override
     public void getSelectedNotificationPriorityFilter(String type){
-        Log.i("getSelectedNotification", "returns " + type);
+        //Log.i("getSelectedNotification", "returns " + type);
         adapter.filter(type);
     }
 
