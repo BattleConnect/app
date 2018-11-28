@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+
+    >
+    <include
+    android:id="@+id/toolbar"
+    layout="@layout/toolbar" />
+
+
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
+    android:layout_below="@id/toolbar"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:divider="@drawable/vertical_divider_1"
     android:showDividers="middle">
+
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,7 +32,7 @@
             android:layout_width="fill_parent"
             android:layout_height="100dp"
             android:background="#86C745"
-            android:text="Explore Data"
+            android:text="Explore Sensor Data"
             android:textAllCaps="false"
             android:textSize="25sp"
             android:layout_marginTop="10dp"
@@ -30,7 +44,7 @@
             android:id="@+id/input_button"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
-            android:text="Report Info"
+            android:text="Make Report"
             android:textAllCaps="false"
             android:textSize="25sp"
             android:background="#A436A5"
@@ -51,7 +65,7 @@
             android:id="@+id/alerts_button"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
-            android:text="Alerts"
+            android:text="View Alerts"
             android:textAllCaps="false"
             android:textSize="25sp"
             android:background="#F2612A"
@@ -64,7 +78,7 @@
             android:id="@+id/map_button"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
-            android:text="Map"
+            android:text="View Map"
             android:textAllCaps="false"
             android:textSize="25sp"
             android:background="#008DDE"
@@ -76,3 +90,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</RelativeLayout>

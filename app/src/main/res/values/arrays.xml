@@ -25,6 +25,15 @@
         <item>@string/temperature</item>
     </string-array>
 
+    <string-array name="forceTypeList">
+        <item>@string/none</item>
+        <item>@string/company</item>
+        <item>@string/platoon</item>
+        <item>@string/squad</item>
+        <item>@string/enemy</item>
+        <item>@string/target</item>
+    </string-array>
+
     <string-array name="notificationTypeList">
         <item>@string/none</item>
         <item>@string/low</item>

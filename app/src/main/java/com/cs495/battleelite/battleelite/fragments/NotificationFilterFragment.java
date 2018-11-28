@@ -23,7 +23,7 @@ public class NotificationFilterFragment extends DialogFragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            final View v = inflater.inflate(R.layout.dialog_filter, null);
+            final View v = inflater.inflate(R.layout.notification_filter_dialog, null);
             builder.setView(v);
             builder.setTitle(R.string.filterButton);
             final Spinner notificationTypes = (Spinner) v.findViewById(R.id.sensorFilterSpinner);

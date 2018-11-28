@@ -1,5 +1,6 @@
 package com.cs495.battleelite.battleelite;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -87,6 +88,18 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
                 holder.sender.setText(model.getSender());
                 holder.priority.setText(model.getPriority());
                 holder.message.setText(model.getMessage());
+
+                switch (model.getPriority()) {
+                    case "LOW":
+                                holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_low));
+                                break;
+                    case "MEDIUM": holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_medium));
+                                break;
+                    case "HIGH": holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_high));
+                                break;
+                    case "CRITICAL": holder.parentLayout.setBackgroundColor(getResources().getColor(R.color.alert_critical));
+                                break;
+                }
             }
 
 

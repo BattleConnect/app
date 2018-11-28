@@ -1,45 +1,50 @@
 package com.cs495.battleelite.battleelite;
 
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Sensor;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.renderscript.Sampler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.cs495.battleelite.battleelite.fragments.MapFilterFragment;
-import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
+import com.cs495.battleelite.battleelite.holders.objects.ForceData;
+import com.cs495.battleelite.battleelite.holders.objects.ForceMarker;
+import com.cs495.battleelite.battleelite.holders.objects.SensorData;
 import com.cs495.battleelite.battleelite.holders.objects.SensorMarker;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
-import java.util.HashMap;
-import javax.annotation.Nullable;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.api.Distribution;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
 
@@ -47,9 +52,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Map<Long, Map<String, Object>> sensors; //long = Sensor_ID, Object = most recent sensor data entry
-    BiMap<Long, Marker> sensorMarkers;
-    HashMap<Long, SensorMarker> markerList = new HashMap<>();
+    Map<String, Map<String, Object>> forces; //key = internally used unique ID, object = most recent force data entry
+
+    BiMap<Long, SensorData> sensorDataList = HashBiMap.create();
+    BiMap<Long, Marker> sensorMarkerList = HashBiMap.create();
+    BiMap<Long, SensorMarker> sensorObjectMarkerList = HashBiMap.create();
+
+    BiMap<String, ForceData> forceDataList = HashBiMap.create();
+    BiMap<String, Marker> forceMarkerList = HashBiMap.create();
+    BiMap<String, ForceMarker> forceObjectMarkerList = HashBiMap.create();
+    Map<Marker, ValueAnimator> animatedSensorList = new HashMap();
+
+    boolean[] sensorFilterIndices;
+    boolean[] forceFilterIndices;
+    boolean[] otherFilterIndices;
+
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
 
@@ -71,34 +88,143 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapFilterFragment filter = new MapFilterFragment();
+                MapFilterFragment filter = MapFilterFragment.newInstance(sensorFilterIndices, forceFilterIndices, otherFilterIndices);
                 filter.show(getFragmentManager(), "MapFilterFragment");
 
             }
 
         });
+
     }
 
     @Override
-    public void getSelectedSensorTypeFilter(String type){
-        Log.i("getSelectedSensorTypes", "returns " + type);
-        filterSensors(type);
+    public void getSelectedForceTypeFilter(List<String> filters) {
+        //Log.i("getSelectedSensorTypes", "returns " + type);
+        filterForces(filters);
     }
 
-    private void filterSensors(String sensorFilter) {
-        for (Map.Entry<Long, SensorMarker> entry : markerList.entrySet()) {
-            SensorMarker sensorMarker = entry.getValue();
+    private void filterForces(List<String> forceFilter) {
+        for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
+            ForceMarker forceMarker = entry.getValue();
 
-            if(sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
-                sensorMarker.getMarker().setVisible(true);
+            if(forceFilter.contains(forceMarker.getType())) {
+                forceMarker.getMarker().setVisible(true);
             }
-            else if(sensorFilter.equalsIgnoreCase(NONE)) {
-                sensorMarker.getMarker().setVisible(true);
+            else if(forceFilter.contains(NONE)) {
+                forceMarker.getMarker().setVisible(true);
             }
-            else if(!sensorFilter.equalsIgnoreCase(sensorMarker.getType())) {
-                sensorMarker.getMarker().setVisible(false);
+            else if(!forceFilter.contains(forceMarker.getType())) {
+                forceMarker.getMarker().setVisible(false);
+            }
+
+            if(forceFilter.size() == 0) {
+                forceMarker.getMarker().setVisible(true);
             }
         }
+    }
+
+    @Override
+    public void getSelectedSensorTypeFilter(List<String> filters){
+        //Log.i("getSelectedSensorTypes", "returns " + type);
+        filterSensors(filters);
+    }
+
+    private void filterSensors(List<String> sensorFilter) {
+        for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
+            SensorMarker sensorMarker = entry.getValue();
+
+            if(sensorFilter.contains(sensorMarker.getType())) {
+                sensorMarker.getMarker().setVisible(true);
+            }
+            else if(sensorFilter.contains(NONE)) {
+                sensorMarker.getMarker().setVisible(true);
+            }
+            else if(!sensorFilter.contains(sensorMarker.getType())) {
+                sensorMarker.getMarker().setVisible(false);
+            }
+
+            if(sensorFilter.size() == 0) {
+                sensorMarker.getMarker().setVisible(true);
+            }
+        }
+    }
+
+    @Override
+    public void getSelectedOtherFilter(List<String> filters) {
+        filterOthers(filters);
+    }
+
+    private void filterOthers(List<String> otherFilters) {
+        for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
+            SensorMarker sensorMarker = entry.getValue();
+
+            if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.heartbeat))) {
+                showHeartbeatZero(sensorMarker);
+            }
+
+            if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.vibration))) {
+                showTrippedVibration(sensorMarker);
+            }
+
+            if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
+                showDeadBattery(sensorMarker);
+            }
+
+            if(otherFilters.size() == 0) {
+                sensorMarker.getMarker().setVisible(true);
+            }
+        }
+
+        for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
+            ForceMarker forceMarker = entry.getValue();
+
+
+            if(otherFilters.size() == 0) {
+                forceMarker.getMarker().setVisible(true);
+            }
+        }
+    }
+
+    private void showHeartbeatZero(SensorMarker sensorMarker) {
+        Long sensorID = sensorMarkerList.inverse().get(sensorMarker.getMarker());
+        SensorData sensorData = sensorDataList.get(sensorID);
+
+        if(sensorData.getSensor_Val() != 0) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+    }
+
+    private void showTrippedVibration(SensorMarker sensorMarker) {
+        Long sensorID = sensorMarkerList.inverse().get(sensorMarker.getMarker());
+        SensorData sensorData = sensorDataList.get(sensorID);
+
+        if(sensorData.getSensor_Val() < 1) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+    }
+
+    private void showDeadBattery(SensorMarker sensorMarker) {
+        Long sensorID = sensorMarkerList.inverse().get(sensorMarker.getMarker());
+        SensorData sensorData = sensorDataList.get(sensorID);
+
+        if(sensorData.getBattery() != 0) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+    }
+
+    @Override
+    public void getSelectedSensorFilterIndicesBoolean(boolean[] indices){
+        sensorFilterIndices = indices;
+    }
+
+    @Override
+    public void getSelectedForceFilterIndicesBoolean(boolean[] indices){
+        forceFilterIndices = indices;
+    }
+
+    @Override
+    public void getSelectedOtherFilterIndicesBoolean(boolean[] indices) {
+        otherFilterIndices = indices;
     }
 
     /**
@@ -117,6 +243,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
         getSensorData(null);
+        getForceData(null);
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         new Handler().postDelayed(new Runnable() {
@@ -137,18 +264,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        long sensorID = sensorMarkers.inverse().get(marker);
-        Map<String, Object> sensorData = sensors.get(sensorID);
+        Long sensorID = sensorMarkerList.inverse().get(marker);
+        String forceID = forceMarkerList.inverse().get(marker);
 
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((long) sensorData.get("Date_Time")));
+        String message = null;
 
-        String message =
-                "ID: " + sensorData.get("Sensor_ID") + "\n" +
-                "Type: " + sensorData.get("Sensor_Type") + "\n" +
-                "Value: " + sensorData.get("Sensor_Val") + "\n" +
-                "Timestamp: " + timestamp + "\n" +
-                "Health: " + sensorData.get("SensorHealth") + "\n" +
-                "Battery: " + sensorData.get("Battery") + "%";
+        if(sensorID != null) {
+            message = displaySensorData(sensorID);
+        }
+        if(forceID != null) {
+            message = displayForceData(forceID);
+        }
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
         builder1.setMessage(message);
@@ -168,64 +294,148 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
-    public void addSensorMarker(Map<String, Object> sensorData, String sensorFilter) {
-        long sensorID = (long) sensorData.get("Sensor_ID");
+    private String displaySensorData(Long sensorID) {
+        SensorData sensorData = sensorDataList.get(sensorID);
 
-        double lat = (double) sensorData.get("Lat");
-        double lng = (double) sensorData.get("Long");
-        LatLng pos = new LatLng(lat, lng);
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((Long) sensorData.getDate_Time()));
 
-        Marker marker = null;
+        String message =
+                "ID: " + sensorData.getSensor_ID() + "\n" +
+                        "Type: " + sensorData.getSensor_Type() + "\n" +
+                        "Value: " + sensorData.getSensor_Val() + "\n" +
+                        "Timestamp: " + timestamp + "\n" +
+                        "Health: " + sensorData.getSensorHealth()+ "\n" +
+                        "Battery: " + sensorData.getBattery() + "%";
 
-        String type = (String) sensorData.get("Sensor_Type");
+        return message;
+    }
 
-        if(sensorFilter != null){
-            if(sensorFilter.equals(type)){
-                if (type.equals("HeartRate"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
-                else if (type.equals("Asset"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
-                else if (type.equals("Vibration"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
-                else if (type.equals("Temp"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
-                else if (type.equals("Moisture"))
-                    marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
-                else
-                    System.out.println(type + "this shouldn't happen");
+    private String displayForceData(String forceID) {
+        ForceData forceData = forceDataList.get(forceID);
 
-                sensorMarkers.put(sensorID, marker);
-                SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
-                markerList.put(sensorID, sensorMarker);
-            }
-            else {
-                //do nothing we don't wanna see that sensor
-            }
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((Long) forceData.getDate_Time()));
+
+        String message =
+                "ID: " + forceData.getID() + "\n" +
+                        "Type: " + forceData.getType() + "\n" +
+                        "Name: " + forceData.getName() + "\n" +
+                        "Timestamp: " + timestamp + "\n" +
+                        "Status: " + forceData.getStatus();
+
+        return message;
+    }
+
+    private boolean isTrippedVibrationSensor(SensorData sensorData) {
+        if (sensorData.getSensor_Type().equals("Vibration") && sensorData.getSensor_Val() > 0)
+            return true;
+        return false;
+    }
+
+    private boolean isDeadHeartRateSensor(SensorData sensorData) {
+        if (sensorData.getSensor_Type().equals("HeartRate") && sensorData.getSensor_Val() == 0)
+            return true;
+        return false;
+    }
+
+
+    public void addSensorMarker(SensorData sensorData, String sensorFilter) {
+        Long sensorID = sensorData.getSensor_ID();
+        Double latitude = sensorData.getLat();
+        Double longitude = sensorData.getLong();
+        LatLng position = new LatLng(latitude, longitude);
+        String type = sensorData.getSensor_Type();
+
+        //create the google maps marker with the correct symbol
+        Marker marker = createSensorMarker(position, sensorData);
+        sensorMarkerList.put(sensorID, marker);
+
+        //if the type of the newly added marker is currently filtered out
+        if(sensorFilter != null && !type.equalsIgnoreCase(sensorFilter)) {
+            marker.setVisible(false);
         }
-        else {
-            if (type.equals("HeartRate"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))));
-            else if (type.equals("Asset"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))));
-            else if (type.equals("Vibration"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))));
-            else if (type.equals("Temp"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))));
-            else if (type.equals("Moisture"))
-                marker = mMap.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))));
-            else
-                System.out.println(type + "this shouldn't happen");
 
-            sensorMarkers.put(sensorID, marker);
-            SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
-            markerList.put(sensorID, sensorMarker);
-        }
+        SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
+        sensorObjectMarkerList.put(sensorID, sensorMarker);
 
 
         if (bounds == null)
-            boundsBuilder.include(new LatLng(lat, lng));
+            boundsBuilder.include(new LatLng(latitude, longitude));
         else
-            bounds.including(new LatLng(lat, lng));
+            bounds.including(new LatLng(latitude, longitude));
+    }
+
+    public Marker createSensorMarker(LatLng position, SensorData sensorData) {
+        String type = sensorData.getSensor_Type();
+        Marker marker = null;
+
+        if (type.equals("HeartRate")) {
+            if (isDeadHeartRateSensor(sensorData)) {
+                marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("dead_heartrate", 128, 128))).anchor(0.5f, 0.5f));
+            }
+            else {
+                marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128))).anchor(0.5f, 0.5f));
+            }
+        }
+        else if (type.equals("Asset"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("diamond",128,128))).anchor(0.5f, 0.5f));
+        else if (type.equals("Vibration")) {
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vibration1",128,128))).anchor(0.5f, 0.5f));
+            if (isTrippedVibrationSensor(sensorData))
+                setMarkerWobble(marker);
+        }
+        else if (type.equals("Temp"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("thermometer",128,128))).anchor(0.5f, 0.5f));
+        else if (type.equals("Moisture"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("water_drop",128,128))).anchor(0.5f, 0.5f));
+        else
+            System.out.println(type + "this shouldn't happen");
+
+        return marker;
+    }
+
+    public void addForceMarker(ForceData forceData, String forceFilter) {
+        String forceID = forceData.getID();
+        Double latitude = forceData.getLat();
+        Double longitude = forceData.getLong();
+        LatLng position = new LatLng(latitude, longitude);
+        String type = forceData.getType();
+
+        //create the google maps marker with the correct symbol
+        Marker marker = createForceMarker(position, type);
+        forceMarkerList.put(forceID, marker);
+
+        //if the type of the newly added marker is currently filtered out
+        if(forceFilter != null && !type.equalsIgnoreCase(forceFilter)) {
+            marker.setVisible(false);
+        }
+
+        ForceMarker forceMarker = new ForceMarker(forceID, type, marker);
+        forceObjectMarkerList.put(forceID, forceMarker);
+
+
+        if (bounds == null)
+            boundsBuilder.include(new LatLng(latitude, longitude));
+        else
+            bounds.including(new LatLng(latitude, longitude));
+    }
+
+    public Marker createForceMarker(LatLng position, String type) {
+        Marker marker = null;
+
+        if (type.equals("Company HQ"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("company_hq",100,150))));
+        else if (type.equals("Platoon"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("platoon",150,130))));
+        else if (type.equals("Squad"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("squad",150,130))));
+        else if (type.equals("Enemy Unit"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("enemy_unit",128,128))));
+        else if (type.equals("Preplanned Target"))
+            marker = mMap.addMarker(new MarkerOptions().position(position).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("target",128,128))));
+        else
+            System.out.println(type + "this shouldn't happen");
+
+        return marker;
     }
 
     public Bitmap resizeMapIcons(String iconName, int width, int height){
@@ -234,63 +444,110 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return resizedBitmap;
     }
 
-    void getSensorData(final String sensorFilter) {
-        sensors = new HashMap<Long, Map<String, Object>>();
-        sensorMarkers = HashBiMap.create();
-        db.collection("sensors").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    System.err.println("Listen failed:" + e);
-                    return;
+    public void setMarkerWobble(final Marker marker) {
+        if (marker != null) {
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, -0.25f, 0.2f, -0.15f, 0.1f, 0.05f, 0f);
+            valueAnimator.setDuration(1000); // duration 1 second
+            valueAnimator.setInterpolator(new LinearInterpolator());
+            valueAnimator.setRepeatCount(-1);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override public void onAnimationUpdate(ValueAnimator animation) {
+                    try {
+                        float v = (float) animation.getAnimatedValue();
+                        marker.setAnchor(0.5f + v, 0.5f);
+                        //marker.setRotation(computeRotation(v, startRotation, destination.getBearing()));
+                    } catch (Exception ex) {
+                        // I don't care atm..
+                    }
                 }
+            });
+            animatedSensorList.put(marker, valueAnimator);
+            valueAnimator.start();
+        }
+    }
 
-                for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    long sensorID = (long) dc.getDocument().get("Sensor_ID");
-                    switch (dc.getType()) {
-                        case ADDED:
-                        case MODIFIED:
-                            if (sensors.containsKey(sensorID)) {
-                                Map<String, Object> oldSensorData = sensors.get(sensorID);
-                                Map<String, Object> newSensorData = dc.getDocument().getData();
-                                System.out.println(oldSensorData.get("Date_Time"));
-                                System.out.println(newSensorData.get("Date_Time"));
+    private void updateSensorMarker(Marker marker, SensorData sensorData) {
+        LatLng newPosition = new LatLng(sensorData.getLat(), sensorData.getLong());
+        marker.setPosition(newPosition);
 
-                                long oldDateTime = (long) oldSensorData.get("Date_Time");
-                                long newDateTime = (long) newSensorData.get("Date_Time");
-                                if (newDateTime > oldDateTime) {
-                                    sensors.put(sensorID, newSensorData);
-                                    double lat = (double) newSensorData.get("Lat");
-                                    double lng = (double) newSensorData.get("Long");
-                                    LatLng newPos = new LatLng(lat, lng);
-                                    if (sensorMarkers.containsKey(sensorID)) {
-                                        if (sensorMarkers.get(sensorID).getPosition() != newPos) {
-                                            System.out.println("changing marker location");
-                                            sensorMarkers.get(sensorID).setPosition(newPos);
-                                            markerList.get(sensorID).setMarker(sensorMarkers.get(sensorID));
-                                        }
-                                    }
-                                    else {
-                                        addSensorMarker(newSensorData, sensorFilter);
-                                    }
-                                }
+        if (sensorData.getSensor_Type().equals("HeartRate")) {
+            if (isDeadHeartRateSensor(sensorData)) {
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("dead_heartrate",128,128)));
+            }
+            else {
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128)));
+            }
+        }
+        else if (sensorData.getSensor_Type() == "Vibration") {
+            ValueAnimator valueAnimator = animatedSensorList.get(marker);
+//            if (valueAnimator != null) {
+//                if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
+//                    valueAnimator.pause();
+//                if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
+//                    valueAnimator.resume();
+//                //paused and not tripped, do nothing
+//                //running and tripped, do nothing
+//            }
+//            else if(isTrippedVibrationSensor(sensorData)) {
+//                setMarkerWobble(marker);
+//            }
+        }
+    }
+
+
+    void getSensorData(final String sensorFilter) {
+        db.collection("sensors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        SensorData sensorData = documentSnapshot.toObject(SensorData.class);
+
+                        Long sensorID = sensorData.getSensor_ID();
+
+                        if(sensorDataList.containsKey(sensorID)) {
+                            if (sensorData.getDate_Time() > sensorDataList.get(sensorID).getDate_Time()) {
+                                sensorDataList.get(sensorID).setAll(sensorData);
+                                sensorMarkerList.get(sensorID).setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
+                                updateSensorMarker(sensorObjectMarkerList.get(sensorID).getMarker(), sensorData);
                             }
-                            else {
-                                sensors.put(sensorID, dc.getDocument().getData());
-                                addSensorMarker(dc.getDocument().getData(), sensorFilter);
-                            }
-                            break;
-                        case REMOVED:
-                            //TODO
-                            break;
-                        default:
-                            break;
+                        }
+                        else {
+                            sensorDataList.put(sensorID, sensorData);
+
+                            addSensorMarker(sensorData, sensorFilter);
+                        }
                     }
                 }
             }
         });
+    }
 
-        System.out.println("Test------: " + markerList.size());
+    void getForceData(final String forceFilter) {
+        db.collection("forces").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        ForceData forceData = documentSnapshot.toObject(ForceData.class);
+
+                        String forceID = forceData.getID();
+
+                        if(forceDataList.containsKey(forceID)) {
+                            if (forceData.getDate_Time() > forceDataList.get(forceID).getDate_Time()) {
+                                forceDataList.get(forceID).setAll(forceData);
+                                forceMarkerList.get(forceID).setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
+                                forceObjectMarkerList.get(forceID).getMarker().setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
+                            }
+                        }
+                        else {
+                            forceDataList.put(forceID, forceData);
+
+                            addForceMarker(forceData, forceFilter);
+                        }
+                    }
+                }
+            }
+        });
     }
 }
