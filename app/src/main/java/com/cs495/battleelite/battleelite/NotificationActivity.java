@@ -1,30 +1,30 @@
 package com.cs495.battleelite.battleelite;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 
+import com.cs495.battleelite.battleelite.adapters.FilterAdapter;
+import com.cs495.battleelite.battleelite.adapters.NotificationAdapter;
 import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
-import com.cs495.battleelite.battleelite.holders.NotificationHolder;
-import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.NotificationResponse;
-import com.cs495.battleelite.battleelite.responses.SensorResponse;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class NotificationActivity extends AppCompatActivity implements NotificationFilterFragment.NotificationFilterFragmentListener {
     private static final String TAG = "NotificationActivity";
@@ -33,9 +33,12 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     //visual elements
     ProgressBar progressBar;
     RecyclerView notificationList;
+    SearchView notificationSearch;
+
+    List<NotificationResponse> notificationData = new ArrayList<>();
 
     private FirebaseFirestore db;
-    private FirestoreRecyclerAdapter adapter;
+    private NotificationAdapter adapter;
     LinearLayoutManager linearLayoutManager;
 
     @Override
@@ -47,6 +50,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         notificationList = (RecyclerView) findViewById(R.id.notification_list);
+        notificationSearch = (SearchView) findViewById(R.id.notification_search);
 
         init();
 
@@ -62,68 +66,52 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     }
 
-    private void loadNotificationData(String sensorFilter) {
-        Query query = db.collection(NOTIFICATIONS);
 
-        if(sensorFilter != null){
-            if(sensorFilter.equals("none")){
-                query = db.collection(NOTIFICATIONS);
-            }
-            else {
-                query = query.whereEqualTo("priority", sensorFilter);
-            }
+    private void configureSearch(){
+        notificationSearch.setIconifiedByDefault(false);
+        notificationSearch.setOnQueryTextListener(searchQueryListener);
+        notificationSearch.setSubmitButtonEnabled(true);
+    }
+
+    private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            adapter.search(query);
+            return true;
         }
 
-        FirestoreRecyclerOptions<NotificationResponse> response = new FirestoreRecyclerOptions.Builder<NotificationResponse>()
-                .setQuery(query, NotificationResponse.class)
-                .build();
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            adapter.search(newText);
+            return false;
+        }
 
-        adapter = new FirestoreRecyclerAdapter<NotificationResponse, NotificationHolder>(response) {
+    };
+
+
+    private void loadNotificationData(String sensorFilter) {
+
+        db.collection(NOTIFICATIONS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onBindViewHolder(NotificationHolder holder, int position, NotificationResponse model) {
-                progressBar.setVisibility(View.GONE);
-
-                //create notification objects in list
-                holder.id.setText(model.getId());
-                holder.sender.setText(model.getSender());
-                holder.priority.setText(model.getPriority());
-                holder.message.setText(model.getMessage());
-
-                switch (model.getPriority()) {
-                    case "LOW":
-                                holder.parentLayout.setBackgroundColor(Color.GREEN);
-                                break;
-                    case "MEDIUM": holder.parentLayout.setBackgroundColor(Color.YELLOW);
-                                break;
-                    case "HIGH": holder.parentLayout.setBackgroundColor(Color.BLUE);
-                                break;
-                    case "CRITICAL": holder.parentLayout.setBackgroundColor(Color.RED);
-                                break;
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    System.err.println("Listen failed:" + e);
+                    return;
                 }
+                List<NotificationResponse> response = new ArrayList<>();
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+
+                    NotificationResponse addToList = new NotificationResponse(doc.get("id").toString(), doc.get("message").toString(), doc.get("priority").toString(), doc.get("sender").toString());
+                    response.add(addToList);
+                }
+                notificationData.addAll(response);
+                adapter = new NotificationAdapter(NotificationActivity.this, notificationData);
+                progressBar.setVisibility(View.GONE);
+                notificationList.setAdapter(adapter);
+                configureSearch();
             }
+        });
 
-
-            @Override
-            public NotificationHolder onCreateViewHolder(ViewGroup group, int i) {
-                View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.notification_list_item, group, false);
-
-                return new NotificationHolder(view);
-            }
-
-            @Override
-            public void onDataChanged() {notificationList.getLayoutManager().scrollToPosition(getItemCount() - 1);
-            }
-
-            @Override
-            public void onError(FirebaseFirestoreException e) {
-                Log.e("error", e.getMessage());
-            }
-        };
-
-        adapter.notifyDataSetChanged();
-        notificationList.setAdapter(adapter);
-        adapter.startListening();
     }
 
     private void configureFilterButton(){
@@ -143,19 +131,8 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     @Override
     public void getSelectedNotificationPriorityFilter(String type){
         Log.i("getSelectedNotification", "returns " + type);
-        loadNotificationData(type);
+        adapter.filter(type);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
 
 }

@@ -1,4 +1,4 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleelite.battleelite.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.cs495.battleelite.battleelite.R;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.SensorResponse;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -38,8 +39,6 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     @Override
     public void onBindViewHolder(SensorHolder holder, int position) {
-        //progressBar.setVisibility(View.GONE);
-
         //create sensor objects in list
         SensorResponse currentItem = filteredList.get(position);
 
