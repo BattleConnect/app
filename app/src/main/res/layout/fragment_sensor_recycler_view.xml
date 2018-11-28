@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="16dp"
+android:background="@color/cardview_light_background"
+tools:context=".SensorActivity">
+
+<ProgressBar
+    android:id="@+id/progress_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"/>
+
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/sensor_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.SensorRecyclerViewFragment">
+    android:divider="#00000000"
+    android:layout_marginTop="50dp"
+    />
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+<SearchView
+    android:id="@+id/sensor_search"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:queryHint="@string/search"
+    android:layout_alignParentTop="true"
+    android:maxWidth="300dp"
+    />
 
-</FrameLayout>
+<Button
+    android:id="@+id/filterButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentTop="true"
+    android:text="@string/filterButton" />
+
+<FrameLayout
+    android:id="@+id/sensorHistoryContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"></FrameLayout>
+
+
+</RelativeLayout>

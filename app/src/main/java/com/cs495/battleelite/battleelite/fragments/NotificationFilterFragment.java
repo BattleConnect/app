@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.cs495.battleelite.battleelite.FilterDialogFragment;
 import com.cs495.battleelite.battleelite.R;
 
 public class NotificationFilterFragment extends DialogFragment {

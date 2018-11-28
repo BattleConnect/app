@@ -1,109 +1,141 @@
 package com.cs495.battleelite.battleelite.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import com.cs495.battleelite.battleelite.FilterAdapter;
 import com.cs495.battleelite.battleelite.R;
+import com.cs495.battleelite.battleelite.responses.SensorResponse;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nullable;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SensorRecyclerViewFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SensorRecyclerViewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SensorRecyclerViewFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class SensorRecyclerViewFragment extends Fragment implements FilterDialogFragment.FilterDialogFragmentListener {
+    private static final String TAG = "SensorActivity";
+    private static final String SENSORS = "sensors";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    View view;
 
-    private OnFragmentInteractionListener mListener;
+    //visual elements
+    ProgressBar progressBar;
+    RecyclerView sensorList;
+    SearchView sensorSearch;
 
-    public SensorRecyclerViewFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SensorRecyclerViewFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SensorRecyclerViewFragment newInstance(String param1, String param2) {
-        SensorRecyclerViewFragment fragment = new SensorRecyclerViewFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private FirebaseFirestore db;
+    LinearLayoutManager linearLayoutManager;
+    boolean[] filterIndices;
+    List<SensorResponse> sensorData = new ArrayList<>();
+    private FilterAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sensor_recycler_view, container, false);
+        // Defines the xml file for the fragment
+        view =  inflater.inflate(R.layout.fragment_sensor_recycler_view, container, false);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        sensorList = (RecyclerView) view.findViewById(R.id.sensor_list);
+        sensorSearch = (SearchView) view.findViewById(R.id.sensor_search);
+
+        init();
+
+        //get sensor data
+        loadSensorList();
+        configureFilterButton();
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    private void configureFilterButton() {
+        final Button filterButton = (Button) view.findViewById(R.id.filterButton);
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FilterDialogFragment filter = FilterDialogFragment.newInstance(filterIndices);
+                filter.show(getFragmentManager(), "FilterDialogFragment");
+            }
+        });
+    }
+
+    private void configureSearch() {
+        sensorSearch.setIconifiedByDefault(false);
+        sensorSearch.setOnQueryTextListener(searchQueryListener);
+        sensorSearch.setSubmitButtonEnabled(true);
+    }
+
+    private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            adapter.search(query);
+            return true;
         }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            adapter.search(newText);
+            return false;
+        }
+
+    };
+
+
+    @Override
+    public void getMultipleSelectedSensorFilters(List<String> filters) {
+        adapter.filter(filters);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void getSelectedFilterIndicesBoolean(boolean[] indices) {
+        filterIndices = indices;
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    private void init() {
+        linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        sensorList.setLayoutManager(linearLayoutManager);
+        db = FirebaseFirestore.getInstance();
+
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void loadSensorList() {
+        Log.i(TAG, "START");
+        db.collection(SENSORS).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    System.err.println("Listen failed:" + e);
+                    return;
+                }
+                List<SensorResponse> response = new ArrayList<>();
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+
+                    SensorResponse addToList = new SensorResponse(Long.valueOf(doc.get("Date_Time").toString()), Double.valueOf(doc.get("Lat").toString()), Double.valueOf(doc.get("Long").toString()), Long.valueOf(doc.get("Battery").toString()), doc.get("SensorHealth").toString(), Long.valueOf(doc.get("Sensor_ID").toString()), doc.get("Sensor_Type").toString(), Double.valueOf(doc.get("Sensor_Val").toString()));
+                    response.add(addToList);
+                }
+                sensorData.addAll(response);
+                adapter = new FilterAdapter(SensorRecyclerViewFragment.this, sensorData);
+                progressBar.setVisibility(View.GONE);
+                sensorList.setAdapter(adapter);
+                adapter.removeDuplicates();
+                configureSearch();
+            }
+        });
     }
 }
