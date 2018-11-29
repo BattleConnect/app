@@ -2,7 +2,6 @@ package com.cs495.battleelite.battleelite.fragments;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -82,10 +81,10 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try{
-            mListener = (FilterDialogFragmentListener) context;
+            mListener = (FilterDialogFragmentListener) getParentFragment();
         } catch (ClassCastException e){
             throw new ClassCastException(getActivity().toString() + " must implement FilterDialogFragmentListener");
         }
