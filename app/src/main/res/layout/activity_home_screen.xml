@@ -15,7 +15,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_below="@id/toolbar"
-    android:layout_height="fill_parent"
+    android:layout_height="375dp"
+    android:id="@+id/topFour"
     android:layout_width="fill_parent"
     android:divider="@drawable/vertical_divider_1"
     android:showDividers="middle">
@@ -57,7 +58,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight="0.5"
+        android:layout_weight=".5"
         android:layout_height="fill_parent"
         android:layout_width="0dp">
 
@@ -75,10 +76,10 @@
             android:textColor="#FFFFFF"/>
 
         <com.cs495.battleelite.battleelite.SquareButton
-            android:id="@+id/map_button"
+            android:id="@+id/soldier_button"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
-            android:text="View Map"
+            android:text="Explore Soldier Data"
             android:textAllCaps="false"
             android:textSize="25sp"
             android:background="#008DDE"
@@ -87,7 +88,30 @@
             android:layout_marginBottom="5dp"
             android:textColor="#FFFFFF"/>
 
+
     </LinearLayout>
 
 </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_below="@id/topFour"
+        android:layout_weight="0.5"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent">
+
+        <com.cs495.battleelite.battleelite.RectangleButton
+            android:id="@+id/map_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="#FF0000"
+            android:orientation="horizontal"
+            android:text="View Map"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+
+    </LinearLayout>
 </RelativeLayout>

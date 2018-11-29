@@ -25,3 +25,4 @@ public class SquareButton extends AppCompatButton {
         setMeasuredDimension(size, size);
     }
 }
+
