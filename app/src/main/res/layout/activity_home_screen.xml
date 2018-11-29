@@ -95,18 +95,17 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_below="@id/topFour"
-        android:layout_weight="0.5"
         android:layout_height="fill_parent"
-        android:layout_width="fill_parent">
+        android:layout_width="fill_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp">
 
         <com.cs495.battleelite.battleelite.RectangleButton
             android:id="@+id/map_button"
             android:layout_width="fill_parent"
-            android:layout_height="175dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_height="fill_parent"
             android:background="#FF0000"
             android:orientation="horizontal"
             android:text="View Map"
