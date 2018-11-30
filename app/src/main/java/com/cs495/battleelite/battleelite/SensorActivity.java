@@ -19,7 +19,6 @@ public class SensorActivity extends AppCompatActivity {
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.frameLayout, fragment);
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 }
