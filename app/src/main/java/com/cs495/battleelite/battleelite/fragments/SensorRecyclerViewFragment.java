@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public class SensorRecyclerViewFragment extends Fragment implements FilterDialogFragment.FilterDialogFragmentListener {
+public class SensorRecyclerViewFragment extends Fragment  {
     private static final String TAG = "SensorActivity";
     private static final String SENSORS = "sensors";
 
@@ -97,13 +97,13 @@ public class SensorRecyclerViewFragment extends Fragment implements FilterDialog
     };
 
 
-    @Override
-    public void getMultipleSelectedSensorFilters(List<String> filters) {
+
+    public void updateMultpleSelectedSensorFilters(List<String> filters) {
         adapter.filter(filters);
     }
 
-    @Override
-    public void getSelectedFilterIndicesBoolean(boolean[] indices) {
+
+    public void updateSelectedFilterIndicesBoolean(boolean[] indices) {
         filterIndices = indices;
     }
 

@@ -55,7 +55,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
      *  activity's context, group items, and child items
      */
     public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, boolean[] checkedStates){
-
+        Log.d("IN ", "EXPLISTVIEW CONSTRUCTOR");
         mContext = context;
         mListDataGroup = listDataGroup;
         mListDataChild = listDataChild;
@@ -66,7 +66,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
             mChildCheckStates.put(0, checkedStates);
         }
         else{
-            Log.i("this ", " means checked is null");
+            Log.i("THIS ", " MEANS CHECKED IS NULL");
         }
 
     }
@@ -264,6 +264,7 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     }
 
     public boolean[] getSelectedFilterIndicesBoolean(int groupPosition){
+        Log.d("IN ", "GetSELECTED FILTER INDICES BOOLEAN");
         boolean getChecked[] = mChildCheckStates.get(groupPosition);
         return getChecked;
     }

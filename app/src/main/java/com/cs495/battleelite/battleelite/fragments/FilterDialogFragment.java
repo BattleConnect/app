@@ -2,8 +2,10 @@ package com.cs495.battleelite.battleelite.fragments;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -30,6 +32,7 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     public boolean[] getCheckedStatesFromActivity(){
+        Log.d("getting ", " Checked states");
         return getArguments().getBooleanArray("checkedStatesFromActivity");
     }
 
@@ -79,12 +82,12 @@ public class FilterDialogFragment extends DialogFragment {
         public void getSelectedFilterIndicesBoolean(boolean[] indices);
 
     }
-
+    
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context){
+        super.onAttach(context);
         try{
-            mListener = (FilterDialogFragmentListener) getParentFragment();
+            mListener = (FilterDialogFragmentListener) context;
         } catch (ClassCastException e){
             throw new ClassCastException(getActivity().toString() + " must implement FilterDialogFragmentListener");
         }
