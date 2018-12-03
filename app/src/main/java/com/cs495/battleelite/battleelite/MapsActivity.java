@@ -103,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterForces(filters);
     }
 
-    private void filterForces(List<String> forceFilter) {
+    void filterForces(List<String> forceFilter) {
         for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
 
@@ -129,7 +129,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterSensors(filters);
     }
 
-    private void filterSensors(List<String> sensorFilter) {
+     void filterSensors(List<String> sensorFilter) {
         for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 

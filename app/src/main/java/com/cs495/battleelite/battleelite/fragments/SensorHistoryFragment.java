@@ -1,6 +1,7 @@
 package com.cs495.battleelite.battleelite.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
@@ -113,6 +114,10 @@ public class SensorHistoryFragment extends Fragment {
     }
 
     void updateSensorInfo() {
+        if (getView() == null) {
+            System.out.println("sensor history fragment view is null");
+            return;
+        }
 
         SensorData sensorData = sensors.get(sensors.size()-1);
 
@@ -135,6 +140,11 @@ public class SensorHistoryFragment extends Fragment {
     }
 
     void updateGraph() {
+        if (getView() == null) {
+            System.out.println("sensor history fragment view is null");
+            return;
+        }
+
         GraphView graph = getView().findViewById(R.id.graph);
         ArrayList<DataPoint> dataList = data();
 
