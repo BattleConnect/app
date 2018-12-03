@@ -478,19 +478,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("pointer_heart",128,128)));
             }
         }
-        else if (sensorData.getSensor_Type() == "Vibration") {
-            ValueAnimator valueAnimator = animatedSensorList.get(marker);
-//            if (valueAnimator != null) {
-//                if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
-//                    valueAnimator.pause();
-//                if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
-//                    valueAnimator.resume();
-//                //paused and not tripped, do nothing
-//                //running and tripped, do nothing
-//            }
-//            else if(isTrippedVibrationSensor(sensorData)) {
-//                setMarkerWobble(marker);
-//            }
+        else if (sensorData.getSensor_Type().equals("Vibration")) {
+            if (animatedSensorList.containsKey(marker)) {
+                ValueAnimator valueAnimator = animatedSensorList.get(marker);
+                if (valueAnimator != null) {
+                    if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
+                        valueAnimator.pause();
+                    if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
+                        valueAnimator.resume();
+                    //paused and not tripped, do nothing
+                    //running and tripped, do nothing
+                }
+            }
+            else {
+                if(isTrippedVibrationSensor(sensorData)) {
+                    setMarkerWobble(marker);
+                }
+            }
         }
     }
 
