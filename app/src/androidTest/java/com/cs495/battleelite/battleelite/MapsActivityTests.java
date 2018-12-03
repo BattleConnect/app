@@ -1,14 +1,17 @@
 package com.cs495.battleelite.battleelite;
 
+import android.animation.ValueAnimator;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.cs495.battleelite.battleelite.holders.objects.ForceData;
 import com.cs495.battleelite.battleelite.holders.objects.SensorData;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
+import static android.support.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
@@ -71,5 +75,147 @@ public class MapsActivityTests {
         while (!moveOn);
             assertEquals(mActivityRule.getActivity().getMarkerCount(), (long) sensorIds.size());
     }
+
+    @Test
+    public void testTrippedVibrationSensorAnimation() {
+        try {
+            Thread.sleep(10000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        final SensorData sensorData = new SensorData((long) 200, 66.7715, 33.8163, "Good", (long) 123456, "Vibration", (long) 2, (long) 35);
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivityRule.getActivity().addSensorMarker(sensorData, null);
+                }
+            });
+        }
+        catch (Throwable t) {
+
+        }
+
+
+        try {
+            Thread.sleep(2000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        Marker marker = mActivityRule.getActivity().sensorMarkerList.get(sensorData.getSensor_ID());
+        ValueAnimator valueAnimator = mActivityRule.getActivity().animatedSensorList.get(marker);
+        assert(valueAnimator != null);
+        assert(valueAnimator.isRunning());
+    }
+
+    boolean sensorTypeFilterTestSucceeded = true;
+    boolean completedSensorTypeFilter = false;
+
+    @Test
+    public void testSensorTypeFilter() {
+        try {
+            Thread.sleep(10000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        final List<String> sensorTypeFilter = new ArrayList<>();
+        sensorTypeFilter.add("HeartRate");
+        sensorTypeFilter.add("Vibration");
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivityRule.getActivity().filterSensors(sensorTypeFilter);
+                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            long sensorId = mActivityRule.getActivity().sensorMarkerList.inverse().get(marker);
+                            SensorData sensorData = mActivityRule.getActivity().sensorDataList.get(sensorId);
+                            if(sensorData.getSensor_Type() == "HeartRate" || sensorData.getSensor_Type() == "Vibration")
+                                sensorTypeFilterTestSucceeded = false;
+                        }
+                        else {
+                            long sensorId = mActivityRule.getActivity().sensorMarkerList.inverse().get(marker);
+                            SensorData sensorData = mActivityRule.getActivity().sensorDataList.get(sensorId);
+                            if (sensorData.getSensor_Type() != "HeartRate" && sensorData.getSensor_Type() != "Vibration")
+                                sensorTypeFilterTestSucceeded = false;
+                        }
+                    }
+                    completedSensorTypeFilter = true;
+                }
+            });
+        }
+        catch (Throwable t) {
+
+        }
+
+        while (!completedSensorTypeFilter) {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("not good");
+            }
+        }
+        assert(sensorTypeFilterTestSucceeded);
+    }
+
+    boolean forceTypeFilterTestSucceeded = true;
+    boolean completedForceTypeFilter = false;
+
+    @Test
+    public void testForceTypeFilter() {
+        try {
+            Thread.sleep(10000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        final List<String> forceTypeFilter = new ArrayList<>();
+        forceTypeFilter.add("Squad");
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivityRule.getActivity().filterForces(forceTypeFilter);
+                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            String forceId = mActivityRule.getActivity().forceMarkerList.inverse().get(marker);
+                            ForceData forceData = mActivityRule.getActivity().forceDataList.get(forceId);
+                            if(forceData.getType() == "Squad")
+                                forceTypeFilterTestSucceeded = false;
+                        }
+                        else {
+                            String forceId = mActivityRule.getActivity().forceMarkerList.inverse().get(marker);
+                            ForceData forceData = mActivityRule.getActivity().forceDataList.get(forceId);
+                            if (forceData.getType() != "Squad")
+                                forceTypeFilterTestSucceeded = false;
+                        }
+                    }
+                    completedSensorTypeFilter = true;
+                }
+            });
+        }
+        catch (Throwable t) {
+
+        }
+
+        while (!completedSensorTypeFilter) {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("not good");
+            }
+        }
+        assert(forceTypeFilterTestSucceeded);
+    }
+
 
 }
