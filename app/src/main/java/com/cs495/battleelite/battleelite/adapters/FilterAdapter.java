@@ -128,19 +128,16 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                     filteredList.add(sensorList.get(i));
                 }
                 if(filters.get(j).equals("Heartbeat=0")){
-                    Log.i("HEARTBEAT ZERO ", "inside");
                     if(sensorList.get(i).getSensor_Type().equals("HeartRate") && sensorList.get(i).getSensor_Val() == 0){
                         filteredList.add(sensorList.get(i));
                     }
                 }
                 if(filters.get(j).equals("Tripped Vibration Sensor")){
-                    Log.i("TRIPPED VIBRATION ", "inside");
                     if(sensorList.get(i).getSensor_Type().equals("Vibration") && sensorList.get(i).getSensor_Val() > 0){
                         filteredList.add(sensorList.get(i));
                     }
                 }
                 if(filters.get(j).equals("Dead Battery")){
-                    Log.i("DEAD BATTERY ", "inside");
                     if(sensorList.get(i).getBattery() == 0){
                         filteredList.add(sensorList.get(i));
                     }

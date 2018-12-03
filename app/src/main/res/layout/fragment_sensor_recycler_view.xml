@@ -28,7 +28,7 @@ tools:context=".SensorActivity">
     android:layout_width="match_parent"
     android:queryHint="@string/search"
     android:layout_alignParentTop="true"
-    android:maxWidth="300dp"
+    android:maxWidth="270dp"
     />
 
 <Button
