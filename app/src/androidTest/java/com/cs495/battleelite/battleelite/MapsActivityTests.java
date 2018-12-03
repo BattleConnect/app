@@ -38,6 +38,8 @@ public class MapsActivityTests {
             new ActivityTestRule<>(MapsActivity.class);
 
 
+    boolean moveOn = false;
+    boolean result = false;
     //makes sure that the number of unique sensors in the database matches the number of sensors being displayed on the map
     @Test
     public void testNumberOfSensorsDisplayed() {
@@ -58,8 +60,7 @@ public class MapsActivityTests {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    System.out.println("don't bullshit me");
-                                    assertEquals(mActivityRule.getActivity().getMarkerCount(), (long) sensorIds.size());
+                                    moveOn = true;
                                 }
                             }, 1000 * 10);
                         } else {
@@ -67,6 +68,8 @@ public class MapsActivityTests {
                         }
                     }
                 });
+        while (!moveOn);
+            assertEquals(mActivityRule.getActivity().getMarkerCount(), (long) sensorIds.size());
     }
 
 }
