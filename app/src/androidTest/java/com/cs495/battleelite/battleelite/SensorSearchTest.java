@@ -8,6 +8,7 @@ import com.cs495.battleelite.battleelite.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.SensorResponse;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,8 +22,9 @@ public class SensorSearchTest {
     SensorRecyclerViewFragment fragment;
     List<SensorResponse> sensorList = new ArrayList();
     List<String> filterList = new ArrayList();
+    FilterAdapter adapter;
 
-
+    @Before
     public void setUp(){
         fragment = new SensorRecyclerViewFragment();
 
@@ -36,7 +38,7 @@ public class SensorSearchTest {
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 10, "Good", 383741, "Moisture", 63));
         sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Fair", 456742, "Asset", 77));
 
-
+        adapter = new FilterAdapter(fragment, sensorList);
 
     }
 
@@ -44,51 +46,41 @@ public class SensorSearchTest {
 
     @Test
     public void testHeartRate(){
-        setUp();
-        FilterAdapter adapter = new FilterAdapter(fragment, sensorList);
         adapter.search("HeartRate");
-        assertEquals(1, adapter.filteredList.size());
-        assertEquals(adapter.filteredList.get(0).getSensor_Type(), "HeartRate");
+        assertEquals(1, adapter.getFilteredList().size());
+        assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "HeartRate");
     }
 
     @Test
     public void testVibration(){
-        setUp();
-        FilterAdapter adapter = new FilterAdapter(fragment, sensorList);
         adapter.search("Vibration");
-        assertEquals(2, adapter.filteredList.size());
-        assertEquals(adapter.filteredList.get(0).getSensor_Type(), "Vibration");
-        assertEquals(adapter.filteredList.get(1).getSensor_Type(), "Vibration");
+        assertEquals(2, adapter.getFilteredList().size());
+        assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Vibration");
+        assertEquals(adapter.getFilteredList().get(1).getSensor_Type(), "Vibration");
     }
 
     @Test
     public void testMoisture(){
-        setUp();
-        FilterAdapter adapter = new FilterAdapter(fragment, sensorList);
         adapter.search("Moisture");
-        assertEquals(3, adapter.filteredList.size());
-        assertEquals(adapter.filteredList.get(0).getSensor_Type(), "Moisture");
-        assertEquals(adapter.filteredList.get(1).getSensor_Type(), "Moisture");
-        assertEquals(adapter.filteredList.get(2).getSensor_Type(), "Moisture");
+        assertEquals(3, adapter.getFilteredList().size());
+        assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Moisture");
+        assertEquals(adapter.getFilteredList().get(1).getSensor_Type(), "Moisture");
+        assertEquals(adapter.getFilteredList().get(2).getSensor_Type(), "Moisture");
     }
 
     @Test
     public void testAsset(){
-        setUp();
-        FilterAdapter adapter = new FilterAdapter(fragment, sensorList);
         adapter.search("Asset");
-        assertEquals(2, adapter.filteredList.size());
-        assertEquals(adapter.filteredList.get(0).getSensor_Type(), "Asset");
-        assertEquals(adapter.filteredList.get(0).getSensor_Type(), "Asset");
+        assertEquals(2, adapter.getFilteredList().size());
+        assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Asset");
+        assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Asset");
 
     }
 
     @Test
     public void testTemp(){
-        setUp();
-        FilterAdapter adapter = new FilterAdapter(fragment, sensorList);
         adapter.search("Temp");
-        assertEquals(1, adapter.filteredList.size());
-        assertEquals(adapter.filteredList.get(0).getSensor_Type(), "Temp");
+        assertEquals(1, adapter.getFilteredList().size());
+        assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Temp");
     }
 }

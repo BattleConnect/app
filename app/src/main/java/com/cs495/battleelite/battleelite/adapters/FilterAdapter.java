@@ -28,7 +28,7 @@ import java.util.List;
 
 public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
-    List<SensorResponse> sensorList, filteredList, filteredListForSearch;
+    private List<SensorResponse> sensorList, filteredList, filteredListForSearch;
     private SensorRecyclerViewFragment mFragment;
 
     public FilterAdapter(SensorRecyclerViewFragment fragment, List<SensorResponse> sensorList){
@@ -205,5 +205,8 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         notifyDataSetChanged();
     }
 
+    public List<SensorResponse> getFilteredList(){
+        return filteredList;
+    }
 
 }
