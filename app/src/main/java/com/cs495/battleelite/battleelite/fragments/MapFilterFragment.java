@@ -19,25 +19,33 @@ import java.util.List;
 
 public class MapFilterFragment extends DialogFragment {
     MapFilterFragment.MapFilterFragmentListener mListener;
+    ArrayList<String> toggleDataHeader;
     ArrayList<String> sensorDataHeader;
     ArrayList<String> forceDataHeader;
     ArrayList<String> otherDataHeader;
+    HashMap<String, List<String>> toggleDataChild;
     HashMap<String, List<String>> sensorDataChild;
     HashMap<String, List<String>> forceDataChild;
     HashMap<String, List<String>> otherDataChild;
+    boolean[] toggleCheckedStates;
     boolean[] sensorCheckedStates;
     boolean[] forceCheckedStates;
     boolean[] otherCheckedStates;
 
-    public static MapFilterFragment newInstance(boolean[] sensorCheckedStates, boolean[] forceCheckedStates, boolean[] otherCheckedStates) {
+    public static MapFilterFragment newInstance(boolean[] toggleCheckedStates, boolean[] sensorCheckedStates, boolean[] forceCheckedStates, boolean[] otherCheckedStates) {
         MapFilterFragment f = new MapFilterFragment();
         Bundle args = new Bundle();
+        args.putBooleanArray("toggleCheckedStates", toggleCheckedStates);
         args.putBooleanArray("sensorCheckedStates", sensorCheckedStates);
         args.putBooleanArray("forceCheckedStates", forceCheckedStates);
         args.putBooleanArray("otherCheckedStates", otherCheckedStates);
         f.setArguments(args);
 
         return f;
+    }
+
+    public boolean[] getToggleCheckedStatesFromActivity(){
+        return getArguments().getBooleanArray("toggleCheckedStates");
     }
 
     public boolean[] getSensorCheckedStatesFromActivity(){
@@ -62,28 +70,38 @@ public class MapFilterFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
-        final ExpandableListView sensorListView = (ExpandableListView) v.findViewById(R.id.sensorFilter);
+        ExpandableListView toggleListView = (ExpandableListView) v.findViewById(R.id.toggleFilter);
+        ExpandableListView sensorListView = (ExpandableListView) v.findViewById(R.id.sensorFilter);
         ExpandableListView forceListView = (ExpandableListView) v.findViewById(R.id.forceFilter);
         ExpandableListView otherListView = (ExpandableListView) v.findViewById(R.id.otherFilter);
 
+        loadToggleData();
         loadSensorData();
         loadForceData();
         loadOtherData();
 
+        toggleCheckedStates = getToggleCheckedStatesFromActivity();
         sensorCheckedStates = getSensorCheckedStatesFromActivity();
         forceCheckedStates = getForceCheckedStatesFromActivity();
         otherCheckedStates = getOtherCheckedStatesFromActivity();
 
+        final ExpListViewAdapterWithCheckbox toggleAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), toggleDataHeader, toggleDataChild, toggleCheckedStates, null);
         final ExpListViewAdapterWithCheckbox sensorAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), sensorDataHeader, sensorDataChild, sensorCheckedStates, null);
         final ExpListViewAdapterWithCheckbox forceAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), forceDataHeader, forceDataChild, forceCheckedStates, null);
         final ExpListViewAdapterWithCheckbox otherAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), otherDataHeader, otherDataChild, otherCheckedStates, null);
 
+        toggleListView.setAdapter(toggleAdapter);
         sensorListView.setAdapter(sensorAdapter);
         forceListView.setAdapter(forceAdapter);
         otherListView.setAdapter(otherAdapter);
 
         builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                if(toggleAdapter != null && toggleAdapter.getGroupCount() != 0 && toggleAdapter.getSelectedItems(0) != null) {
+                    mListener.getSelectedToggleFilter(toggleAdapter.getSelectedItems(0));
+                    mListener.getSelectedToggleFilterIndicesBoolean(toggleAdapter.getSelectedFilterIndicesBoolean(0));
+                }
+
                 if(sensorAdapter != null && sensorAdapter.getGroupCount() != 0 && sensorAdapter.getSelectedItems(0) != null) {
                     mListener.getSelectedSensorTypeFilter(sensorAdapter.getSelectedItems(0));
                     mListener.getSelectedSensorFilterIndicesBoolean(sensorAdapter.getSelectedFilterIndicesBoolean(0));
@@ -112,12 +130,27 @@ public class MapFilterFragment extends DialogFragment {
     }
 
     public interface MapFilterFragmentListener{
+        public void getSelectedToggleFilter(List<String> filters);
         public void getSelectedSensorTypeFilter(List<String> filters);
         public void getSelectedForceTypeFilter(List<String> filters);
         public void getSelectedOtherFilter(List<String> filters);
+        public void getSelectedToggleFilterIndicesBoolean(boolean[] indices);
         public void getSelectedSensorFilterIndicesBoolean(boolean[] indices);
         public void getSelectedForceFilterIndicesBoolean(boolean[] indices);
         public void getSelectedOtherFilterIndicesBoolean(boolean[] indices);
+    }
+
+    private void loadToggleData() {
+        toggleDataHeader = new ArrayList<String>();
+        toggleDataChild = new HashMap<String, List<String>>();
+
+        toggleDataHeader.add("Toggle Data");
+
+        List<String> toggles = new ArrayList<>();
+        toggles.add(getResources().getString(R.string.forces));
+        toggles.add(getResources().getString(R.string.sensors));
+
+        toggleDataChild.put(toggleDataHeader.get(0), toggles);
     }
 
     private void loadOtherData() {

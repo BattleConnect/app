@@ -67,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     BiMap<String, ForceMarker> forceObjectMarkerList = HashBiMap.create();
     Map<Marker, ValueAnimator> animatedSensorList = new HashMap();
 
+    boolean[] toggleFilterIndices;
     boolean[] sensorFilterIndices;
     boolean[] forceFilterIndices;
     boolean[] otherFilterIndices;
@@ -92,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapFilterFragment filter = MapFilterFragment.newInstance(sensorFilterIndices, forceFilterIndices, otherFilterIndices);
+                MapFilterFragment filter = MapFilterFragment.newInstance(toggleFilterIndices, sensorFilterIndices, forceFilterIndices, otherFilterIndices);
                 filter.show(getFragmentManager(), "MapFilterFragment");
 
             }
@@ -102,9 +103,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    public void getSelectedToggleFilter(List<String> filters) {
+        if(filters.size() != 0) toggleData(filters);
+    }
+
+    void toggleData(List<String> toggles) {
+        if(toggles.contains(getResources().getString(R.string.forces))) {
+            for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
+                ForceMarker forceMarker = entry.getValue();
+                forceMarker.getMarker().setVisible(true);
+            }
+        } else {
+            for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
+                ForceMarker forceMarker = entry.getValue();
+                forceMarker.getMarker().setVisible(false);
+            }
+        }
+
+        if(toggles.contains(getResources().getString(R.string.sensors))) {
+            for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
+                SensorMarker sensorMarker = entry.getValue();
+                sensorMarker.getMarker().setVisible(true);
+            }
+        } else {
+            for (Map.Entry<Long, SensorMarker> entry : sensorObjectMarkerList.entrySet()) {
+                SensorMarker sensorMarker = entry.getValue();
+                sensorMarker.getMarker().setVisible(false);
+            }
+        }
+    }
+
+    @Override
     public void getSelectedForceTypeFilter(List<String> filters) {
         //Log.i("getSelectedSensorTypes", "returns " + type);
-        filterForces(filters);
+        if(filters.size() != 0) filterForces(filters);
     }
 
     void filterForces(List<String> forceFilter) {
@@ -121,16 +153,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 forceMarker.getMarker().setVisible(false);
             }
 
-            if(forceFilter.size() == 0) {
-                forceMarker.getMarker().setVisible(true);
-            }
+//            if(forceFilter.size() == 0) {
+//                forceMarker.getMarker().setVisible(true);
+//            }
         }
     }
 
     @Override
     public void getSelectedSensorTypeFilter(List<String> filters){
         //Log.i("getSelectedSensorTypes", "returns " + type);
-        filterSensors(filters);
+        if(filters.size() != 0) filterSensors(filters);
     }
 
      void filterSensors(List<String> sensorFilter) {
@@ -147,15 +179,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 sensorMarker.getMarker().setVisible(false);
             }
 
-            if(sensorFilter.size() == 0) {
-                sensorMarker.getMarker().setVisible(true);
-            }
+//            if(sensorFilter.size() == 0) {
+//                sensorMarker.getMarker().setVisible(true);
+//            }
         }
     }
 
     @Override
     public void getSelectedOtherFilter(List<String> filters) {
-        filterOthers(filters);
+        if(filters.size() != 0) filterOthers(filters);
     }
 
     private void filterOthers(List<String> otherFilters) {
@@ -174,18 +206,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showDeadBattery(sensorMarker);
             }
 
-            if(otherFilters.size() == 0) {
-                sensorMarker.getMarker().setVisible(true);
-            }
+//            if(otherFilters.size() == 0) {
+//                sensorMarker.getMarker().setVisible(true);
+//            }
         }
 
         for (Map.Entry<String, ForceMarker> entry : forceObjectMarkerList.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
 
 
-            if(otherFilters.size() == 0) {
-                forceMarker.getMarker().setVisible(true);
-            }
+//            if(otherFilters.size() == 0) {
+//                forceMarker.getMarker().setVisible(true);
+//            }
         }
     }
 
@@ -214,6 +246,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if(sensorData.getBattery() != 0) {
             sensorMarker.getMarker().setVisible(false);
         }
+    }
+
+    @Override
+    public void getSelectedToggleFilterIndicesBoolean(boolean[] indices) {
+        toggleFilterIndices = indices;
     }
 
     @Override
