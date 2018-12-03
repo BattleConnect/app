@@ -67,6 +67,7 @@ public class home_screen extends AppCompatActivity {
         Button inputButton = (Button) findViewById(R.id.input_button);
         Button mapButton = (Button) findViewById(R.id.map_button);
         Button alertsButton = (Button) findViewById(R.id.alerts_button);
+        Button forceButton = (Button) findViewById(R.id.soldier_button);
 
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +100,14 @@ public class home_screen extends AppCompatActivity {
                 startActivity(new Intent(home_screen.this, NotificationActivity.class));
             }
         });
+
+        forceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkLoginStatus();
+                startActivity(new Intent(home_screen.this, ForcesActivity.class));
+            }
+        });
     }
 
     private  boolean checkLoginStatus(){
@@ -115,7 +124,8 @@ public class home_screen extends AppCompatActivity {
 
     private void logout(){
 
-        firebaseAuth.signOut();;
+        firebaseAuth.signOut();
+        checkLoginStatus();
     }
     private void clearCache(){
         try {

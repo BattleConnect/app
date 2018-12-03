@@ -1,5 +1,6 @@
 package com.cs495.battleelite.battleelite;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -9,6 +10,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.cs495.battleelite.battleelite.fragments.SensorHistoryFragment;
 import com.cs495.battleelite.battleelite.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
@@ -94,6 +97,7 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         }
         filteredListForSearch.clear();
         filteredListForSearch.addAll(filteredList);
+        removeDuplicates();
         notifyDataSetChanged();
     }
 
@@ -141,7 +145,7 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
                            filteredList.remove(j);
                        }
                    } catch (Exception e) {
-                       //Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                       //Toast.makeText(null,e.getMessage(),Toast.LENGTH_LONG).show();
                    }
                    j--;//if match, it deletes the element and put another in its place, so need to check that one too dy decrementing, which the loop will increment, re evaluating the same index
                 }
