@@ -38,4 +38,9 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
     public void getSelectedFilterIndicesBoolean(boolean[] indices) {
         fragment.updateSelectedFilterIndicesBoolean(indices);
     }
+
+    @Override
+    public void getOtherSelectedFilterIndicesBoolean(boolean[] indices){
+        fragment.updateOtherSelectedFilterIndicesBoolean(indices);
+    }
 }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 
 public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
@@ -85,13 +87,31 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     public void filter(List<String> filters){
         filteredList.clear();
-        if(filters == null || filters.size() == 0){
+        if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals("none")){
             filteredList = sensorList;
         }
         for(int i=0; i<sensorList.size(); i++) {
             for (int j = 0; j < filters.size(); j++) {
                 if(sensorList.get(i).getSensor_Type().equals(filters.get(j))){
                     filteredList.add(sensorList.get(i));
+                }
+                if(filters.get(j).equals("Heartbeat=0")){
+                    Log.i("HEARTBEAT ZERO ", "inside");
+                    if(sensorList.get(i).getSensor_Type().equals("HeartRate") && sensorList.get(i).getSensor_Val() == 0){
+                        filteredList.add(sensorList.get(i));
+                    }
+                }
+                if(filters.get(j).equals("Tripped Vibration Sensor")){
+                    Log.i("TRIPPED VIBRATION ", "inside");
+                    if(sensorList.get(i).getSensor_Type().equals("Vibration") && sensorList.get(i).getSensor_Val() > 0){
+                        filteredList.add(sensorList.get(i));
+                    }
+                }
+                if(filters.get(j).equals("Dead Battery")){
+                    Log.i("DEAD BATTERY ", "inside");
+                    if(sensorList.get(i).getBattery() == 0){
+                        filteredList.add(sensorList.get(i));
+                    }
                 }
             }
         }

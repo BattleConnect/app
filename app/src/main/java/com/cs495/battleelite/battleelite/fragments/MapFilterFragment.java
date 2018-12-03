@@ -74,9 +74,9 @@ public class MapFilterFragment extends DialogFragment {
         forceCheckedStates = getForceCheckedStatesFromActivity();
         otherCheckedStates = getOtherCheckedStatesFromActivity();
 
-        final ExpListViewAdapterWithCheckbox sensorAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), sensorDataHeader, sensorDataChild, sensorCheckedStates);
-        final ExpListViewAdapterWithCheckbox forceAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), forceDataHeader, forceDataChild, forceCheckedStates);
-        final ExpListViewAdapterWithCheckbox otherAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), otherDataHeader, otherDataChild, otherCheckedStates);
+        final ExpListViewAdapterWithCheckbox sensorAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), sensorDataHeader, sensorDataChild, sensorCheckedStates, null);
+        final ExpListViewAdapterWithCheckbox forceAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), forceDataHeader, forceDataChild, forceCheckedStates, null);
+        final ExpListViewAdapterWithCheckbox otherAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), otherDataHeader, otherDataChild, otherCheckedStates, null);
 
         sensorListView.setAdapter(sensorAdapter);
         forceListView.setAdapter(forceAdapter);
