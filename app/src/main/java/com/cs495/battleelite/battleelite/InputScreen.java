@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class InputScreen extends AppCompatActivity {
@@ -57,7 +60,12 @@ public class InputScreen extends AppCompatActivity {
         Request request = new Request(tag, condition, time, comment);
 
         DocumentReference newReq = db.collection("requests").document();
-        newReq.set(request);
+        Map<String, Object> req = new HashMap<>();
+        req.put("tag", request.tag);
+        req.put("condition", request.condition);
+        req.put("time", FieldValue.serverTimestamp());
+        req.put("comment", request.comment);
+        newReq.set(req);
 
         tagSpinner.setSelection(0);
         conditionSpinner.setSelection(0);

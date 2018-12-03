@@ -37,6 +37,7 @@ public class SensorRecyclerViewFragment extends Fragment  {
     private FirebaseFirestore db;
     LinearLayoutManager linearLayoutManager;
     boolean[] filterIndices;
+    boolean[] otherFilterIndices;
     List<SensorResponse> sensorData = new ArrayList<>();
     private FilterAdapter adapter;
 
@@ -69,7 +70,7 @@ public class SensorRecyclerViewFragment extends Fragment  {
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FilterDialogFragment filter = FilterDialogFragment.newInstance(filterIndices);
+                FilterDialogFragment filter = FilterDialogFragment.newInstance(filterIndices, otherFilterIndices);
                 filter.show(getFragmentManager(), "FilterDialogFragment");
             }
         });
@@ -105,6 +106,10 @@ public class SensorRecyclerViewFragment extends Fragment  {
 
     public void updateSelectedFilterIndicesBoolean(boolean[] indices) {
         filterIndices = indices;
+    }
+
+    public void updateOtherSelectedFilterIndicesBoolean(boolean[] indices){
+        otherFilterIndices = indices;
     }
 
     private void init() {
