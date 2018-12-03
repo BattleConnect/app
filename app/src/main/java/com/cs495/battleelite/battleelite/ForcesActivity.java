@@ -40,7 +40,6 @@ public class ForcesActivity extends AppCompatActivity  implements FilterDialogFr
 
     @Override
     public void getOtherSelectedFilterIndicesBoolean(boolean[] indices){
-
+        fragment.updateOtherSelectedFilterIndicesBoolean(indices);
     }
-
 }
