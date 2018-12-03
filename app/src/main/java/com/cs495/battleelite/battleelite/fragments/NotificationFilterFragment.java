@@ -16,6 +16,18 @@ import com.cs495.battleelite.battleelite.R;
 public class NotificationFilterFragment extends DialogFragment {
     NotificationFilterFragment.NotificationFilterFragmentListener mListener;
 
+    public static NotificationFilterFragment newInstance(int position){
+        NotificationFilterFragment f = new NotificationFilterFragment();
+        Bundle args = new Bundle();
+        args.putInt("selectedPosition", position);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    public int getSelectedSpinnerPosition(){
+        return getArguments().getInt("selectedPosition");
+    }
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
@@ -31,10 +43,13 @@ public class NotificationFilterFragment extends DialogFragment {
                     getResources().getStringArray(R.array.notificationTypeList));
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             notificationTypes.setAdapter(adapter);
+            if(getSelectedSpinnerPosition() != -1){
+                notificationTypes.setSelection(getSelectedSpinnerPosition());
+            }
             builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     mListener.getSelectedNotificationPriorityFilter(notificationTypes.getSelectedItem().toString());
-
+                    mListener.getSelectedState(notificationTypes.getSelectedItemPosition());
                 }
             });
             builder.setNegativeButton(R.string.filterNegative, new DialogInterface.OnClickListener() {
@@ -49,7 +64,7 @@ public class NotificationFilterFragment extends DialogFragment {
 
         public interface NotificationFilterFragmentListener{
             public void getSelectedNotificationPriorityFilter(String type);
-
+            public void getSelectedState(int position);
         }
 
         @Override

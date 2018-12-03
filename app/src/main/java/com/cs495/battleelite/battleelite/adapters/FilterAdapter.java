@@ -1,6 +1,7 @@
 package com.cs495.battleelite.battleelite;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.FragmentManager;
 import android.content.Context;
