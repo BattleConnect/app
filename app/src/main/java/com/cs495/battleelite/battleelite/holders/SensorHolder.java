@@ -2,6 +2,7 @@ package com.cs495.battleelite.battleelite.holders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,7 +15,7 @@ public class SensorHolder extends RecyclerView.ViewHolder {
     public TextView Battery;
     public TextView SensorHealth;
     public TextView Sensor_ID;
-    public TextView Sensor_Type;
+    public ImageView Sensor_Type;
     public TextView Sensor_Val;
     public LinearLayout parentLayout;
 
@@ -57,7 +58,7 @@ public class SensorHolder extends RecyclerView.ViewHolder {
         this.Sensor_ID = sensor_id;
     }
 
-    public void setSensor_type(TextView sensor_type) {
+    public void setSensor_type(ImageView sensor_type) {
         this.Sensor_Type = sensor_type;
     }
 
