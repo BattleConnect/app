@@ -114,6 +114,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationHolder
         notifyDataSetChanged();
     }
 
-
+    public List<NotificationResponse> getFilteredList(){
+        return filteredList;
+    }
 
 }
