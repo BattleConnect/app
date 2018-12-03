@@ -393,6 +393,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return marker;
     }
 
+    public long getMarkerCount() {
+        return sensorMarkerList.values().size();
+    }
+
     public void addForceMarker(ForceData forceData, String forceFilter) {
         String forceID = forceData.getID();
         Double latitude = forceData.getLat();
