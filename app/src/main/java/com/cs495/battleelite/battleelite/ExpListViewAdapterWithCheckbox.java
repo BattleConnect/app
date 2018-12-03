@@ -54,16 +54,22 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     /*  Here's the constructor we'll use to pass in our calling
      *  activity's context, group items, and child items
      */
-    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, boolean[] checkedStates){
-        Log.d("IN ", "EXPLISTVIEW CONSTRUCTOR");
+    public ExpListViewAdapterWithCheckbox(Context context, ArrayList<String> listDataGroup, HashMap<String, List<String>> listDataChild, boolean[] checkedStates, boolean[] checkedOtherStates){
         mContext = context;
         mListDataGroup = listDataGroup;
         mListDataChild = listDataChild;
 
         // Initialize our hashmap containing our check states here
         mChildCheckStates = new HashMap<Integer, boolean[]>();
-        if(checkedStates != null) {
+        if(checkedStates != null && checkedOtherStates != null) {
             mChildCheckStates.put(0, checkedStates);
+            mChildCheckStates.put(1, checkedOtherStates);
+        }
+        else if(checkedStates != null){
+            mChildCheckStates.put(0, checkedStates);
+        }
+        else if(checkedOtherStates != null){
+            mChildCheckStates.put(1, checkedOtherStates);
         }
         else{
             Log.i("THIS ", " MEANS CHECKED IS NULL");
@@ -264,7 +270,6 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     }
 
     public boolean[] getSelectedFilterIndicesBoolean(int groupPosition){
-        Log.d("IN ", "GetSELECTED FILTER INDICES BOOLEAN");
         boolean getChecked[] = mChildCheckStates.get(groupPosition);
         return getChecked;
     }

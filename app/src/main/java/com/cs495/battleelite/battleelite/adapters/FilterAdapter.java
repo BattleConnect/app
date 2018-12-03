@@ -1,12 +1,15 @@
 package com.cs495.battleelite.battleelite;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 
 public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
@@ -47,11 +51,42 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         holder.Date_Time.setText("Last update: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(currentItem.getDate_Time())));
         holder.Lat.setText("Latitude: " + String.valueOf(currentItem.getLat()));
         holder.Long.setText("Longitude: " + String.valueOf(currentItem.getLong()));
-        holder.Battery.setText("Battery: " + String.valueOf(currentItem.getBattery()) + "%");
-        holder.SensorHealth.setText("Health: " + currentItem.getSensorHealth());
-        holder.Sensor_ID.setText("ID: " + String.valueOf(currentItem.getSensor_ID()));
-        holder.Sensor_Type.setText("Type: " + currentItem.getSensor_Type());
+
+
+
+        holder.Battery.setText(String.valueOf(currentItem.getBattery()) + "%");
+        if(currentItem.getBattery() > 20) {
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
+        }
+        else {
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
+        }
+
+
+
+        holder.SensorHealth.setText(currentItem.getSensorHealth());
+        if(currentItem.getSensorHealth().equalsIgnoreCase("GOOD")) {
+            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
+        }
+        else {
+            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
+        }
+
+        holder.Sensor_ID.setText(String.valueOf(currentItem.getSensor_ID()));
+        holder.Sensor_ID.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.id));
         holder.Sensor_Val.setText("Value: " + String.valueOf(currentItem.getSensor_Val()));
+
+        if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.asset))) {
+            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.diamond));
+        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.heartbeat))) {
+            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.pointer_heart));
+        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.vibration))) {
+            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.vibration1));
+        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.moisture))) {
+            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.water_drop));
+        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.temperature))) {
+            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.thermometer));
+        }
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,13 +120,28 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     public void filter(List<String> filters){
         filteredList.clear();
-        if(filters == null || filters.size() == 0){
+        if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals("none")){
             filteredList = sensorList;
         }
         for(int i=0; i<sensorList.size(); i++) {
             for (int j = 0; j < filters.size(); j++) {
                 if(sensorList.get(i).getSensor_Type().equals(filters.get(j))){
                     filteredList.add(sensorList.get(i));
+                }
+                if(filters.get(j).equals("Heartbeat=0")){
+                    if(sensorList.get(i).getSensor_Type().equals("HeartRate") && sensorList.get(i).getSensor_Val() == 0){
+                        filteredList.add(sensorList.get(i));
+                    }
+                }
+                if(filters.get(j).equals("Tripped Vibration Sensor")){
+                    if(sensorList.get(i).getSensor_Type().equals("Vibration") && sensorList.get(i).getSensor_Val() > 0){
+                        filteredList.add(sensorList.get(i));
+                    }
+                }
+                if(filters.get(j).equals("Dead Battery")){
+                    if(sensorList.get(i).getBattery() == 0){
+                        filteredList.add(sensorList.get(i));
+                    }
                 }
             }
         }

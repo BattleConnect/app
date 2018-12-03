@@ -21,19 +21,24 @@ public class FilterDialogFragment extends DialogFragment {
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
     boolean[] checkedStates;
+    boolean[] otherCheckedStates;
 
-    public static FilterDialogFragment newInstance(boolean[] checkedStatesFromActivity){
+    public static FilterDialogFragment newInstance(boolean[] checkedStatesFromActivity, boolean[] otherCheckedStatesFromActivity){
          FilterDialogFragment f = new FilterDialogFragment();
          Bundle args = new Bundle();
          args.putBooleanArray("checkedStatesFromActivity", checkedStatesFromActivity);
+         args.putBooleanArray("otherCheckedStatesFromActivity", otherCheckedStatesFromActivity);
          f.setArguments(args);
 
          return f;
     }
 
     public boolean[] getCheckedStatesFromActivity(){
-        Log.d("getting ", " Checked states");
         return getArguments().getBooleanArray("checkedStatesFromActivity");
+    }
+
+    public boolean[] getOtherCheckedStatesFromActivity(){
+        return getArguments().getBooleanArray("otherCheckedStatesFromActivity");
     }
 
     @Override
@@ -56,14 +61,19 @@ public class FilterDialogFragment extends DialogFragment {
         loadListData();
         expListView = (ExpandableListView) v.findViewById(R.id.expandableFilter);
         checkedStates = getCheckedStatesFromActivity();
-        listAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), listDataHeader, listDataChild, checkedStates);
+        otherCheckedStates = getOtherCheckedStatesFromActivity();
+        listAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), listDataHeader, listDataChild, checkedStates, otherCheckedStates);
         expListView.setAdapter(listAdapter);
 
 
                 builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.getMultipleSelectedSensorFilters(listAdapter.getSelectedItems(0));
+                        List<String> filters = new ArrayList();
+                        filters.addAll(listAdapter.getSelectedItems(0));
+                        filters.addAll(listAdapter.getSelectedItems(1));
+                        mListener.getMultipleSelectedSensorFilters(filters);
                         mListener.getSelectedFilterIndicesBoolean(listAdapter.getSelectedFilterIndicesBoolean(0));
+                        mListener.getOtherSelectedFilterIndicesBoolean(listAdapter.getSelectedFilterIndicesBoolean(1));
 
                     }
                 });
@@ -80,6 +90,7 @@ public class FilterDialogFragment extends DialogFragment {
     public interface FilterDialogFragmentListener{
         public void getMultipleSelectedSensorFilters(List<String> filters);
         public void getSelectedFilterIndicesBoolean(boolean[] indices);
+        public void getOtherSelectedFilterIndicesBoolean(boolean[] indices);
 
     }
     
@@ -98,7 +109,7 @@ public class FilterDialogFragment extends DialogFragment {
         listDataChild = new HashMap<String, List<String>>();
 
         listDataHeader.add("Sensor Type");
-
+        listDataHeader.add("Other Filter");
 
         List<String> sensorType = new ArrayList();
         sensorType.add(getResources().getString(R.string.asset));
@@ -107,9 +118,14 @@ public class FilterDialogFragment extends DialogFragment {
         sensorType.add(getResources().getString(R.string.moisture));
         sensorType.add(getResources().getString(R.string.temperature));
 
+        List<String> otherFilters = new ArrayList();
+        otherFilters.add(getResources().getString(R.string.heartbeat_zero));
+        otherFilters.add(getResources().getString(R.string.tripped_vibration));
+        otherFilters.add(getResources().getString(R.string.dead_battery));
 
 
         listDataChild.put(listDataHeader.get(0), sensorType);
+        listDataChild.put(listDataHeader.get(1), otherFilters);
 
     }
 }

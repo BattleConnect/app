@@ -34,6 +34,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     ProgressBar progressBar;
     RecyclerView notificationList;
     SearchView notificationSearch;
+    int selectedSpinnerPosition;
 
     List<NotificationResponse> notificationData = new ArrayList<>();
 
@@ -63,6 +64,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         notificationList.setLayoutManager(linearLayoutManager);
         db = FirebaseFirestore.getInstance();
+        selectedSpinnerPosition = -1;
 
     }
 
@@ -120,7 +122,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationFilterFragment filter = new NotificationFilterFragment();
+                NotificationFilterFragment filter = NotificationFilterFragment.newInstance(selectedSpinnerPosition);
                 filter.show(getFragmentManager(), "NotificationFilterFragment");
 
             }
@@ -132,6 +134,11 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     public void getSelectedNotificationPriorityFilter(String type){
         //Log.i("getSelectedNotification", "returns " + type);
         adapter.filter(type);
+    }
+
+    @Override
+    public void getSelectedState(int position){
+        selectedSpinnerPosition = position;
     }
 
 

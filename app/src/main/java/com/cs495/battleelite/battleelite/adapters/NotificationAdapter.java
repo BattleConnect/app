@@ -82,7 +82,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationHolder
     public void filter(String filter){
         filteredList.clear();
         if(filter == null || filter.equals("none")){
-            filteredList = notificationList;
+            filteredList = new ArrayList<NotificationResponse>(notificationList);
         }
         for(int i=0; i<notificationList.size(); i++) {
                 if(notificationList.get(i).getPriority().toLowerCase().equals(filter.toLowerCase())){

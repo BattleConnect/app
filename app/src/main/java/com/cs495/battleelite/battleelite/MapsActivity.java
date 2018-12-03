@@ -244,6 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         boundsBuilder = new LatLngBounds.Builder();
         getSensorData(null);
         getForceData(null);
+        addUserLocation(googleMap);
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         new Handler().postDelayed(new Runnable() {
@@ -557,5 +558,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+    }
+    void addUserLocation(GoogleMap map){
+        map.setMyLocationEnabled(true);
     }
 }
