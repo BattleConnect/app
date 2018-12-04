@@ -34,6 +34,8 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         this.filteredListForSearch.addAll(sensorList);
     }
 
+
+
     @Override
     public void onBindViewHolder(SensorHolder holder, int position) {
         //progressBar.setVisibility(View.GONE);
