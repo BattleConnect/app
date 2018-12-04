@@ -7,5 +7,5 @@
     android:padding="16dp"
     android:background="@color/cardview_light_background"
     tools:context=".SensorActivity"
-    android:id="@+id/forcesLayout">
+    android:id="@+id/frameLayout">
 </FrameLayout>

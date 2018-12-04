@@ -52,6 +52,14 @@
                 android:padding="2dp"
                 android:text="Message" />
 
+            <ImageView
+                android:id="@+id/bat_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/back"
+                android:src="@drawable/baseline_battery_charging_full_black_18dp" />
+
             <TextView
                 android:id="@+id/sensor_battery"
                 android:layout_width="wrap_content"

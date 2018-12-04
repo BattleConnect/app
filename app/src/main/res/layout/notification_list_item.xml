@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sender"
+            android:gravity="center_horizontal"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -31,6 +33,7 @@
             android:id="@+id/notification_sender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginTop="4dp"
             android:text="Message" />
 
@@ -38,6 +41,7 @@
             android:id="@+id/notification_priority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginTop="4dp"
             android:text="Message" />
 
@@ -45,6 +49,7 @@
             android:id="@+id/notification_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:layout_marginTop="4dp"
             android:text="Message" />
 

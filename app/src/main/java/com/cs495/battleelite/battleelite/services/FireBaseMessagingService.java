@@ -5,8 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -14,33 +12,29 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-//import com.cs495.battleelite.battleelite.MainActivity;
-import  com.cs495.battleelite.battleelite.home_screen;
 import com.cs495.battleelite.battleelite.R;
-import com.cs495.battleelite.battleelite.Request;
-import com.cs495.battleelite.battleelite.holders.objects.Notification;
-import com.google.android.gms.common.internal.Constants;
+import com.cs495.battleelite.battleelite.home_screen;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.Map;
-
+/**
+ * Class used to display notifications and register device tokens
+ */
 public class FireBaseMessagingService extends FirebaseMessagingService {
-
     private static final String TAG = "MyFirebaseMsgService";
-    private static final String ID = "id";
-    private static final String PRIORITY = "priority";
-    private static final String MESSAGE = "message";
-    private static final String SENDER = "sender";
-    private static final String USERS = "users";
+    private final String USERS = "users";
+    private final String ID = "id";
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+    /**
+     * When new device token is detected store it in the firestore database
+     * @param token
+     */
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
@@ -51,7 +45,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         if(firebaseAuth.getCurrentUser() != null) {
             String uuid = firebaseAuth.getCurrentUser().getUid();
             db.collection(USERS).document(uuid)
-                    .update("id", token)
+                    .update(ID, token)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -67,6 +61,10 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         }
     }
 
+    /**
+     * On notification received display the notification
+     * @param remoteMessage
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Check if message contains a data payload.
@@ -83,6 +81,10 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         sendNotification(remoteMessage.getNotification().getBody());
     }
 
+    /**
+     * Displays the received notification on the screen
+     * @param messageBody
+     */
     private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, home_screen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -111,6 +113,6 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
     }
 }
