@@ -1,7 +1,7 @@
 package com.cs495.battleelite.battleelite.fragments;
 
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public class SensorRecyclerViewFragment extends Fragment  {
+public class SensorRecyclerViewFragment extends Fragment {
     private static final String TAG = "SensorActivity";
     private static final String SENSORS = "sensors";
 

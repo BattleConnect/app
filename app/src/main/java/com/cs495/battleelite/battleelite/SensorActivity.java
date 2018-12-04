@@ -1,8 +1,8 @@
 package com.cs495.battleelite.battleelite;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -22,7 +22,7 @@ public class SensorActivity extends AppCompatActivity implements FilterDialogFra
         Log.d("START", " HERE");
         fragment = new SensorRecyclerViewFragment();
 
-        FragmentManager manager = getFragmentManager();
+        FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.frameLayout, fragment);
         transaction.commit();

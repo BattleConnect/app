@@ -1,8 +1,6 @@
 package com.cs495.battleelite.battleelite.holders.objects;
 
-import com.google.firebase.Timestamp;
-
-public class SensorData {
+public class SensorData implements java.io.Serializable {
     private Long Date_Time;
     private Double Lat;
     private Double Long;

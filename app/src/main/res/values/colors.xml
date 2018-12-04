@@ -8,6 +8,14 @@
     <color name="good">#B2FF59</color>
     <color name="bad">#D50000</color>
 
+    <color name="low_battery">#EC4141</color>
+    <color name="med_battery">#FDE85F</color>
+    <color name="high_battery">#5FBB4E</color>
+
+    <color name="bad_health">#EC4141</color>
+    <color name="good_health">#5FBB4E</color>
+
+
     <color name="alert_low">#FFF176</color>
     <color name="alert_medium">#FBC02D</color>
     <color name="alert_high">#F57C00</color>

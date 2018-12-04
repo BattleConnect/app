@@ -1,20 +1,14 @@
 package com.cs495.battleelite.battleelite;
 
-import android.app.Application;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.app.FragmentManager;
-import android.content.Context;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.cs495.battleelite.battleelite.fragments.SensorHistoryFragment;
 import com.cs495.battleelite.battleelite.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
@@ -51,7 +45,6 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         holder.Date_Time.setText("Last update: " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date(currentItem.getDate_Time())));
         holder.Lat.setText("Latitude: " + String.valueOf(currentItem.getLat()));
         holder.Long.setText("Longitude: " + String.valueOf(currentItem.getLong()));
-
 
 
         holder.Battery.setText(String.valueOf(currentItem.getBattery()) + "%");

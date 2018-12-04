@@ -1,11 +1,10 @@
 package com.cs495.battleelite.battleelite.fragments;
 
 import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;

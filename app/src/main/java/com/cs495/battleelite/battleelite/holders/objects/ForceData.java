@@ -1,6 +1,6 @@
 package com.cs495.battleelite.battleelite.holders.objects;
 
-public class ForceData {
+public class ForceData implements java.io.Serializable {
     private String ID;
     private Long Date_Time;
     private Double Lat;

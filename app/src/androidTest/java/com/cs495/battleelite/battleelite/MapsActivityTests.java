@@ -6,28 +6,20 @@ import android.support.annotation.NonNull;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
-
 import com.cs495.battleelite.battleelite.holders.objects.ForceData;
 import com.cs495.battleelite.battleelite.holders.objects.SensorData;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-
 import static android.support.constraint.Constraints.TAG;
 import static android.support.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static org.junit.Assert.assertEquals;
@@ -43,7 +35,6 @@ public class MapsActivityTests {
 
 
     boolean moveOn = false;
-    boolean result = false;
     //makes sure that the number of unique sensors in the database matches the number of sensors being displayed on the map
     @Test
     public void testNumberOfSensorsDisplayed() {
@@ -198,7 +189,7 @@ public class MapsActivityTests {
                                 forceTypeFilterTestSucceeded = false;
                         }
                     }
-                    completedSensorTypeFilter = true;
+                    completedForceTypeFilter = true;
                 }
             });
         }
@@ -206,7 +197,7 @@ public class MapsActivityTests {
 
         }
 
-        while (!completedSensorTypeFilter) {
+        while (!completedForceTypeFilter) {
             try {
                 Thread.sleep(1000);
             }
