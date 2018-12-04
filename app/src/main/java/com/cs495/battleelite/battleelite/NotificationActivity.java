@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 
-//import com.cs495.battleelite.battleelite.adapters.FilterAdapter;
+//import com.cs495.battleelite.battleelite.adapters.SensorAdapter;
 import com.cs495.battleelite.battleelite.adapters.NotificationAdapter;
 import com.cs495.battleelite.battleelite.fragments.NotificationFilterFragment;
 import com.cs495.battleelite.battleelite.responses.NotificationResponse;

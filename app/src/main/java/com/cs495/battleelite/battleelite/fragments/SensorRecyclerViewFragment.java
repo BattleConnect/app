@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import com.cs495.battleelite.battleelite.FilterAdapter;
+
+import com.cs495.battleelite.battleelite.adapters.SensorAdapter;
 import com.cs495.battleelite.battleelite.R;
 import com.cs495.battleelite.battleelite.responses.SensorResponse;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,8 +20,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 public class SensorRecyclerViewFragment extends Fragment {
@@ -39,7 +42,7 @@ public class SensorRecyclerViewFragment extends Fragment {
     boolean[] filterIndices;
     boolean[] otherFilterIndices;
     List<SensorResponse> sensorData = new ArrayList<>();
-    private FilterAdapter adapter;
+    private SensorAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,7 +138,7 @@ public class SensorRecyclerViewFragment extends Fragment {
                     response.add(addToList);
                 }
                 sensorData.addAll(response);
-                adapter = new FilterAdapter(SensorRecyclerViewFragment.this, sensorData);
+                adapter = new SensorAdapter(SensorRecyclerViewFragment.this, sensorData);
                 progressBar.setVisibility(View.GONE);
                 sensorList.setAdapter(adapter);
                 adapter.removeDuplicates();

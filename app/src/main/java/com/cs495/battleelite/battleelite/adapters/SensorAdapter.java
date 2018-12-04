@@ -1,4 +1,4 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleelite.battleelite.adapters;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -6,26 +6,40 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.cs495.battleelite.battleelite.R;
 import com.cs495.battleelite.battleelite.fragments.SensorHistoryFragment;
 import com.cs495.battleelite.battleelite.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleelite.battleelite.holders.SensorHolder;
 import com.cs495.battleelite.battleelite.responses.SensorResponse;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-
-public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
-
+/**
+ * The adapter for setting all the values for the sensor activity recycler view
+ */
+public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
+    private static final String TAG = "SensorAdapter";
+    private final String GOOD = "good";
+    private final String SENSOR_ID = "SENSOR_ID";
+    private final String NONE = "none";
     private List<SensorResponse> sensorList, filteredList, filteredListForSearch;
     private SensorRecyclerViewFragment mFragment;
 
-    public FilterAdapter(SensorRecyclerViewFragment fragment, List<SensorResponse> sensorList){
+    /**
+     * The constructor for the adapter for setting all the values for the sensor activity recycler view
+     * @param fragment
+     * @param sensorList
+     */
+    public SensorAdapter(SensorRecyclerViewFragment fragment, List<SensorResponse> sensorList){
         this.mFragment = fragment;
         this.sensorList = sensorList;
         this.filteredList = new ArrayList<>();
@@ -34,10 +48,13 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         this.filteredListForSearch.addAll(sensorList);
     }
 
+    /**
+     * Sets the visual elements values of each item in the sensor recycler view
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(SensorHolder holder, int position) {
-        //progressBar.setVisibility(View.GONE);
-
         //create sensor objects in list
         final SensorResponse currentItem = filteredList.get(position);
 
@@ -46,33 +63,46 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         holder.Lat.setText("Latitude: " + String.valueOf(currentItem.getLat()));
         holder.Long.setText("Longitude: " + String.valueOf(currentItem.getLong()));
 
-
         holder.Battery.setText(String.valueOf(currentItem.getBattery()) + "%");
+
+        //if the battery is below 20% show the user a red icon instead of a green one
         if(currentItem.getBattery() > 20) {
             holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
+
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
         }
         else {
             holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
+
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
         }
 
 
 
-        holder.SensorHealth.setText(currentItem.getSensorHealth());
-        if(currentItem.getSensorHealth().equalsIgnoreCase("GOOD")) {
+        holder.SensorHealth.setText("Health: " + currentItem.getSensorHealth());
+        //if the health is good show the user a green background if the health is bad show a red background
+        if(currentItem.getSensorHealth().equalsIgnoreCase(GOOD)) {
             holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
         }
         else {
             holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
         }
 
-        holder.Sensor_ID.setText(String.valueOf(currentItem.getSensor_ID()));
+        holder.Sensor_ID.setText("ID: " + String.valueOf(currentItem.getSensor_ID()));
         holder.Sensor_ID.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.id));
         holder.Sensor_Val.setText("Value: " + String.valueOf(currentItem.getSensor_Val()));
 
+        //display the sensor type's corresponding icon
         if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.asset))) {
             holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.diamond));
         } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.heartbeat))) {
-            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.pointer_heart));
+            //if heartrate sensor is 0 then show the dead heartrate icon instead of the regular heartrate icon.
+            if(currentItem.getSensor_Val() == 0) {
+                holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(), R.drawable.dead_heartrate));
+            }
+            else {
+                holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(), R.drawable.pointer_heart));
+            }
         } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.vibration))) {
             holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.vibration1));
         } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.moisture))) {
@@ -81,11 +111,12 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
             holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.thermometer));
         }
 
+        //setup on click for each item to launch it's sensor history
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putLong("SENSOR_ID", currentItem.getSensor_ID());
+                bundle.putLong(SENSOR_ID, currentItem.getSensor_ID());
                 SensorHistoryFragment fragment = new SensorHistoryFragment();
                 fragment.setArguments(bundle);
 
@@ -98,11 +129,21 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         });
     }
 
+    /**
+     * Returns the number of items in the recycler view
+     * @return
+     */
     @Override
     public int getItemCount() {
         return filteredList.size();
     }
 
+    /**
+     * Creates the recycler view and displays it on screen
+     * @param group
+     * @param i
+     * @return
+     */
     @Override
     public SensorHolder onCreateViewHolder(ViewGroup group, int i) {
         View view = LayoutInflater.from(group.getContext())
@@ -111,27 +152,33 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         return new SensorHolder(view);
     }
 
+    /**
+     * Filters the recyclerview content based on the filters selected
+     * @param filters
+     */
     public void filter(List<String> filters){
         filteredList.clear();
-        if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals("none")){
+
+        if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals(NONE)){
             filteredList = sensorList;
         }
+
         for(int i=0; i<sensorList.size(); i++) {
             for (int j = 0; j < filters.size(); j++) {
                 if(sensorList.get(i).getSensor_Type().equals(filters.get(j))){
                     filteredList.add(sensorList.get(i));
                 }
-                if(filters.get(j).equals("Heartbeat=0")){
-                    if(sensorList.get(i).getSensor_Type().equals("HeartRate") && sensorList.get(i).getSensor_Val() == 0){
+                if(filters.get(j).equals(mFragment.getString(R.string.heartbeat_zero))){
+                    if(sensorList.get(i).getSensor_Type().equals(mFragment.getString(R.string.heartbeat)) && sensorList.get(i).getSensor_Val() == 0){
                         filteredList.add(sensorList.get(i));
                     }
                 }
-                if(filters.get(j).equals("Tripped Vibration Sensor")){
-                    if(sensorList.get(i).getSensor_Type().equals("Vibration") && sensorList.get(i).getSensor_Val() > 0){
+                if(filters.get(j).equals(mFragment.getString(R.string.tripped_vibration))){
+                    if(sensorList.get(i).getSensor_Type().equals(mFragment.getString(R.string.vibration)) && sensorList.get(i).getSensor_Val() > 0){
                         filteredList.add(sensorList.get(i));
                     }
                 }
-                if(filters.get(j).equals("Dead Battery")){
+                if(filters.get(j).equals(mFragment.getString(R.string.dead_battery))){
                     if(sensorList.get(i).getBattery() == 0){
                         filteredList.add(sensorList.get(i));
                     }
@@ -144,6 +191,10 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         notifyDataSetChanged();
     }
 
+    /**
+     * Searches the items in the recycler view to find the corresponding item
+     * @param text
+     */
     public void search(String text){
         filteredList.clear();
 
@@ -171,6 +222,9 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         filteredList.set(j, temp);
     }
 
+    /**
+     * Removes duplicate items from the list with the same ID
+     */
     public void removeDuplicates(){//takes 1st thing, compares to rest, if id match, check date, swap if needed then delete second item
 
         for(int i=0; i<filteredList.size(); i++) {
@@ -178,19 +232,19 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
             for(int j = i + 1; j < filteredList.size(); j++) {
                 long xID = x.getSensor_ID(); long tempID = filteredList.get(j).getSensor_ID();
                 if(xID == tempID) {
-                   long xDT = x.getDate_Time(); long tempDT = filteredList.get(j).getDate_Time();
+                    long xDT = x.getDate_Time(); long tempDT = filteredList.get(j).getDate_Time();
 
-                   try {
-                       if (xDT > tempDT) {
-                           filteredList.remove(j);
-                       } else {
-                           swap(i, j);
-                           filteredList.remove(j);
-                       }
-                   } catch (Exception e) {
-                       //Toast.makeText(null,e.getMessage(),Toast.LENGTH_LONG).show();
-                   }
-                   j--;//if match, it deletes the element and put another in its place, so need to check that one too dy decrementing, which the loop will increment, re evaluating the same index
+                    try {
+                        if (xDT > tempDT) {
+                            filteredList.remove(j);
+                        } else {
+                            swap(i, j);
+                            filteredList.remove(j);
+                        }
+                    } catch (Exception e) {
+                        Log.d(TAG, e.getMessage());
+                    }
+                    j--;//if match, it deletes the element and put another in its place, so need to check that one too dy decrementing, which the loop will increment, re evaluating the same index
                 }
             }
         }
@@ -198,6 +252,10 @@ public class FilterAdapter extends RecyclerView.Adapter<SensorHolder>  {
         notifyDataSetChanged();
     }
 
+    /**
+     * Returns the list of items in the recyclerview that match the filter selected
+     * @return
+     */
     public List<SensorResponse> getFilteredList(){
         return filteredList;
     }
