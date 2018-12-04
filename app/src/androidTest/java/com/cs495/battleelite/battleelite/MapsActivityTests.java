@@ -208,5 +208,159 @@ public class MapsActivityTests {
         assert(forceTypeFilterTestSucceeded);
     }
 
+    @Test
+    public void testForceViewToggle() {
+        try {
+            Thread.sleep(10000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        final List<String> toggleFilter = new ArrayList<>();
+        toggleFilter.add(String.valueOf(R.string.forces));
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivityRule.getActivity().toggleData(toggleFilter);
+                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            forceTypeFilterTestSucceeded = true;
+                        }
+                        else {
+                            forceTypeFilterTestSucceeded = false;
+                        }
+                    }
+                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            forceTypeFilterTestSucceeded = false;
+                        }
+                        else {
+                            forceTypeFilterTestSucceeded = true;
+                        }
+                    }
+                    completedSensorTypeFilter = true;
+                }
+            });
+        }
+        catch (Throwable t) {
+
+        }
+
+        while (!completedSensorTypeFilter) {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("not good");
+            }
+        }
+        assert(forceTypeFilterTestSucceeded);
+    }
+
+    @Test
+    public void testSensorViewToggle() {
+        try {
+            Thread.sleep(10000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        final List<String> toggleFilter = new ArrayList<>();
+        toggleFilter.add(String.valueOf(R.string.sensors));
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivityRule.getActivity().toggleData(toggleFilter);
+                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            forceTypeFilterTestSucceeded = false;
+                        }
+                        else {
+                            forceTypeFilterTestSucceeded = true;
+                        }
+                    }
+                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            forceTypeFilterTestSucceeded = true;
+                        }
+                        else {
+                            forceTypeFilterTestSucceeded = false;
+                        }
+                    }
+                    completedSensorTypeFilter = true;
+                }
+            });
+        }
+        catch (Throwable t) {
+
+        }
+
+        while (!completedSensorTypeFilter) {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("not good");
+            }
+        }
+        assert(forceTypeFilterTestSucceeded);
+    }
+
+    @Test
+    public void testForceAndSensorViewToggle() {
+        try {
+            Thread.sleep(10000);
+        }
+        catch (Exception e) {
+            System.out.println("not good");
+        }
+
+        final List<String> toggleFilter = new ArrayList<>();
+        toggleFilter.add(String.valueOf(R.string.forces));
+        toggleFilter.add(String.valueOf(R.string.sensors));
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivityRule.getActivity().toggleData(toggleFilter);
+                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            forceTypeFilterTestSucceeded = true;
+                        }
+                        else {
+                            forceTypeFilterTestSucceeded = false;
+                        }
+                    }
+                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                        if (marker.isVisible()) {
+                            forceTypeFilterTestSucceeded = true;
+                        }
+                        else {
+                            forceTypeFilterTestSucceeded = false;
+                        }
+                    }
+                    completedSensorTypeFilter = true;
+                }
+            });
+        }
+        catch (Throwable t) {
+
+        }
+
+        while (!completedSensorTypeFilter) {
+            try {
+                Thread.sleep(1000);
+            }
+            catch (Exception e) {
+                System.out.println("not good");
+            }
+        }
+        assert(forceTypeFilterTestSucceeded);
+    }
+
 
 }
