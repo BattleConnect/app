@@ -48,6 +48,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
         this.filteredListForSearch.addAll(sensorList);
     }
 
+
     /**
      * Sets the visual elements values of each item in the sensor recycler view
      * @param holder
