@@ -1,12 +1,11 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleconnect;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
 
-import com.cs495.battleelite.battleelite.adapters.NotificationAdapter;
-import com.cs495.battleelite.battleelite.responses.NotificationResponse;
+import com.cs495.battleconnect.adapters.NotificationAdapter;
+import com.cs495.battleconnect.responses.NotificationResponse;
 
 
 import org.junit.Before;
@@ -16,7 +15,6 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)

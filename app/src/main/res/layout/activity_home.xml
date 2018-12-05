@@ -37,27 +37,27 @@
                 android:layout_weight="0.5"
                 android:orientation="vertical">
 
-                <com.cs495.battleelite.battleelite.SquareButton
+                <com.cs495.battleconnect.UI.SquareButton
                     android:id="@+id/view_button"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#86C745"
+                    android:background="#5FBB4E "
                     android:text="Explore Sensor Data"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
 
-                <com.cs495.battleelite.battleelite.SquareButton
+                <com.cs495.battleconnect.UI.SquareButton
                     android:id="@+id/input_button"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#A436A5"
+                    android:background="#632E86 "
                     android:text="Report Info"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
@@ -71,27 +71,27 @@
                 android:layout_weight=".5"
                 android:orientation="vertical">
 
-                <com.cs495.battleelite.battleelite.SquareButton
+                <com.cs495.battleconnect.UI.SquareButton
                     android:id="@+id/alerts_button"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#F2612A"
+                    android:background="#EF7135"
                     android:text="View Alerts"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
 
-                <com.cs495.battleelite.battleelite.SquareButton
+                <com.cs495.battleconnect.UI.SquareButton
                     android:id="@+id/soldier_button"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#008DDE"
+                    android:background="#1B98D1"
                     android:text="Explore Force Data"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
@@ -112,11 +112,11 @@
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <com.cs495.battleelite.battleelite.RectangleButton
+            <com.cs495.battleconnect.UI.RectangleButton
                 android:id="@+id/map_button"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="#FF0000"
+                android:background="#EC4141 "
                 android:orientation="horizontal"
                 android:text="View Map"
                 android:textAllCaps="false"

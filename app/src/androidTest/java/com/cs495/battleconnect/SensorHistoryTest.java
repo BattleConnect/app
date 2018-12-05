@@ -1,24 +1,22 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleconnect;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
-import android.view.View;
 
-import com.cs495.battleelite.battleelite.holders.objects.SensorData;
+import com.cs495.battleconnect.R;
+import com.cs495.battleconnect.activities.SensorActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +56,7 @@ public class SensorHistoryTest {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    onView(withId(R.id.sensor_list))
+                                    onView(ViewMatchers.withId(R.id.sensor_list))
                                             .perform(scrollTo(), RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
                                     onView(withId(R.id.graph)).check(matches(isDisplayed()));

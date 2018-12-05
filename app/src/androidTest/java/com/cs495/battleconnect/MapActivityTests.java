@@ -1,4 +1,4 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleconnect;
 
 import android.animation.ValueAnimator;
 import android.os.Handler;
@@ -6,8 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
-import com.cs495.battleelite.battleelite.holders.objects.ForceData;
-import com.cs495.battleelite.battleelite.holders.objects.SensorData;
+
+import com.cs495.battleconnect.R;
+import com.cs495.battleconnect.activities.MapActivity;
+import com.cs495.battleconnect.holders.objects.ForceData;
+import com.cs495.battleconnect.holders.objects.SensorData;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,7 +28,7 @@ import static android.support.test.internal.runner.junit4.statement.UiThreadStat
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class MapsActivityTests {
+public class MapActivityTests {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 

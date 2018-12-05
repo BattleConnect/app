@@ -1,4 +1,4 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleconnect;
 
 import org.junit.Test;
 

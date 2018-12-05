@@ -1,7 +1,7 @@
 <resources>
     <string name="search">Search</string>
 
-    <string name="app_name">BattleElite</string>
+    <string name="app_name">BattleConnect</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_sensor">SensorActivity</string>
 
@@ -12,7 +12,7 @@
     <string name="filterNegative">Cancel</string>
 
     <string name="sensor_type">Sensor Type</string>
-    <string name="none">none</string>
+    <string name="none">NONE</string>
     <string name="asset">Asset</string>
     <string name="heartbeat">HeartRate</string>
     <string name="vibration">Vibration</string>

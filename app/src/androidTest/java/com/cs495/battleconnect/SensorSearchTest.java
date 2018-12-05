@@ -1,12 +1,10 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleconnect;
 
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
-import com.cs495.battleelite.battleelite.FilterAdapter;
-import com.cs495.battleelite.battleelite.fragments.SensorRecyclerViewFragment;
-import com.cs495.battleelite.battleelite.holders.SensorHolder;
-import com.cs495.battleelite.battleelite.responses.SensorResponse;
+import com.cs495.battleconnect.FilterAdapter;
+import com.cs495.battleconnect.fragments.SensorRecyclerViewFragment;
+import com.cs495.battleconnect.responses.SensorResponse;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +13,8 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 @RunWith(AndroidJUnit4.class)
-public class SensorFilterTest {
+public class SensorSearchTest {
     SensorRecyclerViewFragment fragment;
     List<SensorResponse> sensorList = new ArrayList();
     List<String> filterList = new ArrayList();
@@ -42,48 +38,18 @@ public class SensorFilterTest {
 
     }
 
+    //the 5 tests verify that when a valid sensor type is searched for, only the items with that sensor type occur in the list
 
-    //sets up list with one heartrate sensor with a zero value and ensures it is the only thing left in the filtered list
-    @Test
-    public void testHeartBeatZero(){
-        filterList.add("Heartbeat=0");
-        adapter.filter(filterList);
-        assertEquals(1, adapter.getFilteredList().size());
-        assertEquals((int)adapter.getFilteredList().get(0).getSensor_Val(), 0);
-    }
-
-    //sets up list with one tripped vibration w/ value 10 and ensures it is the last thing in the filtered list
-    @Test
-    public void testTrippedVibration(){
-        filterList.add("Tripped Vibration Sensor");
-        adapter.filter(filterList);
-        assertEquals(1, adapter.getFilteredList().size());
-        assertEquals((int)adapter.getFilteredList().get(0).getSensor_Val(), 10);
-    }
-
-    //tests that the only sensor with a dead battery is left in filtered list
-    @Test
-    public void testDeadBattery(){
-        filterList.add("Dead Battery");
-        adapter.filter(filterList);
-        assertEquals(1, adapter.getFilteredList().size());
-        assertEquals((int)adapter.getFilteredList().get(0).getBattery(), 0);
-    }
-
-
-    //the next 5 tests test that when the list is filtered by sensor type, only the sensor type being filtered on appears in the list
     @Test
     public void testHeartRate(){
-        filterList.add("HeartRate");
-        adapter.filter(filterList);
+        adapter.search("HeartRate");
         assertEquals(1, adapter.getFilteredList().size());
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "HeartRate");
     }
 
     @Test
     public void testVibration(){
-        filterList.add("Vibration");
-        adapter.filter(filterList);
+        adapter.search("Vibration");
         assertEquals(2, adapter.getFilteredList().size());
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Vibration");
         assertEquals(adapter.getFilteredList().get(1).getSensor_Type(), "Vibration");
@@ -91,8 +57,7 @@ public class SensorFilterTest {
 
     @Test
     public void testMoisture(){
-        filterList.add("Moisture");
-        adapter.filter(filterList);
+        adapter.search("Moisture");
         assertEquals(3, adapter.getFilteredList().size());
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Moisture");
         assertEquals(adapter.getFilteredList().get(1).getSensor_Type(), "Moisture");
@@ -101,8 +66,7 @@ public class SensorFilterTest {
 
     @Test
     public void testAsset(){
-        filterList.add("Asset");
-        adapter.filter(filterList);
+        adapter.search("Asset");
         assertEquals(2, adapter.getFilteredList().size());
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Asset");
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Asset");
@@ -111,8 +75,7 @@ public class SensorFilterTest {
 
     @Test
     public void testTemp(){
-        filterList.add("Temp");
-        adapter.filter(filterList);
+        adapter.search("Temp");
         assertEquals(1, adapter.getFilteredList().size());
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "Temp");
     }

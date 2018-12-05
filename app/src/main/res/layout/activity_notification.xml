@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@color/cardview_light_background"
-    tools:context=".NotificationActivity">
+    tools:context=".activities.NotificationActivity">
 
     <ProgressBar
         android:id="@+id/progress_bar"

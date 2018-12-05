@@ -6,7 +6,7 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:padding="16dp"
 android:background="@color/cardview_light_background"
-tools:context=".SensorActivity">
+tools:context=".activities.SensorActivity">
 
 <ProgressBar
     android:id="@+id/progress_bar"

@@ -1,8 +1,12 @@
-package com.cs495.battleelite.battleelite;
+package com.cs495.battleconnect;
 
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
+
+import com.cs495.battleconnect.R;
+import com.cs495.battleconnect.activities.HomeActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,7 +33,7 @@ public class OpenActivity {
 
     @Test
     public void openSensorActivity() {
-        onView(withId(R.id.view_button)).perform(click());
+        onView(ViewMatchers.withId(R.id.view_button)).perform(click());
         onView(withId(R.id.sensor_list)).check(matches(isDisplayed()));
     }
 
