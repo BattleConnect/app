@@ -14,7 +14,6 @@ import android.widget.SearchView;
 import com.cs495.battleelite.battleelite.adapters.ForcesAdapter;
 import com.cs495.battleelite.battleelite.R;
 import com.cs495.battleelite.battleelite.responses.ForceResponse;
-import com.cs495.battleelite.battleelite.responses.SensorResponse;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -142,16 +141,14 @@ public class ForcesRecyclerViewFragment extends Fragment {
                         response.add(addToList);
                     }
                     catch (Exception ee){
-
                         Log.i(TAG,"" + ee);
-
                     }
                 }
                 ForceData.addAll(response);
                 adapter = new ForcesAdapter( ForcesRecyclerViewFragment.this, ForceData);
                 progressBar.setVisibility(View.GONE);
                 forceList.setAdapter(adapter);
-               // adapter.removeDuplicates();
+
                 configureSearch();
             }
         });

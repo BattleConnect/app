@@ -11,13 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cs495.battleelite.battleelite.R;
-import com.cs495.battleelite.battleelite.fragments.SensorHistoryFragment;
+
 import com.cs495.battleelite.battleelite.fragments.ForcesRecyclerViewFragment;
 import com.cs495.battleelite.battleelite.holders.ForceHolder;
 import com.cs495.battleelite.battleelite.holders.ForceHolder;
-import com.cs495.battleelite.battleelite.holders.SensorHolder;
+
 import com.cs495.battleelite.battleelite.responses.ForceResponse;
-import com.cs495.battleelite.battleelite.responses.SensorResponse;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,29 +65,24 @@ public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
         holder.name.setText(currentItem.getForce_Name());
 
 
-        holder.Force_ID.setText("ID: " + String.valueOf(currentItem.getForce_ID()));
+        holder.Force_ID.setText(String.valueOf(currentItem.getForce_ID()));
         //holder.Force_ID.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.id));
-        holder.Force_Status.setText("Value: " + String.valueOf(currentItem.getForce_Status()));
+        holder.Force_Status.setText( String.valueOf(currentItem.getForce_Status()));
         //holder.Force_Type.setImageDrawable();
 
         //display the sensor type's corresponding icon
-       /* if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.asset))) {
-            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.diamond));
-        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.heartbeat))) {
-            //if heartrate sensor is 0 then show the dead heartrate icon instead of the regular heartrate icon.
-            if(currentItem.getSensor_Val() == 0) {
-                holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(), R.drawable.dead_heartrate));
-            }
-            else {
-                holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(), R.drawable.pointer_heart));
-            }
-        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.vibration))) {
-            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.vibration1));
-        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.moisture))) {
-            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.water_drop));
-        } else if(currentItem.getSensor_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.temperature))) {
-            holder.Sensor_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.thermometer));
-        }*/
+        if(currentItem.getForce_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.company))) {
+            holder.Force_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.company_hq));
+        }
+        else if(currentItem.getForce_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.platoon))) {
+                holder.Force_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(), R.drawable.platoon));
+        } else if(currentItem.getForce_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.squad))) {
+            holder.Force_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.squad));
+        } else if(currentItem.getForce_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.target))) {
+            holder.Force_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.target));
+        } else if(currentItem.getForce_Type().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.enemy))) {
+            holder.Force_Type.setImageDrawable(ContextCompat.getDrawable(mFragment.getActivity().getApplication(),R.drawable.enemy_unit));
+        }
 
     }
 

@@ -64,7 +64,7 @@ public class ForceResponse {
         return status;
     }
 
-    public void setSensor_Val(String status) { this.status = status; }
+    public void setForce_Status(String status) { this.status = status; }
 
     public String getForce_Type() { return Force_Type; }
 
