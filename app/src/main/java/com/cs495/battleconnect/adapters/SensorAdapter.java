@@ -76,15 +76,20 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
         holder.Battery.setText(String.valueOf(currentItem.getBattery()) + "%");
 
         //if the battery is below 20% show the user a red icon instead of a green one
-        if(currentItem.getBattery() > 20) {
-            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
+        if(currentItem.getBattery() <= 5) {
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.low_battery));
 
-            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.low_battery));
+        }
+        else if (currentItem.getBattery() <= 20) {
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.med_battery));
+
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.med_battery));
         }
         else {
-            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.high_battery));
 
-            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.high_battery));
         }
 
 

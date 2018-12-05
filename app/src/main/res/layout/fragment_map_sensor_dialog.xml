@@ -181,13 +181,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:textStyle="bold"
+                <ImageView
+                    android:id="@+id/bat_icon"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Battery: " />
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/back"
+                    android:src="@drawable/baseline_battery_charging_full_black_18dp" />
+
+                <!--<TextView-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:ellipsize="end"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:text="Battery: " />-->
 
                 <TextView
                     android:id="@+id/battery"

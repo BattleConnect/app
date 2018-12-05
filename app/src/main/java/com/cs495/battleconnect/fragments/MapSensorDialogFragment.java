@@ -117,12 +117,18 @@ public class MapSensorDialogFragment extends DialogFragment {
         batteryTextView.setText(mSensorData.getBattery() + "%");
 
         LinearLayout batteryWrapper = getView().findViewById(R.id.battery_wrapper);
-        if (mSensorData.getBattery() <= 5)
+
+        ImageView batteryIcon = getView().findViewById(R.id.bat_icon);
+        if (mSensorData.getBattery() <= 5) {
             batteryWrapper.setBackgroundResource(R.color.low_battery);
-        else if (mSensorData.getBattery() <= 20)
+            batteryIcon.setBackgroundColor(getResources().getColor(R.color.low_battery));
+        } else if (mSensorData.getBattery() <= 20) {
             batteryWrapper.setBackgroundResource(R.color.med_battery);
-        else
+            batteryIcon.setBackgroundColor(getResources().getColor(R.color.med_battery));
+        } else {
             batteryWrapper.setBackgroundResource(R.color.high_battery);
+            batteryIcon.setBackgroundColor(getResources().getColor(R.color.high_battery));
+        }
     }
 
 
