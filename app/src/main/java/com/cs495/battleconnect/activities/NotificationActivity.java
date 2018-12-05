@@ -10,7 +10,7 @@ import com.cs495.battleconnect.R;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import com.cs495.battleconnect.adapters.NotificationAdapter;
-import com.cs495.battleconnect.fragments.NotificationFilterFragment;
+import com.cs495.battleconnect.fragments.NotificationFilterDialogFragment;
 import com.cs495.battleconnect.responses.NotificationResponse;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class NotificationActivity extends AppCompatActivity implements NotificationFilterFragment.NotificationFilterFragmentListener {
+public class NotificationActivity extends AppCompatActivity implements NotificationFilterDialogFragment.NotificationFilterFragmentListener {
     private static final String TAG = "NotificationActivity";
     private static final String NOTIFICATIONS = "notifications";
 
@@ -119,8 +119,8 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationFilterFragment filter = NotificationFilterFragment.newInstance(selectedSpinnerPosition);
-                filter.show(getFragmentManager(), "NotificationFilterFragment");
+                NotificationFilterDialogFragment filter = NotificationFilterDialogFragment.newInstance(selectedSpinnerPosition);
+                filter.show(getFragmentManager(), "NotificationFilterDialogFragment");
 
             }
 

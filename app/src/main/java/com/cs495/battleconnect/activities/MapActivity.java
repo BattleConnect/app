@@ -49,6 +49,7 @@ import org.javatuples.Triplet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
 
@@ -64,15 +65,64 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     BiMap<Long, Marker> sensorIdToMarker = HashBiMap.create();
     BiMap<Long, SensorMarker> sensorIdToSensorMarker = HashBiMap.create();
 
+    public SensorData getSensorData(long sensorId) {
+        return sensorIdToSensorData.get(sensorId);
+    }
+    public long getSensorId(SensorData sensorData) {
+        return sensorIdToSensorData.inverse().get(sensorData);
+    }
+
+    public Marker getMarker(long sensorId) {
+        return sensorIdToMarker.get(sensorId);
+    }
+    public long getSensorId(Marker marker) {
+        return sensorIdToMarker.inverse().get(marker);
+    }
+    public Set<Marker> getSensorMarkers() {
+        return sensorIdToMarker.values();
+    }
+
+    public SensorMarker getSensorMarker(long sensorId) {
+        return sensorIdToSensorMarker.get(sensorId);
+    }
+    public long getSensorId(SensorMarker sensorMarker) {
+        return sensorIdToSensorMarker.inverse().get(sensorMarker);
+    }
+
     BiMap<String, ForceData> forceIdToForceData = HashBiMap.create();
     BiMap<String, Marker> forceIdToMarker = HashBiMap.create();
     BiMap<String, ForceMarker> forceIdToForceMarker = HashBiMap.create();
 
-    Map<String, BitmapDescriptor> sensorIcons = new HashMap<>();
-    Map<String, BitmapDescriptor> forceIcons = new HashMap<>();
+    public ForceData getForceData(String forceId) {
+        return forceIdToForceData.get(forceId);
+    }
+    public String getForceId(ForceData forceData) {
+        return forceIdToForceData.inverse().get(forceData);
+    }
+
+    public Marker getMarker(String forceId) {
+        return forceIdToMarker.get(forceId);
+    }
+    public String getForceId(Marker marker) {
+        return forceIdToMarker.inverse().get(marker);
+    }
+    public Set<Marker> getForceMarkers() {
+        return forceIdToMarker.values();
+    }
+
+    public ForceMarker getForceMarker(String forceId) {
+        return forceIdToForceMarker.get(forceId);
+    }
+    public String getForceId(ForceMarker forceMarker) {
+        return forceIdToForceMarker.inverse().get(forceMarker);
+    }
 
     //Keeps tracks of animators associated with markers, if any. Tripped vibration sensors shake for example.
     Map<Marker, ValueAnimator> markerToAnimator = new HashMap();
+
+    public ValueAnimator getAnimator(Marker marker) {
+        return markerToAnimator.get(marker);
+    }
 
     private static final String NONE = "none";
     boolean[] toggleFilterIndices;
@@ -122,7 +172,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if(filters.size() != 0) toggleData(filters);
     }
 
-    void toggleData(List<String> toggles) {
+    public void toggleData(List<String> toggles) {
         if(toggles.contains(getResources().getString(R.string.forces))) {
             for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
                 ForceMarker forceMarker = entry.getValue();
@@ -154,7 +204,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if(filters.size() != 0) filterForces(filters);
     }
 
-    void filterForces(List<String> forceFilter) {
+    public void filterForces(List<String> forceFilter) {
         for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
 
@@ -180,7 +230,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if(filters.size() != 0) filterSensors(filters);
     }
 
-     void filterSensors(List<String> sensorFilter) {
+     public void filterSensors(List<String> sensorFilter) {
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 
@@ -194,9 +244,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 sensorMarker.getMarker().setVisible(false);
             }
 
-//            if(sensorFilter.size() == 0) {
-//                sensorMarker.getMarker().setVisible(true);
-//            }
+    //            if(sensorFilter.size() == 0) {
+    //                sensorMarker.getMarker().setVisible(true);
+    //            }
         }
     }
 
@@ -298,7 +348,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
-        getSensorData(null);
+        getSensorDataFromFirestore(null);
         getForceData(null);
         addUserLocation(googleMap);
 
@@ -579,7 +629,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
 
-    void getSensorData(final String sensorFilter) {
+    void getSensorDataFromFirestore(final String sensorFilter) {
         db.collection("sensors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -607,7 +657,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         });
     }
 
-    void getForceData(final String forceFilter) {
+    void getForceDataFromFirestore(final String forceFilter) {
         db.collection("forces").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

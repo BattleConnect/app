@@ -13,11 +13,11 @@ import android.widget.Spinner;
 
 import com.cs495.battleconnect.R;
 
-public class NotificationFilterFragment extends DialogFragment {
-    NotificationFilterFragment.NotificationFilterFragmentListener mListener;
+public class NotificationFilterDialogFragment extends DialogFragment {
+    NotificationFilterDialogFragment.NotificationFilterFragmentListener mListener;
 
-    public static NotificationFilterFragment newInstance(int position){
-        NotificationFilterFragment f = new NotificationFilterFragment();
+    public static NotificationFilterDialogFragment newInstance(int position){
+        NotificationFilterDialogFragment f = new NotificationFilterDialogFragment();
         Bundle args = new Bundle();
         args.putInt("selectedPosition", position);
         f.setArguments(args);
@@ -71,7 +71,7 @@ public class NotificationFilterFragment extends DialogFragment {
         public void onAttach(Context context){
             super.onAttach(context);
             try{
-                mListener = (NotificationFilterFragment.NotificationFilterFragmentListener) context;
+                mListener = (NotificationFilterDialogFragment.NotificationFilterFragmentListener) context;
             } catch (ClassCastException e){
                 throw new ClassCastException(getActivity().toString() + " must implement FilterDialogFragmentListener");
             }

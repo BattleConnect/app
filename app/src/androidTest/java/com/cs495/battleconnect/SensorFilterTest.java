@@ -2,7 +2,7 @@ package com.cs495.battleconnect;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.cs495.battleconnect.FilterAdapter;
+import com.cs495.battleconnect.adapters.SensorAdapter;
 import com.cs495.battleconnect.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleconnect.responses.SensorResponse;
 
@@ -20,7 +20,7 @@ public class SensorFilterTest {
     SensorRecyclerViewFragment fragment;
     List<SensorResponse> sensorList = new ArrayList();
     List<String> filterList = new ArrayList();
-    FilterAdapter adapter;
+    SensorAdapter adapter;
 
     @Before
     public void setUp(){
@@ -36,7 +36,7 @@ public class SensorFilterTest {
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 10, "Good", 383741, "Moisture", 63));
         sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Fair", 456742, "Asset", 77));
 
-        adapter = new FilterAdapter(fragment, sensorList);
+        adapter = new SensorAdapter(fragment, sensorList);
 
     }
 

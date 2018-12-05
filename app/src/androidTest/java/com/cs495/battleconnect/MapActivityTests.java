@@ -7,7 +7,6 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.cs495.battleconnect.R;
 import com.cs495.battleconnect.activities.MapActivity;
 import com.cs495.battleconnect.holders.objects.ForceData;
 import com.cs495.battleconnect.holders.objects.SensorData;
@@ -100,8 +99,8 @@ public class MapActivityTests {
             System.out.println("not good");
         }
 
-        Marker marker = mActivityRule.getActivity().sensorMarkerList.get(sensorData.getSensor_ID());
-        ValueAnimator valueAnimator = mActivityRule.getActivity().animatedSensorList.get(marker);
+        Marker marker = mActivityRule.getActivity().getMarker(sensorData.getSensor_ID());
+        ValueAnimator valueAnimator = mActivityRule.getActivity().getAnimator(marker);
         assert(valueAnimator != null);
         assert(valueAnimator.isRunning());
     }
@@ -126,16 +125,16 @@ public class MapActivityTests {
                 @Override
                 public void run() {
                     mActivityRule.getActivity().filterSensors(sensorTypeFilter);
-                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getSensorMarkers()) {
                         if (marker.isVisible()) {
-                            long sensorId = mActivityRule.getActivity().sensorMarkerList.inverse().get(marker);
-                            SensorData sensorData = mActivityRule.getActivity().sensorDataList.get(sensorId);
+                            long sensorId = mActivityRule.getActivity().getSensorId(marker);
+                            SensorData sensorData = mActivityRule.getActivity().getSensorData(sensorId);
                             if(sensorData.getSensor_Type() == "HeartRate" || sensorData.getSensor_Type() == "Vibration")
                                 sensorTypeFilterTestSucceeded = false;
                         }
                         else {
-                            long sensorId = mActivityRule.getActivity().sensorMarkerList.inverse().get(marker);
-                            SensorData sensorData = mActivityRule.getActivity().sensorDataList.get(sensorId);
+                            long sensorId = mActivityRule.getActivity().getSensorId(marker);
+                            SensorData sensorData = mActivityRule.getActivity().getSensorData(sensorId);
                             if (sensorData.getSensor_Type() != "HeartRate" && sensorData.getSensor_Type() != "Vibration")
                                 sensorTypeFilterTestSucceeded = false;
                         }
@@ -178,16 +177,16 @@ public class MapActivityTests {
                 @Override
                 public void run() {
                     mActivityRule.getActivity().filterForces(forceTypeFilter);
-                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getForceMarkers()) {
                         if (marker.isVisible()) {
-                            String forceId = mActivityRule.getActivity().forceMarkerList.inverse().get(marker);
-                            ForceData forceData = mActivityRule.getActivity().forceDataList.get(forceId);
+                            String forceId = mActivityRule.getActivity().getForceId(marker);
+                            ForceData forceData = mActivityRule.getActivity().getForceData(forceId);
                             if(forceData.getType() == "Squad")
                                 forceTypeFilterTestSucceeded = false;
                         }
                         else {
-                            String forceId = mActivityRule.getActivity().forceMarkerList.inverse().get(marker);
-                            ForceData forceData = mActivityRule.getActivity().forceDataList.get(forceId);
+                            String forceId = mActivityRule.getActivity().getForceId(marker);
+                            ForceData forceData = mActivityRule.getActivity().getForceData(forceId);
                             if (forceData.getType() != "Squad")
                                 forceTypeFilterTestSucceeded = false;
                         }
@@ -227,7 +226,7 @@ public class MapActivityTests {
                 @Override
                 public void run() {
                     mActivityRule.getActivity().toggleData(toggleFilter);
-                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getForceMarkers()) {
                         if (marker.isVisible()) {
                             forceTypeFilterTestSucceeded = true;
                         }
@@ -235,7 +234,7 @@ public class MapActivityTests {
                             forceTypeFilterTestSucceeded = false;
                         }
                     }
-                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getSensorMarkers()) {
                         if (marker.isVisible()) {
                             forceTypeFilterTestSucceeded = false;
                         }
@@ -278,7 +277,7 @@ public class MapActivityTests {
                 @Override
                 public void run() {
                     mActivityRule.getActivity().toggleData(toggleFilter);
-                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getForceMarkers()) {
                         if (marker.isVisible()) {
                             forceTypeFilterTestSucceeded = false;
                         }
@@ -286,7 +285,7 @@ public class MapActivityTests {
                             forceTypeFilterTestSucceeded = true;
                         }
                     }
-                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getSensorMarkers()) {
                         if (marker.isVisible()) {
                             forceTypeFilterTestSucceeded = true;
                         }
@@ -330,7 +329,7 @@ public class MapActivityTests {
                 @Override
                 public void run() {
                     mActivityRule.getActivity().toggleData(toggleFilter);
-                    for (Marker marker : mActivityRule.getActivity().forceMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getForceMarkers()) {
                         if (marker.isVisible()) {
                             forceTypeFilterTestSucceeded = true;
                         }
@@ -338,7 +337,7 @@ public class MapActivityTests {
                             forceTypeFilterTestSucceeded = false;
                         }
                     }
-                    for (Marker marker : mActivityRule.getActivity().sensorMarkerList.values()) {
+                    for (Marker marker : mActivityRule.getActivity().getSensorMarkers()) {
                         if (marker.isVisible()) {
                             forceTypeFilterTestSucceeded = true;
                         }
