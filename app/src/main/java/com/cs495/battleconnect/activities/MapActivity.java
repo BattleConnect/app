@@ -17,6 +17,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+
 import com.cs495.battleconnect.R;
 import com.cs495.battleconnect.fragments.MapFilterFragment;
 import com.cs495.battleconnect.fragments.MapForceDialogFragment;
@@ -56,6 +58,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
     private GoogleMap mMap;
+    View mapView;
     LatLngBounds.Builder boundsBuilder;
     LatLngBounds bounds = null;
     private SupportMapFragment mMapFragment;
@@ -353,6 +356,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         getForceDataFromFirestore(null);
         addUserLocation(googleMap);
 
+        mapView = mMapFragment.getView();
+        //place current location button in top left corner
+        if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
+            View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                    locationButton.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP,0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,RelativeLayout.TRUE);
+            layoutParams.setMargins(0,0,30,30);
+        }
+
+        //show loading dialog
         final ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.setMessage("Retrieving data. Please wait...");
@@ -360,12 +375,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
+        //every 1 second, check if there is enough points to zoom in on. give up after 5 seconds.
         final Handler handler = new Handler();
         final long startTime = System.currentTimeMillis();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //have enough markers on the map to move the camera
+                //check if there is enough markers on the map to zoom in on
                 if (sensorIdToMarker.size() + forceIdToMarker.size() >= 10) {
                     try {
                         bounds = boundsBuilder.build();
@@ -382,7 +398,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     if (System.currentTimeMillis() - startTime < 5000) {
                         handler.postDelayed(this, 1000);
                     }
-                    //give up trying to get enough data points to center the camera around after
                     else {
                         System.out.println("not enough sensors on map to determine camera boundsBuilder");
                         dialog.dismiss();
@@ -714,7 +729,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
                         PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
-            map.getUiSettings().setMyLocationButtonEnabled(false);
+            map.getUiSettings().setMyLocationButtonEnabled(true);
         } else {
             ActivityCompat.requestPermissions(this, new String[] {
                             Manifest.permission.ACCESS_FINE_LOCATION,
