@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/sensor_list"
+        android:id="@+id/force_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="#00000000"
@@ -23,7 +23,7 @@
         />
 
     <SearchView
-        android:id="@+id/sensor_search"
+        android:id="@+id/force_search"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:queryHint="@string/search"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-    android:text="@string/filterButton" />
+        android:text="@string/filterButton" />
 
 
 </RelativeLayout>

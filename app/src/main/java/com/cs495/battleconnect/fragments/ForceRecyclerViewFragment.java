@@ -49,10 +49,10 @@ public class ForceRecyclerViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         // Defines the xml file for the fragment
-        view =  inflater.inflate(R.layout.fragment_sensor_recycler_view, container, false);
+        view =  inflater.inflate(R.layout.fragment_force_recycler_view, container, false);
         progressBar = view.findViewById(R.id.progress_bar);
-        forceList = view.findViewById(R.id.sensor_list);
-        forceSearch = view.findViewById(R.id.sensor_search);
+        forceList = view.findViewById(R.id.force_list);
+        forceSearch = view.findViewById(R.id.force_search);
 
         init();
 
