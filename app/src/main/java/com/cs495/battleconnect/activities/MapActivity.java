@@ -44,14 +44,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.javatuples.Triplet;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
 
-    private static final String NONE = "none";
+
     private GoogleMap mMap;
+    LatLngBounds.Builder boundsBuilder;
+    LatLngBounds bounds = null;
     private SupportMapFragment mMapFragment;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,15 +67,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     BiMap<String, ForceData> forceIdToForceData = HashBiMap.create();
     BiMap<String, Marker> forceIdToMarker = HashBiMap.create();
     BiMap<String, ForceMarker> forceIdToForceMarker = HashBiMap.create();
+
+    Map<String, BitmapDescriptor> sensorIcons = new HashMap<>();
+    Map<String, BitmapDescriptor> forceIcons = new HashMap<>();
+
+    //Keeps tracks of animators associated with markers, if any. Tripped vibration sensors shake for example.
     Map<Marker, ValueAnimator> markerToAnimator = new HashMap();
 
+    private static final String NONE = "none";
     boolean[] toggleFilterIndices;
-    boolean[] sensorFilterIndices;
-    boolean[] forceFilterIndices;
+    boolean[] sensorTypeFilterIndices;
+    boolean[] forceTypeFilterIndices;
     boolean[] otherFilterIndices;
 
-    LatLngBounds.Builder boundsBuilder;
-    LatLngBounds bounds = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +98,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapFilterFragment filter = MapFilterFragment.newInstance(toggleFilterIndices, sensorFilterIndices, forceFilterIndices, otherFilterIndices);
+                MapFilterFragment filter = MapFilterFragment.newInstance(toggleFilterIndices, sensorTypeFilterIndices, forceTypeFilterIndices, otherFilterIndices);
                 filter.show(getFragmentManager(), "MapFilterFragment");
 
             }
@@ -200,11 +209,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 
-            if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.heartbeat))) {
+            if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equals("Heart Rate")) {
                 showHeartbeatZero(sensorMarker);
             }
 
-            if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration)) && sensorMarker.getType().equalsIgnoreCase(getApplication().getString(R.string.vibration))) {
+            if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration)) && sensorMarker.getType().equals("Vibration")) {
                 showTrippedVibration(sensorMarker);
             }
 
@@ -261,12 +270,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void getSelectedSensorFilterIndicesBoolean(boolean[] indices){
-        sensorFilterIndices = indices;
+        sensorTypeFilterIndices = indices;
     }
 
     @Override
     public void getSelectedForceFilterIndicesBoolean(boolean[] indices){
-        forceFilterIndices = indices;
+        forceTypeFilterIndices = indices;
     }
 
     @Override
@@ -410,7 +419,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         sensorIdToMarker.put(sensorID, marker);
 
         //if the type of the newly added marker is currently filtered out
-        if(sensorFilter != null && !type.equalsIgnoreCase(sensorFilter)) {
+        if(sensorFilter != null && type != sensorFilter.toString()) {
             marker.setVisible(false);
         }
 
@@ -427,15 +436,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public Marker createSensorMarker(LatLng position, SensorData sensorData) {
         Marker marker = mMap.addMarker(new MarkerOptions().position(position).icon(getSensorMapIcon(sensorData, 128, 128)).anchor(0.5f, 0.5f));
         if (sensorData.getSensor_Type().equals("Vibration") && isTrippedVibrationSensor(sensorData))
-            setMarkerWobble(marker);
+            setMarkerShake(marker);
 
         return marker;
     }
 
+    Map<Triplet<String, Integer, Integer>, Bitmap> icons = new HashMap<>();
+
     public Bitmap resizeMapIcon(String iconName, int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-        return resizedBitmap;
+        Triplet<String, Integer, Integer> iconDesc = new Triplet<>(iconName, width, height);
+        if (icons.containsKey(iconDesc)) {
+            return icons.get(iconDesc);
+        }
+        else {
+            Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+            icons.put(iconDesc, resizedBitmap);
+            return resizedBitmap;
+        }
     }
 
     public BitmapDescriptor getSensorMapIcon(SensorData sensorData, int width, int height) {
@@ -511,7 +529,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
 
-    public void setMarkerWobble(final Marker marker) {
+    public void setMarkerShake(final Marker marker) {
         if (marker != null) {
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, -0.25f, 0.2f, -0.15f, 0.1f, 0.05f, 0f);
             valueAnimator.setDuration(1000); // duration 1 second
@@ -554,7 +572,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
             else {
                 if(isTrippedVibrationSensor(sensorData)) {
-                    setMarkerWobble(marker);
+                    setMarkerShake(marker);
                 }
             }
         }

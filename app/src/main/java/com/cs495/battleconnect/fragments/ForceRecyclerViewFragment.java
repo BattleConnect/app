@@ -37,7 +37,6 @@ public class ForceRecyclerViewFragment extends Fragment {
     private FirebaseFirestore db;
     LinearLayoutManager linearLayoutManager;
     boolean[] filterIndices;
-    boolean[] otherFilterIndices;
     List<ForceResponse> ForceData = new ArrayList<>();
     private ForcesAdapter adapter;
 
