@@ -6,6 +6,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,6 +62,13 @@ public class MapForceDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceStat) {
         updateForceInfo();
+
+        final Button button = getView().findViewById(R.id.button_close);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 //        final Button button = getView().findViewById(R.id.see_history_btn);
 //        button.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {

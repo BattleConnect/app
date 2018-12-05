@@ -55,9 +55,9 @@ public class OpenActivity {
 //    }
 
 
-    @Test
-    public void openMap() {
-        onView(withId(R.id.map_button)).perform(click());
-        onView(withId(R.id.map)).check(matches(isDisplayed()));
-    }
+//    @Test
+//    public void openMap() {
+//        onView(withId(R.id.map_button)).perform(click());
+//        onView(withId(R.id.map)).check(matches(isDisplayed()));
+//    }
 }

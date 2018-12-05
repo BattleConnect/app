@@ -1,11 +1,15 @@
 package com.cs495.battleelite.battleelite.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,7 +49,6 @@ public class MapSensorDialogFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_map_sensor_dialog, container, false);
     }
 
-
         //private OnFragmentInteractionListener mListener;
 
     public MapSensorDialogFragment() {
@@ -60,6 +63,13 @@ public class MapSensorDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceStat) {
         updateSensorInfo();
+
+        final Button button = getView().findViewById(R.id.button_close);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 //
 //        final Button button = getView().findViewById(R.id.see_history_btn);
 //        button.setOnClickListener(new View.OnClickListener() {
