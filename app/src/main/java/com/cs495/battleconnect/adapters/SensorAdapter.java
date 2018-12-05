@@ -170,7 +170,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
         filteredList.clear();
 
         if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals(NONE)){
-            filteredList = sensorList;
+            filteredList = new ArrayList<>(sensorList);
         }
 
         for(int i=0; i<sensorList.size(); i++) {
