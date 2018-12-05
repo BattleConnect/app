@@ -61,7 +61,7 @@
             android:label="@string/title_activity_notification"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.cs495.battleconnect.activities.ForcesActivity"
+            android:name="com.cs495.battleconnect.activities.ForceActivity"
             android:label="@string/title_activity_forces"
             android:theme="@style/AppTheme"></activity>
     </application>

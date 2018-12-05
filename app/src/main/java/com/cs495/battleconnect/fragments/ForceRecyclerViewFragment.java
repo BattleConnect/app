@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public class ForcesRecyclerViewFragment extends Fragment {
-    private static final String TAG = "ForcesActivity";
+public class ForceRecyclerViewFragment extends Fragment {
+    private static final String TAG = "ForceActivity";
     private static final String FORCES = "forces";
 
     View view;
@@ -51,15 +51,15 @@ public class ForcesRecyclerViewFragment extends Fragment {
         // Inflate the layout for this fragment
         // Defines the xml file for the fragment
         view =  inflater.inflate(R.layout.fragment_sensor_recycler_view, container, false);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        forceList = (RecyclerView) view.findViewById(R.id.sensor_list);
-        forceSearch = (SearchView) view.findViewById(R.id.sensor_search);
+        progressBar = view.findViewById(R.id.progress_bar);
+        forceList = view.findViewById(R.id.sensor_list);
+        forceSearch = view.findViewById(R.id.sensor_search);
 
         init();
 
         //get force data
         loadForceList();
-       // configureFilterButton();
+        configureFilterButton();
 
         return view;
     }
@@ -70,8 +70,8 @@ public class ForcesRecyclerViewFragment extends Fragment {
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FilterDialogFragment filter = FilterDialogFragment.newInstance(filterIndices, otherFilterIndices);
-                filter.show(getFragmentManager(), "FilterDialogFragment");
+                ForceFilterDialogFragment filter = ForceFilterDialogFragment.newInstance(filterIndices);
+                filter.show(getFragmentManager(), "ForceFilterDialogFragment");
             }
         });
     }
@@ -97,19 +97,12 @@ public class ForcesRecyclerViewFragment extends Fragment {
 
     };
 
-
-
-    public void updateMultpleSelectedSensorFilters(List<String> filters) {
-        //adapter.filter(filters);
+    public void updateMultipleSelectedForceFilters(List<String> filters) {
+        adapter.filter(filters);
     }
-
 
     public void updateSelectedFilterIndicesBoolean(boolean[] indices) {
         filterIndices = indices;
-    }
-
-    public void updateOtherSelectedFilterIndicesBoolean(boolean[] indices){
-        otherFilterIndices = indices;
     }
 
     private void init() {
@@ -145,7 +138,7 @@ public class ForcesRecyclerViewFragment extends Fragment {
                     }
                 }
                 ForceData.addAll(response);
-                adapter = new ForcesAdapter( ForcesRecyclerViewFragment.this, ForceData);
+                adapter = new ForcesAdapter( ForceRecyclerViewFragment.this, ForceData);
                 progressBar.setVisibility(View.GONE);
                 forceList.setAdapter(adapter);
                 adapter.removeDuplicates();

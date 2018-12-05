@@ -103,7 +103,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();
-                startActivity(new Intent(HomeActivity.this, ForcesActivity.class));
+                startActivity(new Intent(HomeActivity.this, ForceActivity.class));
             }
         });
     }

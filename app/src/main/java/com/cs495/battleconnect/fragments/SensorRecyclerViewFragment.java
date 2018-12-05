@@ -70,8 +70,8 @@ public class SensorRecyclerViewFragment extends Fragment {
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FilterDialogFragment filter = FilterDialogFragment.newInstance(filterIndices, otherFilterIndices);
-                filter.show(getFragmentManager(), "FilterDialogFragment");
+                SensorFilterDialogFragment filter = SensorFilterDialogFragment.newInstance(filterIndices, otherFilterIndices);
+                filter.show(getFragmentManager(), "SensorFilterDialogFragment");
             }
         });
     }

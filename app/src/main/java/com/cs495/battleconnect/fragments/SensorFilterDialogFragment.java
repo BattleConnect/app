@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FilterDialogFragment extends DialogFragment {
+public class SensorFilterDialogFragment extends DialogFragment {
 
     FilterDialogFragmentListener mListener;
     ArrayList<String> listDataHeader;
@@ -22,8 +22,8 @@ public class FilterDialogFragment extends DialogFragment {
     boolean[] checkedStates;
     boolean[] otherCheckedStates;
 
-    public static FilterDialogFragment newInstance(boolean[] checkedStatesFromActivity, boolean[] otherCheckedStatesFromActivity){
-         FilterDialogFragment f = new FilterDialogFragment();
+    public static SensorFilterDialogFragment newInstance(boolean[] checkedStatesFromActivity, boolean[] otherCheckedStatesFromActivity){
+         SensorFilterDialogFragment f = new SensorFilterDialogFragment();
          Bundle args = new Bundle();
          args.putBooleanArray("checkedStatesFromActivity", checkedStatesFromActivity);
          args.putBooleanArray("otherCheckedStatesFromActivity", otherCheckedStatesFromActivity);

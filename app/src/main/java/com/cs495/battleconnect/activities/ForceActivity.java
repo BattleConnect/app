@@ -5,37 +5,33 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import com.cs495.battleconnect.R;
-import com.cs495.battleconnect.fragments.ForcesRecyclerViewFragment;
+import com.cs495.battleconnect.fragments.ForceFilterDialogFragment;
+import com.cs495.battleconnect.fragments.ForceRecyclerViewFragment;
 
-public class ForcesActivity extends AppCompatActivity /* implements FilterDialogFragment.FilterDialogFragmentListener */{
-    ForcesRecyclerViewFragment fragment;
+import java.util.List;
+
+public class ForceActivity extends AppCompatActivity implements ForceFilterDialogFragment.FilterDialogFragmentListener {
+    ForceRecyclerViewFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forces);
 
-        fragment = new ForcesRecyclerViewFragment();
+        fragment = new ForceRecyclerViewFragment();
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.frameLayout, fragment);
         transaction.commit();
-
-
     }
 
-  /*  @Override
+    @Override
     public void getMultipleSelectedSensorFilters(List<String> filters) {
-        fragment.updateMultipleSelectedSensorFilters(filters);
+        fragment.updateMultipleSelectedForceFilters(filters);
     }
 
     @Override
     public void getSelectedFilterIndicesBoolean(boolean[] indices) {
         fragment.updateSelectedFilterIndicesBoolean(indices);
     }
-
-    @Override
-    public void getOtherSelectedFilterIndicesBoolean(boolean[] indices){
-        fragment.updateOtherSelectedFilterIndicesBoolean(indices);
-    }*/
 }

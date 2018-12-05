@@ -3,18 +3,16 @@ package com.cs495.battleconnect.adapters;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.cs495.battleconnect.R;
 
-import com.cs495.battleconnect.fragments.ForcesRecyclerViewFragment;
+import com.cs495.battleconnect.fragments.ForceRecyclerViewFragment;
 import com.cs495.battleconnect.holders.ForceHolder;
 
 import com.cs495.battleconnect.responses.ForceResponse;
-import com.cs495.battleconnect.responses.SensorResponse;
 
 
 import java.text.SimpleDateFormat;
@@ -36,9 +34,9 @@ public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
     private final String Force_ID = "Force_ID";
     private final String NONE = "none";
     private List<ForceResponse> forceList, filteredList, filteredListForSearch;
-    private ForcesRecyclerViewFragment mFragment;
+    private ForceRecyclerViewFragment mFragment;
 
-    public ForcesAdapter(ForcesRecyclerViewFragment fragment, List<ForceResponse> forceList){
+    public ForcesAdapter(ForceRecyclerViewFragment fragment, List<ForceResponse> forceList){
         this.mFragment = fragment;
         this.forceList = forceList;
         this.filteredList = new ArrayList<>();

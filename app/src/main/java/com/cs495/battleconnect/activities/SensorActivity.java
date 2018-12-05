@@ -7,12 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.cs495.battleconnect.R;
-import com.cs495.battleconnect.fragments.FilterDialogFragment;
+import com.cs495.battleconnect.fragments.SensorFilterDialogFragment;
 import com.cs495.battleconnect.fragments.SensorRecyclerViewFragment;
 
 import java.util.List;
 
-public class SensorActivity extends AppCompatActivity implements FilterDialogFragment.FilterDialogFragmentListener {
+public class SensorActivity extends AppCompatActivity implements SensorFilterDialogFragment.FilterDialogFragmentListener {
     SensorRecyclerViewFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
