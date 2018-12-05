@@ -2,6 +2,7 @@ package com.cs495.battleconnect.activities;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -349,23 +350,46 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
         getSensorDataFromFirestore(null);
-        getForceData(null);
+        getForceDataFromFirestore(null);
         addUserLocation(googleMap);
 
-        new Handler().postDelayed(new Runnable() {
+        final ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Retrieving data. Please wait...");
+        dialog.setIndeterminate(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        final Handler handler = new Handler();
+        final long startTime = System.currentTimeMillis();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                try {
-                    bounds = boundsBuilder.build();
-                    int padding = 0;
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                    mMap.moveCamera(cu);
+                //have enough markers on the map to move the camera
+                if (sensorIdToMarker.size() + forceIdToMarker.size() >= 10) {
+                    try {
+                        bounds = boundsBuilder.build();
+                        int padding = 0;
+                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                        mMap.moveCamera(cu);
+                        dialog.dismiss();
+                    }
+                    catch (IllegalStateException e) { //not enough points to build boundsBuilder
+                        dialog.dismiss();
+                    }
                 }
-                catch (IllegalStateException e) { //not enough points to build boundsBuilder
-                    System.out.println("not enough sensors on map to determine camera boundsBuilder");
+                else {
+                    if (System.currentTimeMillis() - startTime < 5000) {
+                        handler.postDelayed(this, 1000);
+                    }
+                    //give up trying to get enough data points to center the camera around after
+                    else {
+                        System.out.println("not enough sensors on map to determine camera boundsBuilder");
+                        dialog.dismiss();
+                    }
                 }
             }
-        }, 5000);
+        }, 1000);
     }
 
     @Override
