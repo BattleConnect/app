@@ -49,6 +49,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.javatuples.Triplet;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +130,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     private static final String NONE = "none";
-    boolean[] toggleFilterIndices;
+    boolean[] toggleFilterIndices = new boolean[2];
     boolean[] sensorTypeFilterIndices;
     boolean[] forceTypeFilterIndices;
     boolean[] otherFilterIndices;
@@ -140,6 +141,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        Arrays.fill(toggleFilterIndices, true);
 
         initializeMap();
 
