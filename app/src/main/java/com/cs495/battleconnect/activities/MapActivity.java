@@ -55,8 +55,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The activity that manages sensors and force icons on a map.
+ */
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, OnMarkerClickListener, MapFilterFragment.MapFilterFragmentListener {
-
 
     private GoogleMap mMap;
     View mapView;

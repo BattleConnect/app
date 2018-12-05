@@ -16,8 +16,8 @@
     <color name="bad_health">#EC4141</color>
     <color name="good_health">#5FBB4E</color>
 
-    <color name="alert_low">#FDE85F</color>
-    <color name="alert_medium">#FBC02D</color>
+    <color name="alert_low">#FAF5AB</color>
+    <color name="alert_medium">#FDE85F</color>
     <color name="alert_high">#EF7135 </color>
     <color name="alert_critical">#EC4141</color>
 </resources>

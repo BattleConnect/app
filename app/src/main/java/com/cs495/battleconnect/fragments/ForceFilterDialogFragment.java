@@ -47,12 +47,8 @@ public class ForceFilterDialogFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
-
-
-
-
         loadListData();
-        expListView = (ExpandableListView) v.findViewById(R.id.expandableFilter);
+        expListView = v.findViewById(R.id.expandableFilter);
         checkedStates = getCheckedStatesFromActivity();
         listAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), listDataHeader, listDataChild, checkedStates, null);
         expListView.setAdapter(listAdapter);
@@ -62,7 +58,7 @@ public class ForceFilterDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 List<String> filters = new ArrayList();
                 filters.addAll(listAdapter.getSelectedItems(0));
-                mListener.getMultipleSelectedSensorFilters(filters);
+                mListener.getMultipleSelectedForceFilters(filters);
                 mListener.getSelectedFilterIndicesBoolean(listAdapter.getSelectedFilterIndicesBoolean(0));
 
             }
@@ -78,7 +74,7 @@ public class ForceFilterDialogFragment extends DialogFragment {
     }
 
     public interface FilterDialogFragmentListener {
-        void getMultipleSelectedSensorFilters(List<String> filters);
+        void getMultipleSelectedForceFilters(List<String> filters);
         void getSelectedFilterIndicesBoolean(boolean[] indices);
     }
 
