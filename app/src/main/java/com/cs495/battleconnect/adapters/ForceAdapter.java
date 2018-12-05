@@ -28,7 +28,7 @@ import java.util.Map;
  * The adapter for setting all the values for the force activity recycler view
  */
 
-public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
+public class ForceAdapter extends RecyclerView.Adapter<ForceHolder> {
     private static final String TAG = "ForceAdapter";
     private final String GOOD = "good";
     private final String Force_ID = "Force_ID";
@@ -36,7 +36,7 @@ public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
     private List<ForceResponse> forceList, filteredList, filteredListForSearch;
     private ForceRecyclerViewFragment mFragment;
 
-    public ForcesAdapter(ForceRecyclerViewFragment fragment, List<ForceResponse> forceList){
+    public ForceAdapter(ForceRecyclerViewFragment fragment, List<ForceResponse> forceList){
         this.mFragment = fragment;
         this.forceList = forceList;
         this.filteredList = new ArrayList<>();
@@ -207,5 +207,13 @@ public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
         filteredListForSearch.addAll(filteredList);
         removeDuplicates();
         notifyDataSetChanged();
+    }
+
+    /**
+     * Returns the list of items in the recyclerview that match the filter selected
+     * @return
+     */
+    public List<ForceResponse> getFilteredList(){
+        return filteredList;
     }
 }

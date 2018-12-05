@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import com.cs495.battleconnect.adapters.ForcesAdapter;
+import com.cs495.battleconnect.adapters.ForceAdapter;
 import com.cs495.battleconnect.R;
 import com.cs495.battleconnect.responses.ForceResponse;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,7 +38,7 @@ public class ForceRecyclerViewFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     boolean[] filterIndices;
     List<ForceResponse> ForceData = new ArrayList<>();
-    private ForcesAdapter adapter;
+    private ForceAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,7 +137,7 @@ public class ForceRecyclerViewFragment extends Fragment {
                     }
                 }
                 ForceData.addAll(response);
-                adapter = new ForcesAdapter( ForceRecyclerViewFragment.this, ForceData);
+                adapter = new ForceAdapter( ForceRecyclerViewFragment.this, ForceData);
                 progressBar.setVisibility(View.GONE);
                 forceList.setAdapter(adapter);
                 adapter.removeDuplicates();
