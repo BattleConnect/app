@@ -10,7 +10,7 @@ import com.cs495.battleelite.battleelite.fragments.ForcesRecyclerViewFragment;
 
 import java.util.List;
 
-public class ForcesActivity extends AppCompatActivity  implements FilterDialogFragment.FilterDialogFragmentListener {
+public class ForcesActivity extends AppCompatActivity /* implements FilterDialogFragment.FilterDialogFragmentListener */{
     ForcesRecyclerViewFragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class ForcesActivity extends AppCompatActivity  implements FilterDialogFr
 
     }
 
-    @Override
+  /*  @Override
     public void getMultipleSelectedSensorFilters(List<String> filters) {
         fragment.updateMultpleSelectedSensorFilters(filters);
     }
@@ -40,5 +40,5 @@ public class ForcesActivity extends AppCompatActivity  implements FilterDialogFr
     @Override
     public void getOtherSelectedFilterIndicesBoolean(boolean[] indices){
         fragment.updateOtherSelectedFilterIndicesBoolean(indices);
-    }
+    }*/
 }

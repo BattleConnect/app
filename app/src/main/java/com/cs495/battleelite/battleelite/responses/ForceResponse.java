@@ -4,7 +4,7 @@ public class ForceResponse {
     private long Date_Time;
     private double Lat;
     private double Long;
-    private long Force_ID;
+    private String Force_ID;
     private String  Force_Name;
     private String  status;
     private String  Force_Type;
@@ -13,7 +13,7 @@ public class ForceResponse {
     public ForceResponse() {
     }
 
-    public ForceResponse(long date_time, double latitude, double longitude, long id, String type, String name, String status) {
+    public ForceResponse(long date_time, double latitude, double longitude, String id, String type, String name, String status) {
         this.Date_Time = date_time;
         this.Lat = latitude;
         this.Long = longitude;
@@ -46,11 +46,11 @@ public class ForceResponse {
         this.Long = longitude;
     }
 
-    public long getForce_ID() {
+    public String getForce_ID() {
         return Force_ID;
     }
 
-    public void setForce_ID(long force_id) {
+    public void setForce_ID(String force_id) {
         this.Force_ID = force_id;
     }
 
