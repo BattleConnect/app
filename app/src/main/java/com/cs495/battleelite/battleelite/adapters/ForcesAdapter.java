@@ -17,6 +17,7 @@ import com.cs495.battleelite.battleelite.holders.ForceHolder;
 import com.cs495.battleelite.battleelite.holders.ForceHolder;
 
 import com.cs495.battleelite.battleelite.responses.ForceResponse;
+import com.cs495.battleelite.battleelite.responses.SensorResponse;
 
 
 import java.text.SimpleDateFormat;
@@ -86,6 +87,30 @@ public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
 
     }
 
+    /**
+     * Searches the items in the recycler view to find the corresponding item
+     * @param text
+     */
+    public void search(String text){
+        filteredList.clear();
+
+        if(TextUtils.isEmpty(text)){
+            filteredList.addAll(filteredListForSearch);
+        }
+
+        else{
+            String query = text.toLowerCase();
+            for(ForceResponse item : filteredListForSearch){
+                if(item.getForce_Type().toLowerCase().contains(query)
+                        || Long.toString(item.getDate_Time()).toLowerCase().contains(query) || Double.toString(item.getLat()).toLowerCase().contains(query)
+                        || Double.toString(item.getLong()).toLowerCase().contains(query) || item.getForce_Name().toLowerCase().contains(query)
+                        || item.getForce_ID().toLowerCase().contains(query) ||item.getForce_Status().toLowerCase().contains(query)){
+                    filteredList.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
 
     /**
      * Returns the number of items in the recycler view

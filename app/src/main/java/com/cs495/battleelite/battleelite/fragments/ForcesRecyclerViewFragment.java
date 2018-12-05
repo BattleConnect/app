@@ -77,21 +77,21 @@ public class ForcesRecyclerViewFragment extends Fragment {
     }
 
     private void configureSearch() {
-        //sensorSearch.setIconifiedByDefault(false);
-        //sensorSearch.setOnQueryTextListener(searchQueryListener);
-        //sensorSearch.setSubmitButtonEnabled(true);
+        forceSearch.setIconifiedByDefault(false);
+        forceSearch.setOnQueryTextListener(searchQueryListener);
+        forceSearch.setSubmitButtonEnabled(true);
     }
 
     private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-           // adapter.search(query);
+            adapter.search(query);
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            //adapter.search(newText);
+            adapter.search(newText);
             return false;
         }
 
