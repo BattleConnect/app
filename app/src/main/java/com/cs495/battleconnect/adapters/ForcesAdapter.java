@@ -193,7 +193,7 @@ public class ForcesAdapter extends RecyclerView.Adapter<ForceHolder> {
         filteredList.clear();
 
         if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals(NONE)){
-            filteredList = forceList;
+            filteredList = new ArrayList<>(forceList);
         }
 
         for(int i=0; i< forceList.size(); i++) {
