@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import com.cs495.battleelite.battleelite.FilterAdapter;
+import com.cs495.battleelite.battleelite.adapters.ForcesAdapter;
 import com.cs495.battleelite.battleelite.R;
-import com.cs495.battleelite.battleelite.responses.SensorResponse;
+import com.cs495.battleelite.battleelite.responses.ForceResponse;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,8 +38,8 @@ public class ForcesRecyclerViewFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     boolean[] filterIndices;
     boolean[] otherFilterIndices;
-    List<SensorResponse> sensorData = new ArrayList<>();
-    //private FilterAdapter adapter;
+    List<ForceResponse> ForceData = new ArrayList<>();
+    private ForcesAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class ForcesRecyclerViewFragment extends Fragment {
 
         //get force data
         loadForceList();
-        configureFilterButton();
+       // configureFilterButton();
 
         return view;
     }
@@ -77,21 +77,21 @@ public class ForcesRecyclerViewFragment extends Fragment {
     }
 
     private void configureSearch() {
-        //sensorSearch.setIconifiedByDefault(false);
-        //sensorSearch.setOnQueryTextListener(searchQueryListener);
-        //sensorSearch.setSubmitButtonEnabled(true);
+        forceSearch.setIconifiedByDefault(false);
+        forceSearch.setOnQueryTextListener(searchQueryListener);
+        forceSearch.setSubmitButtonEnabled(true);
     }
 
     private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-           // adapter.search(query);
+            adapter.search(query);
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            //adapter.search(newText);
+            adapter.search(newText);
             return false;
         }
 
@@ -128,17 +128,27 @@ public class ForcesRecyclerViewFragment extends Fragment {
                     System.err.println("Listen failed:" + e);
                     return;
                 }
-                List<SensorResponse> response = new ArrayList<>();
+                List<ForceResponse> response = new ArrayList<>();
                 for (DocumentSnapshot doc : queryDocumentSnapshots) {
-
-                    SensorResponse addToList = new SensorResponse(Long.valueOf(doc.get("Date_Time").toString()), Double.valueOf(doc.get("Lat").toString()), Double.valueOf(doc.get("Long").toString()), Long.valueOf(doc.get("Battery").toString()), doc.get("SensorHealth").toString(), Long.valueOf(doc.get("Sensor_ID").toString()), doc.get("Sensor_Type").toString(), Double.valueOf(doc.get("Sensor_Val").toString()));
-                    //response.add(addToList);
+                    try {
+                        ForceResponse addToList = new ForceResponse(Long.valueOf(doc.get("Date_Time").toString()),
+                                Double.valueOf(doc.get("Lat").toString()),
+                                Double.valueOf(doc.get("Long").toString()),
+                                doc.get("ID").toString(),
+                                doc.get("Type").toString(),
+                                doc.get("Name").toString(),
+                                doc.get("Status").toString());
+                        response.add(addToList);
+                    }
+                    catch (Exception ee){
+                        Log.i(TAG,"" + ee);
+                    }
                 }
-                sensorData.addAll(response);
-                //adapter = new FilterAdapter( ForcesRecyclerViewFragment.this, sensorData);
+                ForceData.addAll(response);
+                adapter = new ForcesAdapter( ForcesRecyclerViewFragment.this, ForceData);
                 progressBar.setVisibility(View.GONE);
-                //sensorList.setAdapter(adapter);
-               // adapter.removeDuplicates();
+                forceList.setAdapter(adapter);
+
                 configureSearch();
             }
         });
