@@ -144,7 +144,7 @@ public class MapFilterFragment extends DialogFragment {
         toggleDataHeader = new ArrayList<String>();
         toggleDataChild = new HashMap<String, List<String>>();
 
-        toggleDataHeader.add("Toggle Data");
+        toggleDataHeader.add("Toggle Forces and Sensors");
 
         List<String> toggles = new ArrayList<>();
         toggles.add(getResources().getString(R.string.forces));
@@ -157,7 +157,7 @@ public class MapFilterFragment extends DialogFragment {
         otherDataHeader = new ArrayList<String>();
         otherDataChild = new HashMap<String, List<String>>();
 
-        otherDataHeader.add("Other Filter");
+        otherDataHeader.add("Other");
 
         List<String> sensorType = new ArrayList<>();
         sensorType.add(getResources().getString(R.string.heartbeat_zero));

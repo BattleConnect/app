@@ -1,8 +1,5 @@
 package com.cs495.battleelite.battleelite;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.SmallTest;
@@ -28,7 +25,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class OpenActivity {
 
     @Rule
-    public ActivityTestRule<home_screen> mActivityRule = new ActivityTestRule<home_screen>(home_screen.class) {};
+    public ActivityTestRule<HomeActivity> mActivityRule = new ActivityTestRule<HomeActivity>(HomeActivity.class) {};
 
     @Test
     public void openSensorActivity() {

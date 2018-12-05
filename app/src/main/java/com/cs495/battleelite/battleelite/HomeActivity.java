@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -17,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 
-public class home_screen extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
 
     private FirebaseAuth firebaseAuth;
@@ -26,7 +25,7 @@ public class home_screen extends AppCompatActivity {
         checkLoginStatus();
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_home_screen);
+        setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -73,7 +72,7 @@ public class home_screen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();
-                startActivity(new Intent(home_screen.this, SensorActivity.class));
+                startActivity(new Intent(HomeActivity.this, SensorActivity.class));
             }
         });
 
@@ -81,7 +80,7 @@ public class home_screen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();
-                startActivity(new Intent(home_screen.this, InputScreen.class));
+                startActivity(new Intent(HomeActivity.this, InputActivity.class));
             }
         });
 
@@ -89,7 +88,7 @@ public class home_screen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();
-                startActivity(new Intent(home_screen.this, MapsActivity.class));
+                startActivity(new Intent(HomeActivity.this, MapActivity.class));
             }
         });
 
@@ -97,7 +96,7 @@ public class home_screen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();
-                startActivity(new Intent(home_screen.this, NotificationActivity.class));
+                startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
             }
         });
 
@@ -105,7 +104,7 @@ public class home_screen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();
-                startActivity(new Intent(home_screen.this, ForcesActivity.class));
+                startActivity(new Intent(HomeActivity.this, ForcesActivity.class));
             }
         });
     }
@@ -117,8 +116,8 @@ public class home_screen extends AppCompatActivity {
             firebaseAuth.updateCurrentUser(firebaseAuth.getCurrentUser());
             return true;
         }
-        Intent myIntent = new Intent(home_screen.this, LoginActivity.class);
-        home_screen.this.startActivityForResult(myIntent,1);
+        Intent myIntent = new Intent(HomeActivity.this, LoginActivity.class);
+        HomeActivity.this.startActivityForResult(myIntent,1);
         return true;
     }
 
@@ -157,7 +156,7 @@ public class home_screen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //setContentView(R.layout.activity_home_screen);
+        //setContentView(R.layout.activity_home);
         if(resultCode == 0){// creates loop so you cant back out of login into main
             checkLoginStatus();
         }

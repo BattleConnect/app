@@ -33,15 +33,17 @@
 
     <string name="TagPrompt">Enter Tag</string>
     <string name="Tag1">Health</string>
-    <string name="Tag2">Vehicular Assistance</string>
+    <string name="Tag2">Vehicle Condition</string>
     <string name="Tag3">Sighting</string>
     <string name="Tag4">Supplies</string>
 
     <string name="ConditionPrompt">Enter Condition</string>
-    <string name="Condition1">Poor</string>
-    <string name="Condition2">Fair</string>
-    <string name="Condition3">Good</string>
-    <string name="Condition4">New</string>
+    <string name="Condition1">Critical</string>
+    <string name="Condition2">Poor</string>
+    <string name="Condition3">Fair</string>
+    <string name="Condition4">Average</string>
+    <string name="Condition5">Good</string>
+    <string name="Condition6">Excellent</string>
 
     <string name="CommentHint">Comment</string>
     <string name="title_activity_map_screen">MapScreen</string>

@@ -4,7 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InputScreen">
+    tools:context=".InputActivity">
+
+    <!--<Spinner-->
+        <!--android:id="@+id/inputTagSpinner"-->
+        <!--style="@android:style/Widget.Spinner"-->
+        <!--android:layout_width="322dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="108dp"-->
+        <!--android:entries="@array/tagList"-->
+        <!--android:prompt="@string/TagPrompt"-->
+        <!--tools:layout_editor_absoluteX="0dp"-->
+        <!--tools:layout_editor_absoluteY="75dp"></Spinner>-->
+
+    <!--<Spinner-->
+        <!--android:id="@+id/inputConditionSpinner"-->
+        <!--style="@android:style/Widget.Spinner"-->
+        <!--android:layout_width="322dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="192dp"-->
+        <!--android:entries="@array/conditionList"-->
+        <!--android:prompt="@string/ConditionPrompt"-->
+        <!--tools:layout_editor_absoluteX="0dp"-->
+        <!--tools:layout_editor_absoluteY="75dp"></Spinner>-->
 
     <Spinner
         android:id="@+id/inputTagSpinner"
@@ -14,8 +40,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="108dp"
-        android:entries="@array/tagList"
-        android:prompt="@string/TagPrompt"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="75dp"></Spinner>
 
@@ -27,8 +51,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="192dp"
-        android:entries="@array/conditionList"
-        android:prompt="@string/ConditionPrompt"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="75dp"></Spinner>
 

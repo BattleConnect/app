@@ -14,7 +14,17 @@
         <item>@string/Condition2</item>
         <item>@string/Condition3</item>
         <item>@string/Condition4</item>
+        <item>@string/Condition5</item>
+        <item>@string/Condition6</item>
     </string-array>
+
+    <integer-array name="showCondition">
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
 
     <string-array name="sensorTypeList">
         <item>@string/none</item>

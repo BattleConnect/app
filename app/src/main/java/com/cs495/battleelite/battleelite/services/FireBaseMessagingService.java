@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.cs495.battleelite.battleelite.R;
-import com.cs495.battleelite.battleelite.home_screen;
+import com.cs495.battleelite.battleelite.HomeActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,7 +86,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
      * @param messageBody
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, home_screen.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

@@ -30,8 +30,8 @@ public class MapsActivityTests {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Rule
-    public ActivityTestRule<MapsActivity> mActivityRule =
-            new ActivityTestRule<>(MapsActivity.class);
+    public ActivityTestRule<MapActivity> mActivityRule =
+            new ActivityTestRule<>(MapActivity.class);
 
 
     boolean moveOn = false;
