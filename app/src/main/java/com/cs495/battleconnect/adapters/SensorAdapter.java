@@ -231,6 +231,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 }
             }
         }
+        removeDuplicates();
         notifyDataSetChanged();
     }
 

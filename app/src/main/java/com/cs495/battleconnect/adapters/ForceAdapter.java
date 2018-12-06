@@ -99,6 +99,7 @@ public class ForceAdapter extends RecyclerView.Adapter<ForceHolder> {
                 }
             }
         }
+        removeDuplicates();
         notifyDataSetChanged();
     }
 
