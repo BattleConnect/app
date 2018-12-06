@@ -48,10 +48,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.javatuples.KeyValue;
 import org.javatuples.Triplet;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +116,70 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     boolean[] sensorTypeFilterIndices;
     boolean[] forceTypeFilterIndices;
     boolean[] otherFilterIndices;
+
+    //the filters that are currently applied
+    List<String> currentSensorFilters;
+    List<String> currentForceFilters;
+    List<String> currentOtherFilters;
+
+    /**
+     * Checks if a marker should be set visible based on the currently selected filters. Only used when a new sensor marker is added to the map or a sensor had an update.
+     * @param marker
+     * @param sensorData
+     */
+    void ApplyFilter(Marker marker, SensorData sensorData) {
+        if (!showSensors) {
+            marker.setVisible(false);
+        }
+        else {
+            if (currentSensorFilters != null && currentSensorFilters.size() > 0 && !currentSensorFilters.contains(sensorData.getSensor_Type())) {
+                marker.setVisible(false);
+            }
+            else if (currentOtherFilters != null && currentOtherFilters.size() > 0) {
+                boolean hide = true;
+                if(currentOtherFilters.contains(getApplication().getString(R.string.tripped_vibration))) {
+                    if (isTrippedVibrationSensor(sensorData))
+                        hide=false;
+                }
+                if(currentOtherFilters.contains(getApplication().getString(R.string.heartbeat_zero))) {
+                    if (isDeadHeartRateSensor(sensorData))
+                        hide=false;
+                }
+                if(currentOtherFilters.contains("Health=Service")) {
+                    if (sensorData.getSensorHealth().equals("Service"))
+                        hide = false;
+                }
+
+                if(currentOtherFilters.contains("Health=EOL")) {
+                    if (sensorData.getSensorHealth().equals("EOL"))
+                        hide = false;
+                }
+
+                if(currentOtherFilters.contains(getApplication().getString(R.string.dead_battery))) {
+                    if (sensorData.getBattery() == 0)
+                        hide = false;
+                }
+                if (hide)
+                    marker.setVisible(false);
+            }
+        }
+    }
+
+    /**
+     * Checks if a marker should be set visible based on the currently selected filters. Only used when a new force marker is added to the map or a force had an update.
+     * @param marker
+     * @param forceData
+     */
+    void ApplyFilter(Marker marker, ForceData forceData) {
+        if (!showForces) {
+            marker.setVisible(false);
+        }
+        else {
+            if (currentForceFilters != null && currentForceFilters.size() > 0 && !currentForceFilters.contains(forceData.getType())) {
+                marker.setVisible(false);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,6 +305,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             Arrays.fill(forceTypeFilterIndices, false);
         if (otherFilterIndices != null)
             Arrays.fill(otherFilterIndices, false);
+        currentOtherFilters = null;
+        currentSensorFilters = null;
+        currentForceFilters = null;
         filter();
     }
 
@@ -288,6 +352,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void getSelectedForceTypeFilter(List<String> filters) {
         //Log.i("getSelectedSensorTypes", "returns " + type);
         if(filters.size() != 0) filterForces(filters);
+        currentForceFilters = filters;
     }
 
     /**
@@ -321,6 +386,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void getSelectedSensorTypeFilter(List<String> filters){
         //Log.i("getSelectedSensorTypes", "returns " + type);
         if(filters.size() != 0) filterSensors(filters);
+        currentSensorFilters = filters;
     }
 
     /**
@@ -353,6 +419,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void getSelectedOtherFilter(List<String> filters) {
         if(filters.size() != 0) filterOthers(filters);
+        currentOtherFilters = filters;
     }
 
     /**
@@ -660,10 +727,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         Marker marker = createSensorMarker(position, sensorData);
         sensorIdToMarker.put(sensorID, marker);
 
-        //if the type of the newly added marker is currently filtered out
-        if(sensorFilter != null && type != sensorFilter) {
-            marker.setVisible(false);
-        }
+        ApplyFilter(marker, sensorData);
 
         SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
         sensorIdToSensorMarker.put(sensorID, sensorMarker);
@@ -793,10 +857,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         Marker marker = createForceMarker(position, type);
         forceIdToMarker.put(forceID, marker);
 
-        //if the type of the newly added marker is currently filtered out
-        if(forceFilter != null && !type.equalsIgnoreCase(forceFilter)) {
-            marker.setVisible(false);
-        }
+        ApplyFilter(marker, forceData);
 
         ForceMarker forceMarker = new ForceMarker(forceID, type, marker);
         forceIdToForceMarker.put(forceID, forceMarker);
@@ -877,6 +938,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 }
             }
         }
+
+        ApplyFilter(marker, sensorData);
+    }
+
+    /**
+     * Updates a marker on the map associated with a force based on new data about that force.
+     * @param marker The marker's current sensor.
+     * @param forceData The new data about the force.
+     */
+    private void updateForcerMarker(Marker marker, ForceData forceData) {
+        LatLng newPosition = new LatLng(forceData.getLat(), forceData.getLong());
+        marker.setPosition(newPosition);
+
+        ApplyFilter(marker, forceData);
     }
 
     /**
@@ -897,7 +972,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                             if (sensorData.getDate_Time() > sensorIdToSensorData.get(sensorID).getDate_Time()) {
                                 sensorIdToSensorData.get(sensorID).setAll(sensorData);
                                 sensorIdToMarker.get(sensorID).setPosition(new LatLng(sensorData.getLat(), sensorData.getLong()));
-                                updateSensorMarker(sensorIdToSensorMarker.get(sensorID).getMarker(), sensorData);
+                                updateSensorMarker(getMarker(sensorID), sensorData);
                             }
                         }
                         else {
@@ -928,7 +1003,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                             if (forceData.getDate_Time() > forceIdToForceData.get(forceID).getDate_Time()) {
                                 forceIdToForceData.get(forceID).setAll(forceData);
                                 forceIdToMarker.get(forceID).setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
-                                forceIdToForceMarker.get(forceID).getMarker().setPosition(new LatLng(forceData.getLat(), forceData.getLong()));
+                                updateForcerMarker(getMarker(forceID), forceData);
                             }
                         }
                         else {
