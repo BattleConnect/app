@@ -134,7 +134,7 @@ public class MapSensorDialogFragment extends DialogFragment {
             return R.drawable.vibration1;
         else if (sensorType.equals("Asset"))
             return R.drawable.diamond;
-        else if (sensorType.equals("Temperature"))
+        else if (sensorType.equals("Temp"))
             return R.drawable.thermometer;
 
         return 0;
