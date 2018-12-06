@@ -17,12 +17,14 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
+/**
+ * This activity lets you search and filter alerts. "View alerts" on the home screen.
+ */
 public class NotificationActivity extends AppCompatActivity implements NotificationFilterDialogFragment.NotificationFilterFragmentListener {
     private static final String TAG = "NotificationActivity";
     private static final String NOTIFICATIONS = "notifications";
@@ -43,12 +45,11 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.);
-        //setSupportActionBar(toolbar);
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        notificationList = (RecyclerView) findViewById(R.id.notification_list);
-        notificationSearch = (SearchView) findViewById(R.id.notification_search);
+        //get visual elements
+        progressBar = findViewById(R.id.progress_bar);
+        notificationList = findViewById(R.id.notification_list);
+        notificationSearch = findViewById(R.id.notification_search);
 
         init();
 
@@ -64,7 +65,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         selectedSpinnerPosition = -1;
 
     }
-
 
     private void configureSearch(){
         notificationSearch.setIconifiedByDefault(false);
@@ -87,9 +87,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     };
 
-
     private void loadNotificationData() {
-
         db.collection(NOTIFICATIONS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

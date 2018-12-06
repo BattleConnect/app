@@ -231,16 +231,10 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
         notifyDataSetChanged();
     }
 
-    private void swap( int i, int j) {
-        SensorResponse temp = filteredList.get(i);
-        filteredList.set(i,filteredList.get(j));
-        filteredList.set(j, temp);
-    }
-
     /**
-     * Removes duplicate items from the list with the same ID
+     * Removes duplicate items from the list with the same ID. Keeps the item with the more recent timestamp.
      */
-    public void removeDuplicates(){//takes 1st thing, compares to rest, if id match, check date, swap if needed then delete second item
+    public void removeDuplicates(){ //takes 1st thing, compares to rest, if id match, check date, swap if needed then delete second item
         Map<Long, Long> sensorIdToDateTime = new HashMap<>();
         for (int i = 0; i < sensorList.size(); i++) {
             long sensorId = sensorList.get(i).getSensor_ID();
@@ -262,28 +256,6 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 iterator.remove();
             }
         }
-
-//        for(int i=0; i<filteredList.size(); i++) {
-//            SensorResponse x = filteredList.get(i);
-//            for(int j = i + 1; j < filteredList.size(); j++) {
-//                long xID = x.getSensor_ID(); long tempID = filteredList.get(j).getSensor_ID();
-//                if(xID == tempID) {
-//                    long xDT = x.getDate_Time(); long tempDT = filteredList.get(j).getDate_Time();
-//
-//                    try {
-//                        if (xDT > tempDT) {
-//                            filteredList.remove(j);
-//                        } else {
-//                            swap(i, j);
-//                            filteredList.remove(j);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.d(TAG, e.getMessage());
-//                    }
-//                    j--;//if match, it deletes the element and put another in its place, so need to check that one too dy decrementing, which the loop will increment, re evaluating the same index
-//                }
-//            }
-//        }
 
         notifyDataSetChanged();
     }

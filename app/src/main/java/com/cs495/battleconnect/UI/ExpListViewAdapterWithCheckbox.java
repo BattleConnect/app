@@ -18,8 +18,6 @@ import android.widget.TextView;
 
 import com.cs495.battleconnect.R;
 
-// Eclipse wanted me to use a sparse array instead of my hashmaps, I just suppressed that suggestion
-@SuppressLint("UseSparseArrays")
 public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
 
     // Define activity context

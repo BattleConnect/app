@@ -19,8 +19,8 @@ public class SensorActivity extends AppCompatActivity implements SensorFilterDia
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
 
+        //load the fragment that provides the recycler view for sensors
         fragment = new SensorRecyclerViewFragment();
-
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.frameLayout, fragment);

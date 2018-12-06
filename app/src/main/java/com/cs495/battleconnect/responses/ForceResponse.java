@@ -35,7 +35,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Gets the associated timestamp.
      * @return
      */
     public long getDate_Time() {
@@ -43,13 +43,13 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Sets the timestamp.
      * @param date_time
      */
     public void setDate_Time(long date_time) { this.Date_Time = date_time; }
 
     /**
-     *
+     * Gets the associated latitude.
      * @return
      */
     public double getLat() {
@@ -57,7 +57,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Sets the latitude.
      * @param latitude
      */
     public void setLat(double latitude) {
@@ -65,7 +65,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Gets the associated longitude.
      * @return
      */
     public double getLong() {
@@ -73,7 +73,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Sets the longitude.
      * @param longitude
      */
     public void setLong(double longitude) {
@@ -81,7 +81,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Gets the force's ID.
      * @return Force_ID
      */
     public String getForce_ID() {
@@ -89,7 +89,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Sets the force's ID.
      * @param force_id
      */
     public void setForce_ID(String force_id) {
@@ -97,13 +97,13 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Gets the force's name.
      * @return
      */
     public String getForce_Name() { return Force_Name; }
 
     /**
-     *
+     * Sets the force's name.
      * @param force_name
      */
     public void setForce_Name(String force_name) {
@@ -111,7 +111,7 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Gets the force's status.
      * @return status
      */
     public String getForce_Status() {
@@ -119,19 +119,19 @@ public class ForceResponse {
     }
 
     /**
-     *
+     * Sets the force's status.
      * @param status
      */
     public void setForce_Status(String status) { this.status = status; }
 
     /**
-     *
+     * Gets the force's type.
      * @return
      */
     public String getForce_Type() { return Force_Type; }
 
     /**
-     *
+     * Sets the force's type.
      * @param type
      */
     public void setForce_Type(String type) {
