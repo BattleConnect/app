@@ -74,14 +74,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     BiMap<Long, SensorMarker> sensorIdToSensorMarker = HashBiMap.create();
 
     public SensorData getSensorData(long sensorId) { return sensorIdToSensorData.get(sensorId); }
-    public long getSensorId(SensorData sensorData) { return sensorIdToSensorData.inverse().get(sensorData); }
+    public Long getSensorId(SensorData sensorData) { return sensorIdToSensorData.inverse().get(sensorData); }
 
     public Marker getMarker(long sensorId) { return sensorIdToMarker.get(sensorId); }
-    public long getSensorId(Marker marker) { return sensorIdToMarker.inverse().get(marker); }
+    public Long getSensorId(Marker marker) { return sensorIdToMarker.inverse().get(marker); }
     public Set<Marker> getSensorMarkers() { return sensorIdToMarker.values(); }
 
     public SensorMarker getSensorMarker(long sensorId) { return sensorIdToSensorMarker.get(sensorId); }
-    public long getSensorId(SensorMarker sensorMarker) { return sensorIdToSensorMarker.inverse().get(sensorMarker); }
+    public Long getSensorId(SensorMarker sensorMarker) { return sensorIdToSensorMarker.inverse().get(sensorMarker); }
 
     BiMap<String, ForceData> forceIdToForceData = HashBiMap.create();
     BiMap<String, Marker> forceIdToMarker = HashBiMap.create();
