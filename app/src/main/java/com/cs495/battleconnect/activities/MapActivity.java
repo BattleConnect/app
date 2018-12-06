@@ -49,6 +49,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.javatuples.KeyValue;
 import org.javatuples.Triplet;
 
 import java.util.Arrays;
@@ -163,22 +164,82 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     /**
+     * Each time filters are applied, markerToVisible is cleared.
+     */
+    @Override
+    public void initializeFilter() {
+        markerToVisible.clear();
+    }
+
+    boolean showSensors = true;
+    boolean showForces = true;
+
+    /**
+     * Applies selected filters.
+     */
+    @Override
+    public void filter() {
+        //no filters selected, show all markers
+        if (markerToVisible.isEmpty()) {
+            for (Marker marker : sensorIdToMarker.values()) {
+                if (showSensors)
+                    marker.setVisible(true);
+                //hide sensor marker if showSensors=false;
+                else
+                    marker.setVisible(false);
+            }
+            for (Marker marker : forceIdToMarker.values()) {
+                if (showForces)
+                    marker.setVisible(true);
+                //hide force marker is showForces=false;
+                else
+                    marker.setVisible(false);
+            }
+        }
+        //at least one filter option selected
+        else {
+            for (Marker marker : sensorIdToMarker.values()) {
+                if (showSensors) {
+                    if (markerToVisible.containsKey(marker)) {
+                        marker.setVisible(markerToVisible.get(marker));
+                    }
+                    else {
+                        marker.setVisible(false);
+                    }
+                }
+                //hide sensor marker if showSensors=false;
+                else {
+                    marker.setVisible(false);
+                }
+            }
+            for (Marker marker : forceIdToMarker.values()) {
+                if (showForces) {
+                    if (markerToVisible.containsKey(marker)) {
+                        marker.setVisible(markerToVisible.get(marker));
+                    }
+                    else {
+                        marker.setVisible(false);
+                    }
+                }
+                //hide force marker is showForces=false;
+                else {
+                    marker.setVisible(false);
+                }
+            }
+        }
+    }
+
+    /**
      * Gets the selected filters associated with toggling sensors and forces.
      * @param filters
      */
     @Override
     public void getSelectedToggleFilter(List<String> filters) {
-        if(filters.size() != 0) toggleData(filters);
+        if (filters.size() > 0)
+            toggleData(filters);
         else {
-            for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
-                ForceMarker forceMarker = entry.getValue();
-                forceMarker.getMarker().setVisible(false);
-            }
-
-            for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
-                SensorMarker sensorMarker = entry.getValue();
-                sensorMarker.getMarker().setVisible(false);
-            }
+            showForces = false;
+            showSensors = false;
         }
     }
 
@@ -187,28 +248,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * @param toggles
      */
     public void toggleData(List<String> toggles) {
-        if(toggles.contains(getResources().getString(R.string.forces))) {
-            for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
-                ForceMarker forceMarker = entry.getValue();
-                forceMarker.getMarker().setVisible(true);
-            }
-        } else {
-            for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
-                ForceMarker forceMarker = entry.getValue();
-                forceMarker.getMarker().setVisible(false);
-            }
+        if(!toggles.contains(getResources().getString(R.string.forces))) {
+            showForces = false;
         }
-
-        if(toggles.contains(getResources().getString(R.string.sensors))) {
-            for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
-                SensorMarker sensorMarker = entry.getValue();
-                sensorMarker.getMarker().setVisible(true);
-            }
-        } else {
-            for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
-                SensorMarker sensorMarker = entry.getValue();
-                sensorMarker.getMarker().setVisible(false);
-            }
+        else {
+            showForces = true;
+        }
+        if(!toggles.contains(getResources().getString(R.string.sensors))) {
+            showSensors = false;
+        }
+        else {
+            showSensors = true;
         }
     }
 
@@ -229,15 +279,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void filterForces(List<String> forceFilter) {
         for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
+            Marker marker = forceMarker.getMarker();
 
             if(forceFilter.contains(forceMarker.getType())) {
-                forceMarker.getMarker().setVisible(true);
+                markerToVisible.put(marker, true);
             }
-            else if(forceFilter.contains(NONE)) {
-                forceMarker.getMarker().setVisible(true);
-            }
+//            else if(forceFilter.contains(NONE)) {
+//                forceMarker.getMarker().setVisible(true);
+//            }
             else if(!forceFilter.contains(forceMarker.getType())) {
-                forceMarker.getMarker().setVisible(false);
+                if (!markerToVisible.containsKey(marker)) {
+                    markerToVisible.put(marker, false);
+                }
             }
         }
     }
@@ -259,15 +312,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      public void filterSensors(List<String> sensorFilter) {
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
+            Marker marker = sensorMarker.getMarker();
 
             if(sensorFilter.contains(sensorMarker.getType())) {
-                sensorMarker.getMarker().setVisible(true);
+                markerToVisible.put(marker, true);
             }
-            else if(sensorFilter.contains(NONE)) {
-                sensorMarker.getMarker().setVisible(true);
-            }
+//            else if(forceFilter.contains(NONE)) {
+//                forceMarker.getMarker().setVisible(true);
+//            }
             else if(!sensorFilter.contains(sensorMarker.getType())) {
-                sensorMarker.getMarker().setVisible(false);
+                if (!markerToVisible.containsKey(marker)) {
+                    markerToVisible.put(marker, false);
+                }
             }
         }
     }
@@ -288,39 +344,47 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private void filterOthers(List<String> otherFilters) {
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
+            Marker marker = sensorMarker.getMarker();
 
             if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero))) {
                 if(sensorMarker.getType().equals("HeartRate")) {
-                    hideIfNotDeadHeartRateSensor(sensorMarker);
-                } else {
-                    sensorMarker.getMarker().setVisible(false);
+                    showIfDeadHeartRateSensor(sensorMarker);
+                } else if (!markerToVisible.containsKey(marker)) {
+                    markerToVisible.put(marker, false);
                 }
             }
 
             if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration))) {
                 if(sensorMarker.getType().equals("Vibration")) {
-                    hideIfNotTrippedVibrationSensor(sensorMarker);
-                } else {
-                    sensorMarker.getMarker().setVisible(false);
+                    showIfTrippedVibrationSensor(sensorMarker);
+                } else if (!markerToVisible.containsKey(marker)) {
+                    markerToVisible.put(marker, false);
                 }
             }
             if(otherFilters.contains("Health=Service")) {
-                hideIfNotServiceHealth(sensorMarker);
+                showIfServiceHealth(sensorMarker);
+            }  else if (!markerToVisible.containsKey(marker)) {
+                markerToVisible.put(marker, false);
             }
 
             if(otherFilters.contains("Health=EOL")) {
-                hideIfNotEOLHealth(sensorMarker);
+                showIfEOLHealth(sensorMarker);
+            }  else if (!markerToVisible.containsKey(marker)) {
+                markerToVisible.put(marker, false);
             }
 
             if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
-                hideIfNotDeadBattery(sensorMarker);
+                showIfDeadBattery(sensorMarker);
+            }  else if (!markerToVisible.containsKey(marker)) {
+                markerToVisible.put(marker, false);
             }
         }
 
         for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
-
-            forceMarker.getMarker().setVisible(false);
+            Marker marker = forceMarker.getMarker();
+            if (!markerToVisible.containsKey(marker))
+                markerToVisible.put(marker, false);
         }
     }
 
@@ -328,12 +392,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * Hides heart rate sensors with nonzero values.
      * @param sensorMarker
      */
-    private void hideIfNotDeadHeartRateSensor(SensorMarker sensorMarker) {
+    private void showIfDeadHeartRateSensor(SensorMarker sensorMarker) {
         Long sensorID = getSensorId(sensorMarker);
         SensorData sensorData = getSensorData(sensorID);
+        Marker marker = sensorMarker.getMarker();
 
-        if(sensorData.getSensor_Val() != 0) {
-            sensorMarker.getMarker().setVisible(false);
+        if(sensorData.getSensor_Val() == 0) {
+            markerToVisible.put(marker, true);
+        }  else if (!markerToVisible.containsKey(marker)) {
+            markerToVisible.put(marker, false);
         }
     }
 
@@ -341,12 +408,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * Hides vibration sensors that have not been tripped.
      * @param sensorMarker
      */
-    private void hideIfNotTrippedVibrationSensor(SensorMarker sensorMarker) {
+    private void showIfTrippedVibrationSensor(SensorMarker sensorMarker) {
         Long sensorID = getSensorId(sensorMarker);
         SensorData sensorData = getSensorData(sensorID);
+        Marker marker = sensorMarker.getMarker();
 
-        if(sensorData.getSensor_Val() < 1) {
-            sensorMarker.getMarker().setVisible(false);
+        if(sensorData.getSensor_Val() > 1) {
+            markerToVisible.put(marker, true);
+        }  else if (!markerToVisible.containsKey(marker)) {
+            markerToVisible.put(marker, false);
         }
     }
 
@@ -354,12 +424,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * Hides sensors that don't have dead batteries.
      * @param sensorMarker
      */
-    private void hideIfNotDeadBattery(SensorMarker sensorMarker) {
+    private void showIfDeadBattery(SensorMarker sensorMarker) {
         Long sensorID = getSensorId(sensorMarker);
         SensorData sensorData = getSensorData(sensorID);
+        Marker marker = sensorMarker.getMarker();
 
-        if(sensorData.getBattery() != 0) {
-            sensorMarker.getMarker().setVisible(false);
+        if(sensorData.getBattery() == 0) {
+            markerToVisible.put(marker, true);
+        }  else if (!markerToVisible.containsKey(marker)) {
+            markerToVisible.put(marker, false);
         }
     }
 
@@ -367,12 +440,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * Hides sensors that don't have health=service.
      * @param sensorMarker
      */
-    private void hideIfNotServiceHealth(SensorMarker sensorMarker) {
+    private void showIfServiceHealth(SensorMarker sensorMarker) {
         Long sensorID = getSensorId(sensorMarker);
         SensorData sensorData = getSensorData(sensorID);
+        Marker marker = sensorMarker.getMarker();
 
-        if(!sensorData.getSensorHealth().equals("Service")) {
-            sensorMarker.getMarker().setVisible(false);
+        if(sensorData.getSensorHealth().equals("Service")) {
+            markerToVisible.put(marker, true);
+        }  else if (!markerToVisible.containsKey(marker)) {
+            markerToVisible.put(marker, false);
         }
     }
 
@@ -380,12 +456,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * Hides sensors that don't have health=service.
      * @param sensorMarker
      */
-    private void hideIfNotEOLHealth(SensorMarker sensorMarker) {
+    private void showIfEOLHealth(SensorMarker sensorMarker) {
         Long sensorID = getSensorId(sensorMarker);
         SensorData sensorData = getSensorData(sensorID);
+        Marker marker = sensorMarker.getMarker();
 
-        if(!sensorData.getSensorHealth().equals("EOL")) {
-            sensorMarker.getMarker().setVisible(false);
+        if(sensorData.getSensorHealth().equals("EOL")) {
+            markerToVisible.put(marker, true);
+        }  else if (!markerToVisible.containsKey(marker)) {
+            markerToVisible.put(marker, false);
         }
     }
 

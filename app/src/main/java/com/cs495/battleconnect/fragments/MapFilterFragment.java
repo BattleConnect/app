@@ -128,6 +128,7 @@ public class MapFilterFragment extends DialogFragment {
 
         builder.setPositiveButton(R.string.filterPositive, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                mListener.initializeFilter();
                 if(toggleAdapter != null && toggleAdapter.getGroupCount() != 0 && toggleAdapter.getSelectedItems(0) != null) {
                     mListener.getSelectedToggleFilter(toggleAdapter.getSelectedItems(0));
                     mListener.getSelectedToggleFilterIndicesBoolean(toggleAdapter.getSelectedFilterIndicesBoolean(0));
@@ -147,6 +148,7 @@ public class MapFilterFragment extends DialogFragment {
                     mListener.getSelectedOtherFilter(otherAdapter.getSelectedItems(0));
                     mListener.getSelectedOtherFilterIndicesBoolean(otherAdapter.getSelectedFilterIndicesBoolean(0));
                 }
+                mListener.filter();
             }
         });
         builder.setNegativeButton(R.string.filterNegative, new DialogInterface.OnClickListener() {
@@ -159,6 +161,7 @@ public class MapFilterFragment extends DialogFragment {
     }
 
     public interface MapFilterFragmentListener{
+        void initializeFilter();
         void getSelectedToggleFilter(List<String> filters);
         void getSelectedSensorTypeFilter(List<String> filters);
         void getSelectedForceTypeFilter(List<String> filters);
@@ -167,6 +170,7 @@ public class MapFilterFragment extends DialogFragment {
         void getSelectedSensorFilterIndicesBoolean(boolean[] indices);
         void getSelectedForceFilterIndicesBoolean(boolean[] indices);
         void getSelectedOtherFilterIndicesBoolean(boolean[] indices);
+        void filter();
     }
 
     /**
