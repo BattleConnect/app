@@ -1,5 +1,8 @@
 package com.cs495.battleconnect;
 
+import android.app.Activity;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.cs495.battleconnect.adapters.SensorAdapter;
@@ -21,6 +24,7 @@ public class SensorFilterTest {
     List<SensorResponse> sensorList = new ArrayList();
     List<String> filterList = new ArrayList();
     SensorAdapter adapter;
+    private Context instrumentationCtx;
 
     @Before
     public void setUp(){

@@ -174,7 +174,7 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
     public void filter(List<String> filters){
         filteredList.clear();
 
-        if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals(NONE)){
+        if(filters == null || filters.size() == 0 || filters.get(0).toLowerCase().equals("NONE")){
             filteredList = new ArrayList<>(sensorList);
         }
 
@@ -183,17 +183,17 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
                 if(sensorList.get(i).getSensor_Type().equals(filters.get(j))){
                     filteredList.add(sensorList.get(i));
                 }
-                if(filters.get(j).equals(mFragment.getString(R.string.heartbeat_zero))){
-                    if(sensorList.get(i).getSensor_Type().equals(mFragment.getString(R.string.heartbeat)) && sensorList.get(i).getSensor_Val() == 0){
+                if(filters.get(j).equals("Heartbeat=0")){
+                    if(sensorList.get(i).getSensor_Type().equals("HeartRate") && sensorList.get(i).getSensor_Val() == 0){
                         filteredList.add(sensorList.get(i));
                     }
                 }
-                if(filters.get(j).equals(mFragment.getString(R.string.tripped_vibration))){
-                    if(sensorList.get(i).getSensor_Type().equals(mFragment.getString(R.string.vibration)) && sensorList.get(i).getSensor_Val() > 0){
+                if(filters.get(j).equals("Tripped Vibration Sensor")){
+                    if(sensorList.get(i).getSensor_Type().equals("Vibration") && sensorList.get(i).getSensor_Val() > 0){
                         filteredList.add(sensorList.get(i));
                     }
                 }
-                if(filters.get(j).equals(mFragment.getString(R.string.dead_battery))){
+                if(filters.get(j).equals("Dead Battery")){
                     if(sensorList.get(i).getBattery() == 0){
                         filteredList.add(sensorList.get(i));
                     }

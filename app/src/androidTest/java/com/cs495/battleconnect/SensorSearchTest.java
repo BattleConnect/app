@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 public class SensorSearchTest {
     SensorRecyclerViewFragment fragment;
     List<SensorResponse> sensorList = new ArrayList();
-    List<String> filterList = new ArrayList();
     SensorAdapter adapter;
 
     @Before

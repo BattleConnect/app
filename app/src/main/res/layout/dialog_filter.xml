@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorRight"
         android:divider="#A4C739"
-        android:dividerHeight="0.5dp"
-        android:layout_weight="1" />
+        android:dividerHeight=".5dp"
+        android:layout_weight="1"
+        />
 
 </LinearLayout>
