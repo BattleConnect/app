@@ -64,6 +64,10 @@ public class SensorRecyclerViewFragment extends Fragment {
         return view;
     }
 
+    /**
+     * configures the filter button to open the filter dialog fragment
+     */
+
     private void configureFilterButton() {
         final Button filterButton = view.findViewById(R.id.filterButton);
 
@@ -76,12 +80,20 @@ public class SensorRecyclerViewFragment extends Fragment {
         });
     }
 
+    /**
+     * configures the search bar and query listener
+     */
+
     private void configureSearch() {
         sensorSearch.setIconifiedByDefault(false);
         sensorSearch.setOnQueryTextListener(searchQueryListener);
         sensorSearch.setSubmitButtonEnabled(true);
     }
 
+
+    /**
+     * search query listener that uses the adapter to search when input is detected in the searchview
+     */
     private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -97,15 +109,27 @@ public class SensorRecyclerViewFragment extends Fragment {
 
     };
 
+    /**
+     * used by the activity to update which filters are selected. the activity uses the interface from the dialog fragment
+     * to get the selected values, then calls this update functions to pass the values to the recyclerview adapter
+     * @param filters
+     */
     public void updateMultipleSelectedSensorFilters(List<String> filters) {
         adapter.filter(filters);
     }
 
-
+    /**
+     * used by the activity to set the selected filter indices within the recycler fragment
+     * @param indices
+     */
     public void updateSelectedFilterIndicesBoolean(boolean[] indices) {
         filterIndices = indices;
     }
 
+    /**
+     * used by the activity to set the selected filter indices of the "other" tab within the recycler fragment
+     * @param indices
+     */
     public void updateOtherSelectedFilterIndicesBoolean(boolean[] indices){
         otherFilterIndices = indices;
     }
@@ -117,8 +141,11 @@ public class SensorRecyclerViewFragment extends Fragment {
 
     }
 
+    /**
+     * gets the sensor data from firestore and adds the data to a list, then sets the adapter
+     */
+
     private void loadSensorList() {
-        Log.i(TAG, "START");
         db.collection(SENSORS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

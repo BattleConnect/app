@@ -32,10 +32,19 @@ public class SensorFilterDialogFragment extends DialogFragment {
          return f;
     }
 
+    /**
+     * function gets the filters that are already selected by passing them back and forth between activity and fragment
+     * @return checked states from the activity
+     */
+
     public boolean[] getCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("checkedStatesFromActivity");
     }
 
+    /**
+     * same as other getChecked function, but for the "other tab"
+     * @return checked filters under the "other" tab
+     */
     public boolean[] getOtherCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("otherCheckedStatesFromActivity");
     }
@@ -82,6 +91,10 @@ public class SensorFilterDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+        this interface allows the filter values and their respective indices to be passed back to the activity
+     */
+
     public interface FilterDialogFragmentListener{
         void getMultipleSelectedSensorFilters(List<String> filters);
         void getSelectedFilterIndicesBoolean(boolean[] indices);
@@ -97,6 +110,10 @@ public class SensorFilterDialogFragment extends DialogFragment {
             throw new ClassCastException(getActivity().toString() + " must implement FilterDialogFragmentListener");
         }
     }
+
+    /**
+     * sets up the filter list options
+     */
 
     public void loadListData(){
         listDataHeader = new ArrayList<String>();

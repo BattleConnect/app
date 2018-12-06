@@ -208,6 +208,9 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
     /**
      * Searches the items in the recycler view to find the corresponding item
+     * FilteredListForSearch is used to hold a previously filtered list that can then be searched.  If the search text is then
+     * erased, the recycler can then revert back to this FilteredListForSearch to display the items pertaining to the original
+     * filtering, so that simultaneous searching/filtering is enabled
      * @param text
      */
     public void search(String text){
