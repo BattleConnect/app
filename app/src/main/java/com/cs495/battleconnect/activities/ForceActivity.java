@@ -29,6 +29,20 @@ public class ForceActivity extends AppCompatActivity implements ForceFilterDialo
         transaction.commit();
     }
 
+    /**
+     * gets a list of filters from the sensorfilterdialogfragment and calls the recyclerviewfragment update function
+     * which then uses the adapter to filter based on those values
+     * @param filters
+     */
+    @Override
+    public void getMultipleSelectedForceFilters(List<String> filters) {
+        fragment.updateMultipleSelectedForceFilters(filters);
+    }
+
+    /**
+     * gets a list of filter indices from the sensorfilterdialogfragment and passes them along to the recyclerviewfragment
+     * @param indices
+     */
     @Override
     public void getSelectedFilterIndicesBoolean(boolean[] indices) {
         fragment.updateSelectedFilterIndicesBoolean(indices);

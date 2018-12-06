@@ -58,6 +58,7 @@ public class ForceFilterDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 List<String> filters = new ArrayList();
                 filters.addAll(listAdapter.getSelectedItems(0));
+                mListener.getMultipleSelectedForceFilters(filters);
                 mListener.getSelectedFilterIndicesBoolean(listAdapter.getSelectedFilterIndicesBoolean(0));
 
             }
@@ -73,6 +74,7 @@ public class ForceFilterDialogFragment extends DialogFragment {
     }
 
     public interface FilterDialogFragmentListener {
+        void getMultipleSelectedForceFilters(List<String> filters);
         void getSelectedFilterIndicesBoolean(boolean[] indices);
     }
 
