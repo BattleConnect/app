@@ -197,6 +197,8 @@ public class MapFilterFragment extends DialogFragment {
         List<String> sensorType = new ArrayList<>();
         sensorType.add(getResources().getString(R.string.heartbeat_zero));
         sensorType.add(getResources().getString(R.string.tripped_vibration));
+        sensorType.add("Health=Service");
+        sensorType.add("Health=EOL");
         sensorType.add(getResources().getString(R.string.dead_battery));
 
         otherDataChild.put(otherDataHeader.get(0), sensorType);

@@ -92,10 +92,12 @@ public class MapSensorDialogFragment extends DialogFragment {
         sensorHealthTextView.setText(mSensorData.getSensorHealth());
 
         LinearLayout healthWrapper = getView().findViewById(R.id.health_wrapper);
-        if (mSensorData.getSensorHealth().equals("Good"))
-            healthWrapper.setBackgroundResource(R.color.good_health);
-        else
-            healthWrapper.setBackgroundResource(R.color.bad_health);
+        if (mSensorData.getSensorHealth().equals(getString(R.string.health_good)))
+            healthWrapper.setBackgroundResource(R.color.health_good);
+        else if (mSensorData.getSensorHealth().equals(getString(R.string.health_service)))
+            healthWrapper.setBackgroundResource(R.color.health_service);
+        else if (mSensorData.getSensorHealth().equals(getString(R.string.health_EOL)))
+            healthWrapper.setBackgroundResource(R.color.health_EOL);
 
         TextView batteryTextView = getView().findViewById(R.id.battery);
         batteryTextView.setText(mSensorData.getBattery() + "%");
@@ -104,14 +106,14 @@ public class MapSensorDialogFragment extends DialogFragment {
 
         ImageView batteryIcon = getView().findViewById(R.id.bat_icon);
         if (mSensorData.getBattery() <= 5) {
-            batteryWrapper.setBackgroundResource(R.color.low_battery);
-            batteryIcon.setBackgroundColor(getResources().getColor(R.color.low_battery));
+            batteryWrapper.setBackgroundResource(R.color.battery_low);
+            batteryIcon.setBackgroundColor(getResources().getColor(R.color.battery_low));
         } else if (mSensorData.getBattery() <= 20) {
-            batteryWrapper.setBackgroundResource(R.color.med_battery);
-            batteryIcon.setBackgroundColor(getResources().getColor(R.color.med_battery));
+            batteryWrapper.setBackgroundResource(R.color.battery_med);
+            batteryIcon.setBackgroundColor(getResources().getColor(R.color.battery_med));
         } else {
-            batteryWrapper.setBackgroundResource(R.color.high_battery);
-            batteryIcon.setBackgroundColor(getResources().getColor(R.color.high_battery));
+            batteryWrapper.setBackgroundResource(R.color.battery_high);
+            batteryIcon.setBackgroundColor(getResources().getColor(R.color.battery_high));
         }
     }
 

@@ -29,14 +29,15 @@ public class SensorSearchTest {
         fragment = new SensorRecyclerViewFragment();
 
         sensorList.add(new SensorResponse(1541060296, 33.81604, 66.7767, 77, "Good", 378357, "HeartRate", 0));
-        sensorList.add(new SensorResponse(341060296, 33.81604, 66.7767, 96, "Poor", 459294, "Vibration", 10));
-        sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Fair", 383745, "Asset", 77));
+        sensorList.add(new SensorResponse(341060296, 33.81604, 66.7767, 96, "EOL", 459294, "Vibration", 10));
+        sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Service", 383745, "Asset", 77));
         sensorList.add(new SensorResponse(1569370296, 33.81604, 66.7767, 85, "Good", 191234, "Temp", 34));
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 0, "Good", 982371, "Moisture", 63));
-        sensorList.add(new SensorResponse(341060296, 33.81604, 66.7767, 96, "Poor", 387531, "Vibration", 0));
+        sensorList.add(new SensorResponse(341060296, 33.81604, 66.7767, 96, "EOL", 387531, "Vibration", 0));
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 55, "Good", 234958, "Moisture", 63));
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 10, "Good", 383741, "Moisture", 63));
-        sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Fair", 456742, "Asset", 77331));
+        sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Service", 456742, "Asset", 7731));
+
 
         adapter = new SensorAdapter(fragment, sensorList);
 

@@ -302,6 +302,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     sensorMarker.getMarker().setVisible(false);
                 }
             }
+            if(otherFilters.contains("Health=Service")) {
+                hideIfNotServiceHealth(sensorMarker);
+            }
+
+            if(otherFilters.contains("Health=EOL")) {
+                hideIfNotEOLHealth(sensorMarker);
+            }
 
             if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
                 hideIfNotDeadBattery(sensorMarker);
@@ -333,8 +340,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * @param sensorMarker
      */
     private void hideIfNotTrippedVibrationSensor(SensorMarker sensorMarker) {
-        Long sensorID = sensorIdToMarker.inverse().get(sensorMarker.getMarker());
-        SensorData sensorData = sensorIdToSensorData.get(sensorID);
+        Long sensorID = getSensorId(sensorMarker);
+        SensorData sensorData = getSensorData(sensorID);
 
         if(sensorData.getSensor_Val() < 1) {
             sensorMarker.getMarker().setVisible(false);
@@ -346,10 +353,36 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      * @param sensorMarker
      */
     private void hideIfNotDeadBattery(SensorMarker sensorMarker) {
-        Long sensorID = sensorIdToMarker.inverse().get(sensorMarker.getMarker());
-        SensorData sensorData = sensorIdToSensorData.get(sensorID);
+        Long sensorID = getSensorId(sensorMarker);
+        SensorData sensorData = getSensorData(sensorID);
 
         if(sensorData.getBattery() != 0) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+    }
+
+    /**
+     * Hides sensors that don't have health=service.
+     * @param sensorMarker
+     */
+    private void hideIfNotServiceHealth(SensorMarker sensorMarker) {
+        Long sensorID = getSensorId(sensorMarker);
+        SensorData sensorData = getSensorData(sensorID);
+
+        if(!sensorData.getSensorHealth().equals("Service")) {
+            sensorMarker.getMarker().setVisible(false);
+        }
+    }
+
+    /**
+     * Hides sensors that don't have health=service.
+     * @param sensorMarker
+     */
+    private void hideIfNotEOLHealth(SensorMarker sensorMarker) {
+        Long sensorID = getSensorId(sensorMarker);
+        SensorData sensorData = getSensorData(sensorID);
+
+        if(!sensorData.getSensorHealth().equals("EOL")) {
             sensorMarker.getMarker().setVisible(false);
         }
     }

@@ -135,6 +135,8 @@ public class SensorFilterDialogFragment extends DialogFragment {
         List<String> otherFilters = new ArrayList();
         otherFilters.add(getResources().getString(R.string.heartbeat_zero));
         otherFilters.add(getResources().getString(R.string.tripped_vibration));
+        otherFilters.add("Health=Service");
+        otherFilters.add("Health=EOL");
         otherFilters.add(getResources().getString(R.string.dead_battery));
 
 

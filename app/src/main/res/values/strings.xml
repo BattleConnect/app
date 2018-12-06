@@ -19,6 +19,10 @@
     <string name="moisture">Moisture</string>
     <string name="temperature">Temp</string>
 
+    <string name="health_good">Good</string>
+    <string name="health_service">Service</string>
+    <string name="health_EOL">EOL</string>
+
     <string name="force_type">Force Type</string>
     <string name="company">Company HQ</string>
     <string name="platoon">Platoon</string>

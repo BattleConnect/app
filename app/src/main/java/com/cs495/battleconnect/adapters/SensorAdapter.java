@@ -77,25 +77,28 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
         //set the background color for the battery info based on the battery %
         if(currentItem.getBattery() <= 5) {
-            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.low_battery));
-            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.low_battery));
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.battery_low));
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.battery_low));
         }
         else if (currentItem.getBattery() <= 20) {
-            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.med_battery));
-            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.med_battery));
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.battery_med));
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.battery_med));
         }
         else {
-            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.high_battery));
-            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.high_battery));
+            holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.battery_high));
+            holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.battery_high));
         }
 
         holder.SensorHealth.setText("Health: " + currentItem.getSensorHealth());
         //if the health is good show the user a green background if the health is bad show a red background
-        if(currentItem.getSensorHealth().equalsIgnoreCase(GOOD)) {
-            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.good));
+        if(currentItem.getSensorHealth().equalsIgnoreCase(mFragment.getActivity().getApplication().getString(R.string.health_good))) {
+            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.health_good));
         }
-        else {
-            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.bad));
+        else if (currentItem.getSensorHealth().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.health_service))) {
+            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.health_service));
+        }
+        else if (currentItem.getSensorHealth().equalsIgnoreCase(mFragment.getActivity().getApplication().getResources().getString(R.string.health_EOL))){
+            holder.SensorHealth.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.health_EOL));
         }
 
         holder.Sensor_ID.setText("ID: " + String.valueOf(currentItem.getSensor_ID()));
@@ -186,6 +189,16 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
                     }
                     if (filters.get(j).equals("Tripped Vibration Sensor")) {
                         if (sensorList.get(i).getSensor_Type().equals("Vibration") && sensorList.get(i).getSensor_Val() > 0) {
+                            filteredList.add(sensorList.get(i));
+                        }
+                    }
+                    if (filters.get(j).equals("Health=Service")) {
+                        if (sensorList.get(i).getSensorHealth().equals("Service")) {
+                            filteredList.add(sensorList.get(i));
+                        }
+                    }
+                    if (filters.get(j).equals("Health=EOL")) {
+                        if (sensorList.get(i).getSensorHealth().equals("EOL")) {
                             filteredList.add(sensorList.get(i));
                         }
                     }
