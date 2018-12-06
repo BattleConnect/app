@@ -4,6 +4,9 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
+/**
+ * This class is for creating buttons that are ensured to be square shaped.
+ */
 public class SquareButton extends AppCompatButton {
     public SquareButton(Context context) {
         super(context);
@@ -17,6 +20,11 @@ public class SquareButton extends AppCompatButton {
         super(context, attrs, defStyleAttr);
     }
 
+    /**
+     * Set the dimensions of the button such that width=height.
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);

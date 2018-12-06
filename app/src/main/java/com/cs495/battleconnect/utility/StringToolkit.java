@@ -6,6 +6,9 @@ import android.text.style.StyleSpan;
 
 import java.util.Locale;
 
+/**
+ * This class contains static methods for manipulating text/strings.
+ */
 public class StringToolkit {
     /**
      * Makes a substring of a string bold.
@@ -13,7 +16,6 @@ public class StringToolkit {
      * @param textToBold    Text you want to make bold
      * @return              String with bold substring
      */
-
     public static SpannableStringBuilder makeSectionOfTextBold(String text, String textToBold){
 
         SpannableStringBuilder builder=new SpannableStringBuilder();

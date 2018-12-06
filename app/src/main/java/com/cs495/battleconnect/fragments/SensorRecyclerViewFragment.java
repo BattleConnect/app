@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public class SensorRecyclerViewFragment extends Fragment {
     private static final String TAG = "SensorActivity";
-    private static final String SENSORS = "sensors";
+    private static final String SENSORS = "sensorDataList";
 
     View view;
 

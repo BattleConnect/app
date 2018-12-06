@@ -12,22 +12,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.cs495.battleconnect.R;
 import com.cs495.battleconnect.holders.objects.SensorData;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapSensorDialogFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapSensorDialogFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class shows the data associated with a sensor when that sensor's marker is clicked on the map.
  */
 public class MapSensorDialogFragment extends DialogFragment {
     private static final String SENSOR_DATA = "param1";
     private SensorData mSensorData;
 
+    /**
+     * The constructor for this class.
+     * @param sensorData The data associated with the sensor whose data we want to display.
+     * @return
+     */
     public static MapSensorDialogFragment newInstance(SensorData sensorData) {
         MapSensorDialogFragment fragment = new MapSensorDialogFragment();
         Bundle bundle = new Bundle();
@@ -44,8 +43,6 @@ public class MapSensorDialogFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_map_sensor_dialog, container, false);
     }
 
-        //private OnFragmentInteractionListener mListener;
-
     public MapSensorDialogFragment() {
         // Required empty public constructor
     }
@@ -57,34 +54,21 @@ public class MapSensorDialogFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceStat) {
+        //After the view is created, update the information on the screen to reflect the sensor's data.
         updateSensorInfo();
 
+        //Configure the listener on the close button.
         final Button button = getView().findViewById(R.id.button_close);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dismiss();
             }
         });
-//
-//        final Button button = getView().findViewById(R.id.see_history_btn);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Bundle bundle = new Bundle();
-//                bundle.putLong("SENSOR_ID", mSensorData.getSensor_ID());
-//                SensorHistoryFragment fragment = new SensorHistoryFragment();
-//                fragment.setArguments(bundle);
-//
-//                FragmentManager manager = getFragmentManager();
-//                FragmentTransaction transaction = manager.beginTransaction();
-//                transaction.replace(R.id.frameLayout, fragment);
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-//                dismiss();
-//            }
-//        });
     }
 
-
+    /**
+     * Updates the information shown about the sensor on the screen.
+     */
     void updateSensorInfo() {
         if (getView() == null) {
             return;
@@ -131,7 +115,10 @@ public class MapSensorDialogFragment extends DialogFragment {
         }
     }
 
-
+    /**
+     * Gets the icon associated with a sensor based on the sensor's type.
+     * @return
+     */
     public int getSensorIcon() {
         String sensorType = mSensorData.getSensor_Type();
 

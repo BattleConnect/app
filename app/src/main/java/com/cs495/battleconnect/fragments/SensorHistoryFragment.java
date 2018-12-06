@@ -25,22 +25,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SensorHistoryFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SensorHistoryFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This fragment shows the history of a sensor.
+ * The history of a sensor consists of a graph showing the sensor's value over time.
  */
 public class SensorHistoryFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String SENSOR_ID = "param1";
 
-    // TODO: Rename and change types of parameters
     private long mSensorId;
-
-    //private OnFragmentInteractionListener mListener;
 
     public SensorHistoryFragment() {
         // Required empty public constructor
@@ -49,23 +41,7 @@ public class SensorHistoryFragment extends Fragment {
     private static final String TAG = SensorHistoryFragment.class.getName();
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    List<SensorData> sensors = new ArrayList<>();
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment SensorHistoryFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-//    public static SensorHistoryFragment newInstance(long param1) {
-//        SensorHistoryFragment fragment = new SensorHistoryFragment();
-//        Bundle args = new Bundle();
-//        args.putLong(SENSOR_ID, param1);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
+    List<SensorData> sensorDataList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,13 +59,14 @@ public class SensorHistoryFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_sensor_history, container, false);
     }
 
-//    @Override
-//    public void onViewCreated(View view, @Nullable Bundle savedInstanceStat) {
-//    }
 
+    /**
+     * Gets all of the data associated with a particular sensor from Firebase.
+     * @param sensorId
+     */
     void getSensorData(final long sensorId) {
         System.out.println("getting sensor data");
-        db.collection("sensors")
+        db.collection("sensorDataList")
                 .whereEqualTo("Sensor_ID", sensorId)
                 .orderBy("Date_Time")
                 .get()
@@ -99,7 +76,7 @@ public class SensorHistoryFragment extends Fragment {
                         if (task.isSuccessful()) {
                             for(QueryDocumentSnapshot document : task.getResult()) {
                                 SensorData sensorData = document.toObject(SensorData.class);
-                                sensors.add(sensorData);
+                                sensorDataList.add(sensorData);
                             }
                             updateSensorInfo();
                             updateGraph();
@@ -110,13 +87,17 @@ public class SensorHistoryFragment extends Fragment {
                 });
     }
 
+    /**
+     * Updates the information shown about the sensor on the screen.
+     */
     void updateSensorInfo() {
+        //The view may be null if the user clicked the back button immediately after opening the sensor history fragment.
         if (getView() == null) {
-            System.out.println("sensor history fragment view is null");
+            Log.d("SensorHistory", "View is null.");
             return;
         }
 
-        SensorData sensorData = sensors.get(sensors.size()-1);
+        SensorData sensorData = sensorDataList.get(sensorDataList.size()-1);
 
         ((TextView) getView().findViewById(R.id.id)).setText(String.valueOf(sensorData.getSensor_ID()));
 
@@ -136,9 +117,14 @@ public class SensorHistoryFragment extends Fragment {
         ((TextView) getView().findViewById(R.id.battery)).setText(sensorData.getBattery() + "%");
     }
 
+    /**
+     * Updates the data in the graph shown on the screen.
+     * The graph shows the values of a sensor over time. Y-axis = sensor values. X-axis = timestamps.
+     */
     void updateGraph() {
+        //The view may be null if the user clicked the back button immediately after opening the sensor history fragment.
         if (getView() == null) {
-            System.out.println("sensor history fragment view is null");
+            Log.d("SensorHistory", "View is null.");
             return;
         }
 
@@ -160,7 +146,6 @@ public class SensorHistoryFragment extends Fragment {
                 if (isValueX) {
                     Date d = new Date((long) (value));
                     return (simpleDateFormat.format(d));
-                    //return super.formatLabel(value, isValueX);
                 }
                 else {
                     return super.formatLabel(value, isValueX);
@@ -168,65 +153,20 @@ public class SensorHistoryFragment extends Fragment {
             }
         });
 
-        graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-//
-//        // set manual x bounds to have nice steps
-//        graph.getViewport().setMinX(dataList.get(0).getX());
-//        graph.getViewport().setMaxX(dataList.get(dataList.size() - 1).getX());
-//        graph.getViewport().setXAxisBoundsManual(true);
-//
-
-//
-//
-//        graph.getGridLabelRenderer().setNumVerticalLabels(5); // only 4 because of the space
-//        graph.getViewport().setBackgroundColor(2);
+        //There isn't enough room on the screen to show more than three x-axis labels.
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
     }
 
+    /**
+     * Converts data about the sensor into data points for the graph.
+     * @return
+     */
     public ArrayList<DataPoint> data(){
         ArrayList<DataPoint> values = new ArrayList<>();
-        for (SensorData sensorData : sensors) {
+        for (SensorData sensorData : sensorDataList) {
             DataPoint dataPoint = new DataPoint(sensorData.getDate_Time(), sensorData.getSensor_Val());
             values.add(dataPoint);
         }
         return values;
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
 }

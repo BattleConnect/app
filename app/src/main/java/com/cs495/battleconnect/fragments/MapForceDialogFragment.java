@@ -11,22 +11,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.cs495.battleconnect.R;
 import com.cs495.battleconnect.holders.objects.ForceData;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MapSensorDialogFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MapSensorDialogFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class shows the data associated with a force when that force's marker is clicked on the map.
  */
 public class MapForceDialogFragment extends DialogFragment {
     private static final String FORCE_DATA = "param1";
     private ForceData mForceData;
 
+    /**
+     * The constructor for this class.
+     * @param forceData The data associated with the force whose data we want to display.
+     * @return
+     */
     public static MapForceDialogFragment newInstance(ForceData forceData) {
         MapForceDialogFragment fragment = new MapForceDialogFragment();
         Bundle bundle = new Bundle();
@@ -44,8 +43,6 @@ public class MapForceDialogFragment extends DialogFragment {
     }
 
 
-    //private OnFragmentInteractionListener mListener;
-
     public MapForceDialogFragment() {
         // Required empty public constructor
     }
@@ -57,33 +54,21 @@ public class MapForceDialogFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceStat) {
+        //After the view is created, update the information on the screen to reflect the sensor's data.
         updateForceInfo();
 
+        //Configure the listener on the close button.
         final Button button = getView().findViewById(R.id.button_close);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dismiss();
             }
         });
-//        final Button button = getView().findViewById(R.id.see_history_btn);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Bundle bundle = new Bundle();
-//                bundle.putLong("SENSOR_ID", mSensorData.getSensor_ID());
-//                SensorHistoryFragment fragment = new SensorHistoryFragment();
-//                fragment.setArguments(bundle);
-//
-//                FragmentManager manager = getFragmentManager();
-//                FragmentTransaction transaction = manager.beginTransaction();
-//                transaction.replace(R.id.frameLayout, fragment);
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-//                dismiss();
-//            }
-//        });
     }
 
-
+    /**
+     * Updates the information shown about the force on the screen.
+     */
     void updateForceInfo() {
         if (getView() == null) {
             return;
@@ -107,6 +92,10 @@ public class MapForceDialogFragment extends DialogFragment {
     }
 
 
+    /**
+     * Gets the icon associated with a sensor based on the sensor's type.
+     * @return
+     */
     public int getForceIcon() {
         String forceType = mForceData.getType();
 

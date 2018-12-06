@@ -73,20 +73,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     BiMap<Long, Marker> sensorIdToMarker = HashBiMap.create();
     BiMap<Long, SensorMarker> sensorIdToSensorMarker = HashBiMap.create();
 
-    public SensorData getSensorData(long sensorId) {
-        return sensorIdToSensorData.get(sensorId);
-    }
+    public SensorData getSensorData(long sensorId) { return sensorIdToSensorData.get(sensorId); }
     public long getSensorId(SensorData sensorData) { return sensorIdToSensorData.inverse().get(sensorData); }
 
-    public Marker getMarker(long sensorId) {
-        return sensorIdToMarker.get(sensorId);
-    }
-    public long getSensorId(Marker marker) {
-        return sensorIdToMarker.inverse().get(marker);
-    }
-    public Set<Marker> getSensorMarkers() {
-        return sensorIdToMarker.values();
-    }
+    public Marker getMarker(long sensorId) { return sensorIdToMarker.get(sensorId); }
+    public long getSensorId(Marker marker) { return sensorIdToMarker.inverse().get(marker); }
+    public Set<Marker> getSensorMarkers() { return sensorIdToMarker.values(); }
 
     public SensorMarker getSensorMarker(long sensorId) { return sensorIdToSensorMarker.get(sensorId); }
     public long getSensorId(SensorMarker sensorMarker) { return sensorIdToSensorMarker.inverse().get(sensorMarker); }
@@ -110,17 +102,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return forceIdToMarker.values();
     }
 
-    public ForceMarker getForceMarker(String forceId) {
-        return forceIdToForceMarker.get(forceId);
-    }
+    public ForceMarker getForceMarker(String forceId) { return forceIdToForceMarker.get(forceId); }
     public String getForceId(ForceMarker forceMarker) { return forceIdToForceMarker.inverse().get(forceMarker); }
 
     //Keeps tracks of animators associated with markers, if any. Tripped vibration sensors shake for example.
     Map<Marker, ValueAnimator> markerToAnimator = new HashMap();
 
-    public ValueAnimator getAnimator(Marker marker) {
-        return markerToAnimator.get(marker);
-    }
+    public ValueAnimator getAnimator(Marker marker) { return markerToAnimator.get(marker); }
 
     private static final String NONE = "none";
     boolean[] toggleFilterIndices = new boolean[2];
@@ -237,10 +225,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             else if(!forceFilter.contains(forceMarker.getType())) {
                 forceMarker.getMarker().setVisible(false);
             }
-
-//            if(forceFilter.size() == 0) {
-//                forceMarker.getMarker().setVisible(true);
-//            }
         }
     }
 
@@ -271,10 +255,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             else if(!sensorFilter.contains(sensorMarker.getType())) {
                 sensorMarker.getMarker().setVisible(false);
             }
-
-    //            if(sensorFilter.size() == 0) {
-    //                sensorMarker.getMarker().setVisible(true);
-    //            }
         }
     }
 
@@ -306,19 +286,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
                 hideIfNotDeadBattery(sensorMarker);
             }
-
-//            if(otherFilters.size() == 0) {
-//                sensorMarker.getMarker().setVisible(true);
-//            }
-        }
-
-        for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
-            ForceMarker forceMarker = entry.getValue();
-
-
-//            if(otherFilters.size() == 0) {
-//                forceMarker.getMarker().setVisible(true);
-//            }
         }
     }
 
