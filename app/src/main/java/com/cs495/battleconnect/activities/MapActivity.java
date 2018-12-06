@@ -166,6 +166,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void getSelectedToggleFilter(List<String> filters) {
         if(filters.size() != 0) toggleData(filters);
+        else {
+            for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
+                ForceMarker forceMarker = entry.getValue();
+                forceMarker.getMarker().setVisible(false);
+            }
+
+            for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
+                SensorMarker sensorMarker = entry.getValue();
+                sensorMarker.getMarker().setVisible(false);
+            }
+        }
     }
 
     /**
