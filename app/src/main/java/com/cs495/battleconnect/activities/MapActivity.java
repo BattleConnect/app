@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -556,23 +557,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     //Stores every icon that is created so that the same icon isn't created over and over again.
-    Map<Triplet<String, Integer, Integer>, Bitmap> icons = new HashMap<>();
+    Map<Triplet<Integer, Integer, Integer>, Bitmap> icons = new HashMap<>();
 
     /**
      * Resizes an icon.
-     * @param iconName The desired icon.
+     * @param icon The desired icon.
      * @param width
      * @param height
      * @return
      */
-    public Bitmap resizeMapIcon(String iconName, int width, int height){
-        Triplet<String, Integer, Integer> iconDesc = new Triplet<>(iconName, width, height);
+    public Bitmap resizeIcon(int icon, int width, int height){
+        Triplet<Integer, Integer, Integer> iconDesc = new Triplet<>(icon, width, height);
         //If an icon with the same specifications has been created before, obtain it from the icons dictionary.
         if (icons.containsKey(iconDesc)) {
             return icons.get(iconDesc);
         }
         else {
-            Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+            Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), icon);
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
             icons.put(iconDesc, resizedBitmap);
             return resizedBitmap;
@@ -591,19 +592,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         if (sensorType.equals("HeartRate")) {
             if (isDeadHeartRateSensor(sensorData)) {
-                return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("dead_heartrate", width, height));
+                return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.pointer_heart, width, height));
             }
             else
-                return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("pointer_heart", width, height));
+                return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.dead_heartrate, width, height));
         }
         else if (sensorType.equals("Moisture"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("water_drop", width, height));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.water_drop, width, height));
         else if (sensorType.equals("Vibration"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("vibration1", width, height));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.vibration1, width, height));
         else if (sensorType.equals("Asset"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("diamond", width, height));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.diamond, width, height));
         else if (sensorType.equals("Temp"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("thermometer", width, height));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.thermometer, width, height));
 
         return null;
     }
@@ -615,15 +616,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
      */
     public BitmapDescriptor getForceIcon(String forceType) {
         if (forceType.equals("Platoon"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("platoon", 150, 130));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.platoon, 150, 130));
         else if (forceType.equals("Squad"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("squad", 150, 130));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.squad, 150, 130));
         else if (forceType.equals("Enemy Unit"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("enemy_unit", 128, 128));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.enemy_unit, 128, 128));
         else if (forceType.equals("Preplanned Target"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("target", 128, 128));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.target, 128, 128));
         else if (forceType.equals("Company HQ"))
-            return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("company_hq", 100, 150));
+            return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.company_hq, 100, 150));
 
         return null;
     }
