@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -74,9 +75,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public SensorData getSensorData(long sensorId) {
         return sensorIdToSensorData.get(sensorId);
     }
-    public long getSensorId(SensorData sensorData) {
-        return sensorIdToSensorData.inverse().get(sensorData);
-    }
+    public long getSensorId(SensorData sensorData) { return sensorIdToSensorData.inverse().get(sensorData); }
 
     public Marker getMarker(long sensorId) {
         return sensorIdToMarker.get(sensorId);
@@ -88,12 +87,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return sensorIdToMarker.values();
     }
 
-    public SensorMarker getSensorMarker(long sensorId) {
-        return sensorIdToSensorMarker.get(sensorId);
-    }
-    public long getSensorId(SensorMarker sensorMarker) {
-        return sensorIdToSensorMarker.inverse().get(sensorMarker);
-    }
+    public SensorMarker getSensorMarker(long sensorId) { return sensorIdToSensorMarker.get(sensorId); }
+    public long getSensorId(SensorMarker sensorMarker) { return sensorIdToSensorMarker.inverse().get(sensorMarker); }
 
     BiMap<String, ForceData> forceIdToForceData = HashBiMap.create();
     BiMap<String, Marker> forceIdToMarker = HashBiMap.create();
@@ -102,9 +97,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public ForceData getForceData(String forceId) {
         return forceIdToForceData.get(forceId);
     }
-    public String getForceId(ForceData forceData) {
-        return forceIdToForceData.inverse().get(forceData);
-    }
+    public String getForceId(ForceData forceData) { return forceIdToForceData.inverse().get(forceData); }
 
     public Marker getMarker(String forceId) {
         return forceIdToMarker.get(forceId);
@@ -119,9 +112,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public ForceMarker getForceMarker(String forceId) {
         return forceIdToForceMarker.get(forceId);
     }
-    public String getForceId(ForceMarker forceMarker) {
-        return forceIdToForceMarker.inverse().get(forceMarker);
-    }
+    public String getForceId(ForceMarker forceMarker) { return forceIdToForceMarker.inverse().get(forceMarker); }
 
     //Keeps tracks of animators associated with markers, if any. Tripped vibration sensors shake for example.
     Map<Marker, ValueAnimator> markerToAnimator = new HashMap();
@@ -136,8 +127,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     boolean[] forceTypeFilterIndices;
     boolean[] otherFilterIndices;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +137,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         configureFilterButton();
     }
 
+    /**
+     * Attaches a listener to the filter button, so that when the filter button is clicked it will bring up the filter dialog.
+     */
     private void configureFilterButton(){
         final Button filterButton = (Button) findViewById(R.id.filterButton);
 
@@ -163,6 +155,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    /**
+     * Loads the google map fragment.
+     */
     private void initializeMap() {
         mMapFragment = SupportMapFragment.newInstance();
         mMapFragment.getMapAsync(this);
@@ -173,11 +168,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         transaction.commit();
     }
 
+    /**
+     * Gets the selected filters associated with toggling sensors and forces.
+     * @param filters
+     */
     @Override
     public void getSelectedToggleFilter(List<String> filters) {
         if(filters.size() != 0) toggleData(filters);
     }
 
+    /**
+     * Based on the selected filters, will toggle the sensors or forces on the map on/off.
+     * @param toggles
+     */
     public void toggleData(List<String> toggles) {
         if(toggles.contains(getResources().getString(R.string.forces))) {
             for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
@@ -204,12 +207,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Gets the selected filters associated with filtering forces by their type.
+     * @param filters
+     */
     @Override
     public void getSelectedForceTypeFilter(List<String> filters) {
         //Log.i("getSelectedSensorTypes", "returns " + type);
         if(filters.size() != 0) filterForces(filters);
     }
 
+    /**
+     * Filters the forces shown on the map based on their type.
+     * @param forceFilter
+     */
     public void filterForces(List<String> forceFilter) {
         for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
             ForceMarker forceMarker = entry.getValue();
@@ -230,12 +241,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Gets the selected filters associated with filtering sensors by their type.
+     * @param filters
+     */
     @Override
     public void getSelectedSensorTypeFilter(List<String> filters){
         //Log.i("getSelectedSensorTypes", "returns " + type);
         if(filters.size() != 0) filterSensors(filters);
     }
 
+    /**
+     * Filters the sensors shown on the map based on their type.
+     * @param sensorFilter
+     */
      public void filterSensors(List<String> sensorFilter) {
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
@@ -256,25 +275,33 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Gets the filter options selected that fall under the category of "Other filters".
+     * @param filters
+     */
     @Override
     public void getSelectedOtherFilter(List<String> filters) {
         if(filters.size() != 0) filterOthers(filters);
     }
 
+    /**
+     * Filters the sensors and forces on the map based on the filters selected under the "Other filters" category.
+     * @param otherFilters
+     */
     private void filterOthers(List<String> otherFilters) {
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 
             if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equals("Heart Rate")) {
-                showHeartbeatZero(sensorMarker);
+                hideIfNotDeadHeartRateSensor(sensorMarker);
             }
 
             if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration)) && sensorMarker.getType().equals("Vibration")) {
-                showTrippedVibration(sensorMarker);
+                hideIfNotTrippedVibrationSensor(sensorMarker);
             }
 
             if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
-                showDeadBattery(sensorMarker);
+                hideIfNotDeadBattery(sensorMarker);
             }
 
 //            if(otherFilters.size() == 0) {
@@ -292,16 +319,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-    private void showHeartbeatZero(SensorMarker sensorMarker) {
-        Long sensorID = sensorIdToMarker.inverse().get(sensorMarker.getMarker());
-        SensorData sensorData = sensorIdToSensorData.get(sensorID);
+    /**
+     * Hides heart rate sensors with nonzero values.
+     * @param sensorMarker
+     */
+    private void hideIfNotDeadHeartRateSensor(SensorMarker sensorMarker) {
+        Long sensorID = getSensorId(sensorMarker);
+        SensorData sensorData = getSensorData(sensorID);
 
         if(sensorData.getSensor_Val() != 0) {
             sensorMarker.getMarker().setVisible(false);
         }
     }
 
-    private void showTrippedVibration(SensorMarker sensorMarker) {
+    /**
+     * Hides vibration sensors that have not been tripped.
+     * @param sensorMarker
+     */
+    private void hideIfNotTrippedVibrationSensor(SensorMarker sensorMarker) {
         Long sensorID = sensorIdToMarker.inverse().get(sensorMarker.getMarker());
         SensorData sensorData = sensorIdToSensorData.get(sensorID);
 
@@ -310,7 +345,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-    private void showDeadBattery(SensorMarker sensorMarker) {
+    /**
+     * Hides sensors that don't have dead batteries.
+     * @param sensorMarker
+     */
+    private void hideIfNotDeadBattery(SensorMarker sensorMarker) {
         Long sensorID = sensorIdToMarker.inverse().get(sensorMarker.getMarker());
         SensorData sensorData = sensorIdToSensorData.get(sensorID);
 
@@ -319,21 +358,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Gets the indices of the filters selected associated with toggling sensors and forces on/off.
+     * @param indices
+     */
     @Override
     public void getSelectedToggleFilterIndicesBoolean(boolean[] indices) {
         toggleFilterIndices = indices;
     }
 
+    /**
+     * Gets the indices of the filters selected associated with sensors.
+     * @param indices
+     */
     @Override
     public void getSelectedSensorFilterIndicesBoolean(boolean[] indices){
         sensorTypeFilterIndices = indices;
     }
 
+    /**
+     * Gets the indices of the filters selected associated with forces.
+     * @param indices
+     */
     @Override
     public void getSelectedForceFilterIndicesBoolean(boolean[] indices){
         forceTypeFilterIndices = indices;
     }
 
+    /**
+     * Gets the indices of the filters selected that fall under the cateogory of "Other filters".
+     * @param indices
+     */
     @Override
     public void getSelectedOtherFilterIndicesBoolean(boolean[] indices) {
         otherFilterIndices = indices;
@@ -354,11 +409,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
         mMap.setOnMarkerClickListener(this);
         boundsBuilder = new LatLngBounds.Builder();
-        getSensorDataFromFirestore(null);
-        getForceDataFromFirestore(null);
+
+        //get sensor data and force data from firebase
+        getSensorDataFromFirebase(null);
+        getForceDataFromFirebase(null);
+
         addUserLocation(googleMap);
 
         mapView = mMapFragment.getView();
+
         //place current location button in top left corner
         if (mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
             View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
@@ -370,7 +429,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
 
         //show loading dialog
-        final ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
+        final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.setMessage("Retrieving data. Please wait...");
         dialog.setIndeterminate(true);
@@ -409,10 +468,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }, 1000);
     }
 
+    /**
+     * Overrides what happens when you click on a marker. When you click on a marker, an alert dialog is shown giving you more information about the specific sensor/force.
+     * @param marker
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Long sensorId = sensorIdToMarker.inverse().get(marker);
-        String forceId = forceIdToMarker.inverse().get(marker);
+        Long sensorId = getSensorId(marker);
+        String forceId = getForceId(marker);
 
         if (sensorId != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -427,70 +491,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             fragment.show(ft, "dialog");
         }
         return true;
-//
-//        String message = null;
-//
-//        if(sensorID != null) {
-//            message = displaySensorData(sensorID);
-//        }
-//        if(forceID != null) {
-//            message = displayForceData(forceID);
-//        }
-//
-//        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-//        builder1.setMessage(message);
-//        builder1.setCancelable(true);
-//
-//        builder1.setNegativeButton(
-//                "Close",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        dialog.cancel();
-//                    }
-//                });
-//
-//        AlertDialog alert11 = builder1.create();
-//        alert11.show();
-//
     }
 
-//    private String displaySensorData(Long sensorID) {
-//        SensorData sensorData = sensorIdToSensorData.get(sensorID);
-//
-//        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((Long) sensorData.getDate_Time()));
-//
-//        String message =
-//                "ID: " + sensorData.getSensor_ID() + "\n" +
-//                        "Type: " + sensorData.getSensor_Type() + "\n" +
-//                        "Value: " + sensorData.getSensor_Val() + "\n" +
-//                        "Timestamp: " + timestamp + "\n" +
-//                        "Health: " + sensorData.getSensorHealth()+ "\n" +
-//                        "Battery: " + sensorData.getBattery() + "%";
-//
-//        return message;
-//    }
-
-//    private String displayForceData(String forceID) {
-//        ForceData forceData = forceDataList.get(forceID);
-//
-//        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(new Date((Long) forceData.getDate_Time()));
-//
-//        String message =
-//                "ID: " + forceData.getID() + "\n" +
-//                        "Type: " + forceData.getType() + "\n" +
-//                        "Name: " + forceData.getName() + "\n" +
-//                        "Timestamp: " + timestamp + "\n" +
-//                        "Status: " + forceData.getStatus();
-//
-//        return message;
-//    }
-
+    /**
+     * Determines if a vibration sensor has been tripped or not.
+     * @param sensorData
+     * @return
+     */
     private boolean isTrippedVibrationSensor(SensorData sensorData) {
         if (sensorData.getSensor_Type().equals("Vibration") && sensorData.getSensor_Val() > 0)
             return true;
         return false;
     }
 
+    /**
+     * Determines if a heart rate sensor is a dead heart rate sensor or not.
+     * @param sensorData
+     * @return
+     */
     private boolean isDeadHeartRateSensor(SensorData sensorData) {
         if (sensorData.getSensor_Type().equals("HeartRate") && sensorData.getSensor_Val() == 0)
             return true;
@@ -498,6 +516,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
 
+    /**
+     * Adds a marker on the map that is associated with a sensor.
+     * @param sensorData
+     * @param sensorFilter If there is a filter currently selected, apply that filter to the marker being added.
+     */
     public void addSensorMarker(SensorData sensorData, String sensorFilter) {
         Long sensorID = sensorData.getSensor_ID();
         Double latitude = sensorData.getLat();
@@ -510,13 +533,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         sensorIdToMarker.put(sensorID, marker);
 
         //if the type of the newly added marker is currently filtered out
-        if(sensorFilter != null && type != sensorFilter.toString()) {
+        if(sensorFilter != null && type != sensorFilter) {
             marker.setVisible(false);
         }
 
         SensorMarker sensorMarker = new SensorMarker(sensorID, type, marker);
         sensorIdToSensorMarker.put(sensorID, sensorMarker);
-
 
         if (bounds == null)
             boundsBuilder.include(new LatLng(latitude, longitude));
@@ -524,6 +546,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             bounds.including(new LatLng(latitude, longitude));
     }
 
+    /**
+     * Creates a marker for a sensor.
+     * @param position The marker's location.
+     * @param sensorData
+     * @return
+     */
     public Marker createSensorMarker(LatLng position, SensorData sensorData) {
         Marker marker = mMap.addMarker(new MarkerOptions().position(position).icon(getSensorMapIcon(sensorData, 128, 128)).anchor(0.5f, 0.5f));
         if (sensorData.getSensor_Type().equals("Vibration") && isTrippedVibrationSensor(sensorData))
@@ -532,10 +560,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return marker;
     }
 
+    //Stores every icon that is created so that the same icon isn't created over and over again.
     Map<Triplet<String, Integer, Integer>, Bitmap> icons = new HashMap<>();
 
+    /**
+     * Resizes an icon.
+     * @param iconName The desired icon.
+     * @param width
+     * @param height
+     * @return
+     */
     public Bitmap resizeMapIcon(String iconName, int width, int height){
         Triplet<String, Integer, Integer> iconDesc = new Triplet<>(iconName, width, height);
+        //If an icon with the same specifications has been created before, obtain it from the icons dictionary.
         if (icons.containsKey(iconDesc)) {
             return icons.get(iconDesc);
         }
@@ -547,6 +584,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Gets the correct icon for a sensor based on the sensor's type.
+     * @param sensorData
+     * @param width
+     * @param height
+     * @return
+     */
     public BitmapDescriptor getSensorMapIcon(SensorData sensorData, int width, int height) {
         String sensorType = sensorData.getSensor_Type();
 
@@ -569,6 +613,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return null;
     }
 
+    /**
+     * Gets the right icon for a force based on the force's type.
+     * @param forceType
+     * @return
+     */
     public BitmapDescriptor getForceIcon(String forceType) {
         if (forceType.equals("Platoon"))
             return BitmapDescriptorFactory.fromBitmap(resizeMapIcon("platoon", 150, 130));
@@ -584,10 +633,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return null;
     }
 
-    public long getMarkerCount() {
+    /**
+     * Gets the total number of sensor markers on the map.
+     * @return
+     */
+    public long getSensorMarkerCount() {
         return sensorIdToMarker.values().size();
     }
 
+    /**
+     * Adds a marker to the map that is associated with a particular force.
+     * @param forceData
+     * @param forceFilter If there is a filter currently selected, apply that filter to the marker being added.
+     */
     public void addForceMarker(ForceData forceData, String forceFilter) {
         String forceID = forceData.getID();
         Double latitude = forceData.getLat();
@@ -614,12 +672,22 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             bounds.including(new LatLng(latitude, longitude));
     }
 
+    /**
+     * Creates a marker that is associated with a force.
+     * @param position
+     * @param type
+     * @return
+     */
     public Marker createForceMarker(LatLng position, String type) {
         Marker marker = mMap.addMarker(new MarkerOptions().position(position).icon(getForceIcon(type)));
         return marker;
     }
 
 
+    /**
+     * Adds a shaking animation to a particular map marker.
+     * @param marker
+     */
     public void setMarkerShake(final Marker marker) {
         if (marker != null) {
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f, -0.25f, 0.2f, -0.15f, 0.1f, 0.05f, 0f);
@@ -631,9 +699,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     try {
                         float v = (float) animation.getAnimatedValue();
                         marker.setAnchor(0.5f + v, 0.5f);
-                        //marker.setRotation(computeRotation(v, startRotation, destination.getBearing()));
                     } catch (Exception ex) {
-                        // I don't care atm..
+                        Log.d("MapActivity", "Marker animation failed to update.");
                     }
                 }
             });
@@ -642,6 +709,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    /**
+     * Updates a marker on the map associated with a sensor based on new data about that sensor.
+     * @param marker The marker's current sensor.
+     * @param sensorData The new data about the sensor.
+     */
     private void updateSensorMarker(Marker marker, SensorData sensorData) {
         LatLng newPosition = new LatLng(sensorData.getLat(), sensorData.getLong());
         marker.setPosition(newPosition);
@@ -653,12 +725,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             if (markerToAnimator.containsKey(marker)) {
                 ValueAnimator valueAnimator = markerToAnimator.get(marker);
                 if (valueAnimator != null) {
+                    //animation is running, but the sensor has no longer been tripped: pause the animation
                     if (valueAnimator.isRunning() && !isTrippedVibrationSensor(sensorData))
                         valueAnimator.pause();
+                    //animation is not running and the sensor has been tripped: resume the animation
                     if (valueAnimator.isPaused() && isTrippedVibrationSensor(sensorData))
                         valueAnimator.resume();
-                    //paused and not tripped, do nothing
-                    //running and tripped, do nothing
+                    //animation is not running but the sensor has not been tripped: do nothing
+                    //sensor has been tripped but the animation is already running: do nothing
                 }
             }
             else {
@@ -669,8 +743,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-
-    void getSensorDataFromFirestore(final String sensorFilter) {
+    /**
+     * Continuously retrieves sensor data from Firebase.
+     * @param sensorFilter Want to pass currently selected filters associated with sensors to addSensorMarker() .
+     */
+    void getSensorDataFromFirebase(final String sensorFilter) {
         db.collection("sensors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -689,7 +766,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         }
                         else {
                             sensorIdToSensorData.put(sensorID, sensorData);
-
                             addSensorMarker(sensorData, sensorFilter);
                         }
                     }
@@ -698,7 +774,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         });
     }
 
-    void getForceDataFromFirestore(final String forceFilter) {
+    /**
+     * Continuously retrieves force data from Firebase.
+     * @param forceFilter Want to pass currently selected filters associated with sensors to addForceMarker() .
+     */
+    void getForceDataFromFirebase(final String forceFilter) {
         db.collection("forces").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -717,7 +797,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         }
                         else {
                             forceIdToForceData.put(forceID, forceData);
-
                             addForceMarker(forceData, forceFilter);
                         }
                     }
@@ -725,6 +804,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
         });
     }
+
+    /**
+     * Ensures that the map gives the user the option to see their current location.
+     * @param map
+     */
     void addUserLocation(GoogleMap map){
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED &&

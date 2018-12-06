@@ -66,7 +66,7 @@ public class MapActivityTests {
                     }
                 });
         while (!moveOn);
-            assertEquals(mActivityRule.getActivity().getMarkerCount(), (long) sensorIds.size());
+            assertEquals(mActivityRule.getActivity().getSensorMarkerCount(), (long) sensorIds.size());
     }
 
     @Test
