@@ -21,8 +21,8 @@ public class ForceActivity extends AppCompatActivity implements ForceFilterDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forces);
 
+        //load the fragment that provides the recycler view for forces
         fragment = new ForceRecyclerViewFragment();
-
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.frameLayout, fragment);

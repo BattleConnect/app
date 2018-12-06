@@ -231,12 +231,6 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
         notifyDataSetChanged();
     }
 
-    private void swap( int i, int j) {
-        SensorResponse temp = filteredList.get(i);
-        filteredList.set(i,filteredList.get(j));
-        filteredList.set(j, temp);
-    }
-
     /**
      * Removes duplicate items from the list with the same ID. Keeps the item with the more recent timestamp.
      */

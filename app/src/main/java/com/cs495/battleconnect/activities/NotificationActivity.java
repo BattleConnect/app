@@ -46,6 +46,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
+        //get visual elements
         progressBar = findViewById(R.id.progress_bar);
         notificationList = findViewById(R.id.notification_list);
         notificationSearch = findViewById(R.id.notification_search);
@@ -57,9 +58,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         configureFilterButton();
     }
 
-    /**
-     *
-     */
     private void init() {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         notificationList.setLayoutManager(linearLayoutManager);
@@ -68,9 +66,6 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     }
 
-    /**
-     * Configure the search functionality.
-     */
     private void configureSearch(){
         notificationSearch.setIconifiedByDefault(false);
         notificationSearch.setOnQueryTextListener(searchQueryListener);
@@ -92,9 +87,7 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     };
 
-
     private void loadNotificationData() {
-
         db.collection(NOTIFICATIONS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

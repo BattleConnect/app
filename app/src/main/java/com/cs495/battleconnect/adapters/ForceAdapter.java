@@ -154,12 +154,6 @@ public class ForceAdapter extends RecyclerView.Adapter<ForceHolder> {
         notifyDataSetChanged();
     }
 
-    private void swap( int i, int j) {
-        ForceResponse temp = filteredList.get(i);
-        filteredList.set(i,filteredList.get(j));
-        filteredList.set(j, temp);
-    }
-
     /**
      * Filters the recyclerview content based on the filters selected
      * @param filters
