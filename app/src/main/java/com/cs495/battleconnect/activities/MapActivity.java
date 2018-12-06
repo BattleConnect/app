@@ -592,10 +592,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         if (sensorType.equals("HeartRate")) {
             if (isDeadHeartRateSensor(sensorData)) {
-                return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.pointer_heart, width, height));
+                return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.dead_heartrate, width, height));
             }
             else
-                return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.dead_heartrate, width, height));
+                return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.pointer_heart, width, height));
         }
         else if (sensorType.equals("Moisture"))
             return BitmapDescriptorFactory.fromBitmap(resizeIcon(R.drawable.water_drop, width, height));
