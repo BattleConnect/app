@@ -8,12 +8,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import com.cs495.battleconnect.UI.ExpListViewAdapterWithCheckbox;
 import com.cs495.battleconnect.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +35,11 @@ public class MapFilterFragment extends DialogFragment {
     HashMap<String, List<String>> sensorDataChild;
     HashMap<String, List<String>> forceDataChild;
     HashMap<String, List<String>> otherDataChild;
+
+    ExpListViewAdapterWithCheckbox toggleAdapter;
+    ExpListViewAdapterWithCheckbox sensorAdapter;
+    ExpListViewAdapterWithCheckbox forceAdapter;
+    ExpListViewAdapterWithCheckbox otherAdapter;
 
     boolean[] toggleCheckedStates;
     boolean[] sensorCheckedStates;
@@ -99,7 +106,15 @@ public class MapFilterFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View v = inflater.inflate(R.layout.map_filter_dialog, null);
         builder.setView(v);
-        builder.setTitle(R.string.filterButton);
+        final View title = inflater.inflate(R.layout.map_filter_dialog_title,null);
+        builder.setCustomTitle(title);
+        final Button button = title.findViewById(R.id.clearButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                clear();
+            }
+        });
+        //builder.setTitle(R.string.filterButton);
 
         ExpandableListView toggleListView = v.findViewById(R.id.toggleFilter);
         ExpandableListView sensorListView = v.findViewById(R.id.sensorFilter);
@@ -116,10 +131,10 @@ public class MapFilterFragment extends DialogFragment {
         forceCheckedStates = getForceCheckedStatesFromActivity();
         otherCheckedStates = getOtherCheckedStatesFromActivity();
 
-        final ExpListViewAdapterWithCheckbox toggleAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), toggleDataHeader, toggleDataChild, toggleCheckedStates, null);
-        final ExpListViewAdapterWithCheckbox sensorAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), sensorDataHeader, sensorDataChild, sensorCheckedStates, null);
-        final ExpListViewAdapterWithCheckbox forceAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), forceDataHeader, forceDataChild, forceCheckedStates, null);
-        final ExpListViewAdapterWithCheckbox otherAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), otherDataHeader, otherDataChild, otherCheckedStates, null);
+        toggleAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), toggleDataHeader, toggleDataChild, toggleCheckedStates, null);
+        sensorAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), sensorDataHeader, sensorDataChild, sensorCheckedStates, null);
+        forceAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), forceDataHeader, forceDataChild, forceCheckedStates, null);
+        otherAdapter = new ExpListViewAdapterWithCheckbox(this.getActivity(), otherDataHeader, otherDataChild, otherCheckedStates, null);
 
         toggleListView.setAdapter(toggleAdapter);
         sensorListView.setAdapter(sensorAdapter);
@@ -160,7 +175,19 @@ public class MapFilterFragment extends DialogFragment {
         return builder.create();
     }
 
+    /**
+     * Clears all selected filters and toggles sensors and forces on. Then applies those filters.
+     */
+    void clear() {
+        toggleAdapter.checkAllItems();
+        sensorAdapter.uncheckAllItems();
+        forceAdapter.uncheckAllItems();
+        otherAdapter.uncheckAllItems();
+        mListener.clearFilters();
+    }
+
     public interface MapFilterFragmentListener{
+        void clearFilters();
         void initializeFilter();
         void getSelectedToggleFilter(List<String> filters);
         void getSelectedSensorTypeFilter(List<String> filters);

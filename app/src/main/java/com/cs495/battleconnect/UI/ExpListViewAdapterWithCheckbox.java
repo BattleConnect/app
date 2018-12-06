@@ -54,6 +54,8 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
     private String groupText;
     private String childText;
 
+    private List<CheckBox> checkBoxes = new ArrayList<>();
+
     /*  Here's the constructor we'll use to pass in our calling
      *  activity's context, group items, and child items
      */
@@ -78,6 +80,20 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
             Log.i("THIS ", " MEANS CHECKED IS NULL");
         }
 
+    }
+
+    public void uncheckAllItems() {
+        for (CheckBox checkbox : checkBoxes) {
+            if (checkbox.isChecked())
+                checkbox.toggle();
+        }
+    }
+
+    public void checkAllItems() {
+        for (CheckBox checkbox : checkBoxes) {
+            if (!checkbox.isChecked())
+                checkbox.toggle();
+        }
     }
 
     public int getNumberOfCheckedItemsInGroup(int mGroupPosition)
@@ -237,6 +253,8 @@ public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
             // boolean value of getChecked[position]
             childViewHolder.mCheckBox.setChecked(false);
         }
+
+        checkBoxes.add(childViewHolder.mCheckBox);
 
         childViewHolder.mCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 

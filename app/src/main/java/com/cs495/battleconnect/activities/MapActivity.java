@@ -230,6 +230,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     /**
+     * Shows all the markers.
+     */
+    public void clearFilters() {
+        showSensors = true;
+        showForces = true;
+        markerToVisible.clear();
+        if (toggleFilterIndices != null )
+            Arrays.fill(toggleFilterIndices, true);
+        if (sensorTypeFilterIndices != null)
+            Arrays.fill(sensorTypeFilterIndices, false);
+        if (forceTypeFilterIndices != null)
+            Arrays.fill(forceTypeFilterIndices, false);
+        if (otherFilterIndices != null)
+            Arrays.fill(otherFilterIndices, false);
+        filter();
+    }
+
+    /**
      * Gets the selected filters associated with toggling sensors and forces.
      * @param filters
      */
