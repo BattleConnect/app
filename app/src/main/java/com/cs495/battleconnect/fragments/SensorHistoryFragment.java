@@ -65,8 +65,7 @@ public class SensorHistoryFragment extends Fragment {
      * @param sensorId
      */
     void getSensorData(final long sensorId) {
-        System.out.println("getting sensor data");
-        db.collection("sensorDataList")
+        db.collection("sensors")
                 .whereEqualTo("Sensor_ID", sensorId)
                 .orderBy("Date_Time")
                 .get()
