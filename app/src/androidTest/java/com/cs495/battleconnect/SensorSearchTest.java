@@ -36,7 +36,7 @@ public class SensorSearchTest {
         sensorList.add(new SensorResponse(341060296, 33.81604, 66.7767, 96, "EOL", 387531, "Vibration", 0));
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 55, "Good", 234958, "Moisture", 63));
         sensorList.add(new SensorResponse(1519365296, 33.81604, 66.7767, 10, "Good", 383741, "Moisture", 63));
-        sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Service", 456742, "Asset", 7731));
+        sensorList.add(new SensorResponse(154143296, 33.81604, 66.7767, 71, "Service", 456742, "Asset", 77331));
 
 
         adapter = new SensorAdapter(fragment, sensorList);
@@ -121,7 +121,7 @@ public class SensorSearchTest {
      */
     @Test
     public void testHealth(){
-        adapter.search("Fair");
+        adapter.search("Service");
         assertEquals(2, adapter.getFilteredList().size());
     }
 

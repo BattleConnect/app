@@ -108,8 +108,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     //Keeps tracks of animators associated with markers, if any. Tripped vibration sensors shake for example.
     Map<Marker, ValueAnimator> markerToAnimator = new HashMap();
-
     public ValueAnimator getAnimator(Marker marker) { return markerToAnimator.get(marker); }
+
+    //Keeps track of whether markers should be visible or not.
+    Map<Marker, Boolean> markerToVisible = new HashMap();
 
     private static final String NONE = "none";
     boolean[] toggleFilterIndices = new boolean[2];
