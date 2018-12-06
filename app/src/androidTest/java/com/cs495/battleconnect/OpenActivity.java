@@ -31,34 +31,48 @@ public class OpenActivity {
     @Rule
     public ActivityTestRule<HomeActivity> mActivityRule = new ActivityTestRule<HomeActivity>(HomeActivity.class) {};
 
+    /**
+     * Test that the explore sensor data activity opens.
+     */
     @Test
     public void openSensorActivity() {
-        onView(ViewMatchers.withId(R.id.view_button)).perform(click());
+        onView(ViewMatchers.withId(R.id.sensor_button)).perform(click());
         onView(withId(R.id.sensor_list)).check(matches(isDisplayed()));
     }
 
+    /**
+     * Test that the view alerts activity opens.
+     */
     @Test
     public void openAlertsActivity() {
         onView(withId(R.id.alerts_button)).perform(click());
         onView(withId(R.id.notification_list)).check(matches(isDisplayed()));
     }
 
+    /**
+     * Test that the report info activity opens.
+     */
     @Test
-    public void openMakeReport() {
+    public void openReportInfo() {
         onView(withId(R.id.input_button)).perform(click());
         onView(withId(R.id.inputComment)).check(matches(isDisplayed()));
     }
 
-//    @Test
-//    public void openSoldierData() {
-//        onView(withId(R.id.soldier_button)).perform(click());
-//        onView(withId(R.id.notification_list)).check(matches(isDisplayed()));
-//    }
+    /**
+     * Test that the explore force data activity opens.
+     */
+    @Test
+    public void openForceActivity() {
+        onView(withId(R.id.force_button)).perform(click());
+        onView(withId(R.id.force_list)).check(matches(isDisplayed()));
+    }
 
-
-//    @Test
-//    public void openMap() {
-//        onView(withId(R.id.map_button)).perform(click());
-//        onView(withId(R.id.map)).check(matches(isDisplayed()));
-//    }
+    /**
+     * Test that the map activity opens.
+     */
+    @Test
+    public void openMap() {
+        onView(withId(R.id.map_button)).perform(click());
+        onView(withId(R.id.map)).check(matches(isDisplayed()));
+    }
 }

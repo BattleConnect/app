@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.cs495.battleconnect.R;
 
+/**
+ * A class that defines an expandable list that has checkboxes next to the list items.
+ */
 public class ExpListViewAdapterWithCheckbox extends BaseExpandableListAdapter {
 
     // Define activity context

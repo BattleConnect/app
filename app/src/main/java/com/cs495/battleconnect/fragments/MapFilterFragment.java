@@ -17,21 +17,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This dialog shows all the filter options for the map.
+ */
 public class MapFilterFragment extends DialogFragment {
+
     MapFilterFragment.MapFilterFragmentListener mListener;
+
     ArrayList<String> toggleDataHeader;
     ArrayList<String> sensorDataHeader;
     ArrayList<String> forceDataHeader;
     ArrayList<String> otherDataHeader;
+
     HashMap<String, List<String>> toggleDataChild;
     HashMap<String, List<String>> sensorDataChild;
     HashMap<String, List<String>> forceDataChild;
     HashMap<String, List<String>> otherDataChild;
+
     boolean[] toggleCheckedStates;
     boolean[] sensorCheckedStates;
     boolean[] forceCheckedStates;
     boolean[] otherCheckedStates;
 
+    /**
+     * Constructor for this dialog. Passes in all of the filters that were checked and applied previously.
+     * @param toggleCheckedStates Toggle filters checked and applied previously.
+     * @param sensorCheckedStates Sensor types checked and applied previously.
+     * @param forceCheckedStates Force types checked and applied previously.
+     * @param otherCheckedStates Other filters checked and applied previously.
+     * @return
+     */
     public static MapFilterFragment newInstance(boolean[] toggleCheckedStates, boolean[] sensorCheckedStates, boolean[] forceCheckedStates, boolean[] otherCheckedStates) {
         MapFilterFragment f = new MapFilterFragment();
         Bundle args = new Bundle();
@@ -44,18 +59,34 @@ public class MapFilterFragment extends DialogFragment {
         return f;
     }
 
+    /**
+     * Get the toggle filters that were checked and applied previously from the MapActivity.
+     * @return
+     */
     public boolean[] getToggleCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("toggleCheckedStates");
     }
 
+    /**
+     * Get the sensor type filters that were checked and applied previously from the MapActivity.
+     * @return
+     */
     public boolean[] getSensorCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("sensorCheckedStates");
     }
 
+    /**
+     * Get the force type filters that were checked and applied previously from the MapActivity.
+     * @return
+     */
     public boolean[] getForceCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("forceCheckedStates");
     }
 
+    /**
+     * Get the other filters that were checked and applied previously from the MapActivity.
+     * @return
+     */
     public boolean[] getOtherCheckedStatesFromActivity(){
         return getArguments().getBooleanArray("otherCheckedStates");
     }
@@ -70,10 +101,10 @@ public class MapFilterFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
-        ExpandableListView toggleListView = (ExpandableListView) v.findViewById(R.id.toggleFilter);
-        ExpandableListView sensorListView = (ExpandableListView) v.findViewById(R.id.sensorFilter);
-        ExpandableListView forceListView = (ExpandableListView) v.findViewById(R.id.forceFilter);
-        ExpandableListView otherListView = (ExpandableListView) v.findViewById(R.id.otherFilter);
+        ExpandableListView toggleListView = v.findViewById(R.id.toggleFilter);
+        ExpandableListView sensorListView = v.findViewById(R.id.sensorFilter);
+        ExpandableListView forceListView = v.findViewById(R.id.forceFilter);
+        ExpandableListView otherListView = v.findViewById(R.id.otherFilter);
 
         loadToggleData();
         loadSensorData();
@@ -120,8 +151,6 @@ public class MapFilterFragment extends DialogFragment {
         });
         builder.setNegativeButton(R.string.filterNegative, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
-
             }
         });
 
@@ -130,16 +159,19 @@ public class MapFilterFragment extends DialogFragment {
     }
 
     public interface MapFilterFragmentListener{
-        public void getSelectedToggleFilter(List<String> filters);
-        public void getSelectedSensorTypeFilter(List<String> filters);
-        public void getSelectedForceTypeFilter(List<String> filters);
-        public void getSelectedOtherFilter(List<String> filters);
-        public void getSelectedToggleFilterIndicesBoolean(boolean[] indices);
-        public void getSelectedSensorFilterIndicesBoolean(boolean[] indices);
-        public void getSelectedForceFilterIndicesBoolean(boolean[] indices);
-        public void getSelectedOtherFilterIndicesBoolean(boolean[] indices);
+        void getSelectedToggleFilter(List<String> filters);
+        void getSelectedSensorTypeFilter(List<String> filters);
+        void getSelectedForceTypeFilter(List<String> filters);
+        void getSelectedOtherFilter(List<String> filters);
+        void getSelectedToggleFilterIndicesBoolean(boolean[] indices);
+        void getSelectedSensorFilterIndicesBoolean(boolean[] indices);
+        void getSelectedForceFilterIndicesBoolean(boolean[] indices);
+        void getSelectedOtherFilterIndicesBoolean(boolean[] indices);
     }
 
+    /**
+     * Loads the toggle filter options.
+     */
     private void loadToggleData() {
         toggleDataHeader = new ArrayList<String>();
         toggleDataChild = new HashMap<String, List<String>>();
@@ -153,6 +185,9 @@ public class MapFilterFragment extends DialogFragment {
         toggleDataChild.put(toggleDataHeader.get(0), toggles);
     }
 
+    /**
+     * Loads the other filter options.
+     */
     private void loadOtherData() {
         otherDataHeader = new ArrayList<String>();
         otherDataChild = new HashMap<String, List<String>>();
@@ -167,6 +202,9 @@ public class MapFilterFragment extends DialogFragment {
         otherDataChild.put(otherDataHeader.get(0), sensorType);
     }
 
+    /**
+     * Loads the sensor type filter options.
+     */
     private void loadSensorData() {
         sensorDataHeader = new ArrayList<String>();
         sensorDataChild = new HashMap<String, List<String>>();
@@ -183,6 +221,9 @@ public class MapFilterFragment extends DialogFragment {
         sensorDataChild.put(sensorDataHeader.get(0), sensorType);
     }
 
+    /**
+     * Loads the force type filter options.
+     */
     private void loadForceData() {
         forceDataHeader = new ArrayList<String>();
         forceDataChild = new HashMap<String, List<String>>();

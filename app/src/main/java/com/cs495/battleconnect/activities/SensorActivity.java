@@ -12,6 +12,9 @@ import com.cs495.battleconnect.fragments.SensorRecyclerViewFragment;
 
 import java.util.List;
 
+/**
+ * This activity is for searching, browsing, filtering, and inspecting sensor data. "Explore sensor data" on the home screen.
+ */
 public class SensorActivity extends AppCompatActivity implements SensorFilterDialogFragment.FilterDialogFragmentListener {
     SensorRecyclerViewFragment fragment;
     @Override

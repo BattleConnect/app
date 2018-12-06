@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This is the dialog that shows all the filter options for filtering force data.
+ */
 public class ForceFilterDialogFragment extends DialogFragment {
 
     FilterDialogFragmentListener mListener;
@@ -21,6 +24,11 @@ public class ForceFilterDialogFragment extends DialogFragment {
     HashMap<String, List<String>> listDataChild;
     boolean[] checkedStates;
 
+    /**
+     * Constructor for this dialog.
+     * @param checkedStatesFromActivity
+     * @return
+     */
     public static ForceFilterDialogFragment newInstance(boolean[] checkedStatesFromActivity){
         ForceFilterDialogFragment f = new ForceFilterDialogFragment();
         Bundle args = new Bundle();
@@ -38,7 +46,6 @@ public class ForceFilterDialogFragment extends DialogFragment {
     public AlertDialog onCreateDialog(Bundle savedInstanceState) {
         final ExpListViewAdapterWithCheckbox listAdapter;
         final ExpandableListView expListView;
-
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
 
@@ -65,8 +72,6 @@ public class ForceFilterDialogFragment extends DialogFragment {
         });
         builder.setNegativeButton(R.string.filterNegative, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-
-
             }
         });
         // Create the AlertDialog object and return it
@@ -88,6 +93,9 @@ public class ForceFilterDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Loads the filter options available for filtering force data.
+     */
     public void loadListData(){
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();

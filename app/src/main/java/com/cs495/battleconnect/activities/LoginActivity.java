@@ -37,83 +37,83 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_login);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
 
-            loginB = findViewById(R.id.buttonLogin);
-            editTextEmail = findViewById(R.id.editTextEmail);
-            editTextPassword = findViewById(R.id.editTextPassword);
+        loginB = findViewById(R.id.buttonLogin);
+        editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPassword = findViewById(R.id.editTextPassword);
 
-            //configureButtons();
-            firebaseAuth = FirebaseAuth.getInstance();
-            if(firebaseAuth.getCurrentUser() != null) {//already logged in
-                success();
-            }
-
-            loginB.setOnClickListener(this);
-
-            db = FirebaseFirestore.getInstance();
+        //configureButtons();
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser() != null) {//already logged in
+            success();
         }
 
-        @Override
-        protected void onDestroy() {
-            Intent returnIntent = new Intent();
-            setResult(0, returnIntent);
-            super.onDestroy();
+        loginB.setOnClickListener(this);
 
+        db = FirebaseFirestore.getInstance();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent returnIntent = new Intent();
+        setResult(0, returnIntent);
+        super.onDestroy();
+
+    }
+
+    /**
+     * Attempts to login the user.
+     */
+    private void  login(){
+        String email = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
+            setResult(Activity.RESULT_OK, null);
         }
-
-        /**
-         * Attempts to login the user.
-         */
-        private void  login(){
-            String email = editTextEmail.getText().toString().trim();
-            String password = editTextPassword.getText().toString().trim();
-
-            if(TextUtils.isEmpty(email)){
-                Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
-                setResult(Activity.RESULT_OK, null);
-            }
-            if(TextUtils.isEmpty(password)){
-                Toast.makeText(this, "Empty Password", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        success();
-                        Intent returnIntent = new Intent();
-                        setResult(1, returnIntent);
-                        finish();
-                        return;
-                    }
-                    else{
-                        fail();
-                    }
+        if(TextUtils.isEmpty(password)){
+            Toast.makeText(this, "Empty Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    success();
+                    Intent returnIntent = new Intent();
+                    setResult(1, returnIntent);
+                    finish();
+                    return;
                 }
-            });
-        }
+                else{
+                    fail();
+                }
+            }
+        });
+    }
 
-        /**
-         * Display a toast when the user has successfully logged in.
-         */
-        private void success(){
-            Toast.makeText(this, "You have successfully logged in.", Toast.LENGTH_SHORT).show();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("resultCode", 0);
-            setResult(0, resultIntent);
+    /**
+     * Display a toast when the user has successfully logged in.
+     */
+    private void success(){
+        Toast.makeText(this, "You have successfully logged in.", Toast.LENGTH_SHORT).show();
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("resultCode", 0);
+        setResult(0, resultIntent);
 
-            //store the user id for notification purposes
-            storeUUID();
-        }
+        //store the user id for notification purposes
+        storeUUID();
+    }
 
-        /**
-         * Remember the user so that they don't have to login again.
-         */
-        private void storeUUID() {
-            //store the new token in the database
-            if(firebaseAuth.getCurrentUser() != null) {
+    /**
+     * Remember the user so that they don't have to login again.
+     */
+    private void storeUUID() {
+        //store the new token in the database
+        if(firebaseAuth.getCurrentUser() != null) {
             Map<String, Object> data = new HashMap<>();
             String uuid = firebaseAuth.getCurrentUser().getUid();
             String token = FirebaseInstanceId.getInstance().getToken();

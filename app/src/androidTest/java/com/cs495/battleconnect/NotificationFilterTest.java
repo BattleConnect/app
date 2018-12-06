@@ -17,12 +17,18 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * This class tests the ability to filter alerts.
+ */
 @RunWith(AndroidJUnit4.class)
 public class NotificationFilterTest {
     List<NotificationResponse> notifications = new ArrayList();
     private Context instrumentationCtx;
     NotificationAdapter adapter;
 
+    /**
+     * Add example alerts.
+     */
     @Before
     public void setUp(){
         instrumentationCtx = InstrumentationRegistry.getContext();
@@ -36,8 +42,9 @@ public class NotificationFilterTest {
         adapter = new NotificationAdapter(instrumentationCtx, notifications);
     }
 
-    //the following tests verify that when a filter is applied, only notifications matching those filters occur in the resulting list
-
+    /**
+     * Test filtering by low priority.
+     */
     @Test
     public void low(){
         adapter.filter("LOW");
@@ -45,6 +52,9 @@ public class NotificationFilterTest {
         assertEquals(adapter.getFilteredList().get(0).getPriority(), "LOW");
     }
 
+    /**
+     * Test filtering by medium priority.
+     */
     @Test
     public void medium(){
         adapter.filter("MEDIUM");
@@ -57,6 +67,9 @@ public class NotificationFilterTest {
 
     }
 
+    /**
+     * Test filtering by high priority.
+     */
     @Test
     public void high(){
         adapter.filter("HIGH");
@@ -65,6 +78,9 @@ public class NotificationFilterTest {
 
     }
 
+    /**
+     * Test filtering by critical priority.
+     */
     @Test
     public void critical(){
         adapter.filter("CRITICAL");
@@ -74,6 +90,9 @@ public class NotificationFilterTest {
     }
 
 
+    /**
+     * Tests that all the alerts are shown when no priority is selected.
+     */
     @Test
     public void none(){
         adapter.filter("NONE");

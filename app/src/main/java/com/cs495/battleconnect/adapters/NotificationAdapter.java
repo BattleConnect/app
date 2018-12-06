@@ -77,8 +77,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationHolder
             case CRITICAL: holder.parentLayout.setBackgroundColor(mContext.getResources().getColor(R.color.alert_critical));
                 break;
         }
-
-
     }
 
     /**

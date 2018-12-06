@@ -68,13 +68,13 @@ public class HomeActivity extends AppCompatActivity {
      * Configures the buttons that lead to other activities.
      */
     private void configureButtons(){
-        Button viewButton = findViewById(R.id.view_button);
+        Button sensorButton = findViewById(R.id.sensor_button);
         Button inputButton = findViewById(R.id.input_button);
         Button mapButton = findViewById(R.id.map_button);
         Button alertsButton = findViewById(R.id.alerts_button);
-        Button forceButton = findViewById(R.id.soldier_button);
+        Button forceButton = findViewById(R.id.force_button);
 
-        viewButton.setOnClickListener(new View.OnClickListener() {
+        sensorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkLoginStatus();

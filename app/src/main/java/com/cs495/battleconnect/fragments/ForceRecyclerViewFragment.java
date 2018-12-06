@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
+/**
+ * This is the view that shows all the force data in a scrollable list.
+ */
 public class ForceRecyclerViewFragment extends Fragment {
     private static final String TAG = "ForceActivity";
     private static final String FORCES = "forces";
@@ -50,6 +53,8 @@ public class ForceRecyclerViewFragment extends Fragment {
         // Inflate the layout for this fragment
         // Defines the xml file for the fragment
         view =  inflater.inflate(R.layout.fragment_force_recycler_view, container, false);
+
+        //setting the visual elements
         progressBar = view.findViewById(R.id.progress_bar);
         forceList = view.findViewById(R.id.force_list);
         forceSearch = view.findViewById(R.id.force_search);
@@ -63,6 +68,9 @@ public class ForceRecyclerViewFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Configures the filter button.
+     */
     private void configureFilterButton() {
         final Button filterButton = (Button) view.findViewById(R.id.filterButton);
 
@@ -75,12 +83,18 @@ public class ForceRecyclerViewFragment extends Fragment {
         });
     }
 
+    /**
+     * Configures the search functionality.
+     */
     private void configureSearch() {
         forceSearch.setIconifiedByDefault(false);
         forceSearch.setOnQueryTextListener(searchQueryListener);
         forceSearch.setSubmitButtonEnabled(true);
     }
 
+    /**
+     * search query listener that uses the adapter to search when input is detected in the searchview
+     */
     private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -96,10 +110,19 @@ public class ForceRecyclerViewFragment extends Fragment {
 
     };
 
+    /**
+     * used by the activity to update which filters are selected. the activity uses the interface from the dialog fragment
+     * to get the selected values, then calls this update functions to pass the values to the recyclerview adapter
+     * @param filters
+     */
     public void updateMultipleSelectedForceFilters(List<String> filters) {
         adapter.filter(filters);
     }
 
+    /**
+     * used by the activity to set the selected filter indices within the recycler fragment
+     * @param indices
+     */
     public void updateSelectedFilterIndicesBoolean(boolean[] indices) {
         filterIndices = indices;
     }
@@ -111,6 +134,9 @@ public class ForceRecyclerViewFragment extends Fragment {
 
     }
 
+    /**
+     * gets the force data from firestore and adds the data to a list, then sets the adapter
+     */
     private void loadForceList() {
         Log.i(TAG, "START");
         db.collection(FORCES).addSnapshotListener(new EventListener<QuerySnapshot>() {

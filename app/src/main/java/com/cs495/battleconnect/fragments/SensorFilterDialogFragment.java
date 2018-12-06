@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This is the dialog that shows the filter options for filtering sensor data when exploring sensor data.
+ */
 public class SensorFilterDialogFragment extends DialogFragment {
 
     FilterDialogFragmentListener mListener;

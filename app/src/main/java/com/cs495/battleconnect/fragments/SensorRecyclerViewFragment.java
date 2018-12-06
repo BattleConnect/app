@@ -144,7 +144,6 @@ public class SensorRecyclerViewFragment extends Fragment {
     /**
      * gets the sensor data from firestore and adds the data to a list, then sets the adapter
      */
-
     private void loadSensorList() {
         db.collection(SENSORS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

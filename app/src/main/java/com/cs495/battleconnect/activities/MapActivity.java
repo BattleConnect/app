@@ -638,6 +638,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     /**
+     * Gets the total number of force markers on the map.
+     * @return
+     */
+    public long getForceMarkerCount() {
+        return forceIdToMarker.values().size();
+    }
+
+    /**
      * Adds a marker to the map that is associated with a particular force.
      * @param forceData
      * @param forceFilter If there is a filter currently selected, apply that filter to the marker being added.

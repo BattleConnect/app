@@ -6,15 +6,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.cs495.battleconnect.R;
-
 import com.cs495.battleconnect.fragments.ForceRecyclerViewFragment;
 import com.cs495.battleconnect.holders.ForceHolder;
-
 import com.cs495.battleconnect.responses.ForceResponse;
-
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,11 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * The adapter for setting all the values for the force activity recycler view
  */
-
 public class ForceAdapter extends RecyclerView.Adapter<ForceHolder> {
     private static final String TAG = "ForceAdapter";
     private final String GOOD = "good";

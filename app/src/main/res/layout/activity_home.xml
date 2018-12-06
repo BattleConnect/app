@@ -38,7 +38,7 @@
                 android:orientation="vertical">
 
                 <com.cs495.battleconnect.UI.SquareButton
-                    android:id="@+id/view_button"
+                    android:id="@+id/sensor_button"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
                     android:layout_marginLeft="10dp"
@@ -85,7 +85,7 @@
                     android:textSize="25sp" />
 
                 <com.cs495.battleconnect.UI.SquareButton
-                    android:id="@+id/soldier_button"
+                    android:id="@+id/force_button"
                     android:layout_width="fill_parent"
                     android:layout_height="100dp"
                     android:layout_marginTop="5dp"

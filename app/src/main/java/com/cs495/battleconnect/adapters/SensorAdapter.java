@@ -75,24 +75,19 @@ public class SensorAdapter extends RecyclerView.Adapter<SensorHolder>  {
 
         holder.Battery.setText(String.valueOf(currentItem.getBattery()) + "%");
 
-        //if the battery is below 20% show the user a red icon instead of a green one
+        //set the background color for the battery info based on the battery %
         if(currentItem.getBattery() <= 5) {
             holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.low_battery));
-
             holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.low_battery));
         }
         else if (currentItem.getBattery() <= 20) {
             holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.med_battery));
-
             holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.med_battery));
         }
         else {
             holder.Battery.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.high_battery));
-
             holder.bat_icon.setBackgroundColor(mFragment.getActivity().getApplication().getResources().getColor(R.color.high_battery));
         }
-
-
 
         holder.SensorHealth.setText("Health: " + currentItem.getSensorHealth());
         //if the health is good show the user a green background if the health is bad show a red background

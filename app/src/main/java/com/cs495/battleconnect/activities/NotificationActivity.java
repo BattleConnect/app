@@ -19,7 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 /**
@@ -58,6 +57,9 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
         configureFilterButton();
     }
 
+    /**
+     * Initializes key components of the activity.
+     */
     private void init() {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         notificationList.setLayoutManager(linearLayoutManager);
@@ -66,12 +68,18 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     }
 
+    /**
+     * Configures the search functionality.
+     */
     private void configureSearch(){
         notificationSearch.setIconifiedByDefault(false);
         notificationSearch.setOnQueryTextListener(searchQueryListener);
         notificationSearch.setSubmitButtonEnabled(true);
     }
 
+    /**
+     * Attaches a listener to the search functionality. The adapter does the actual searching.
+     */
     private SearchView.OnQueryTextListener searchQueryListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -87,6 +95,9 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     };
 
+    /**
+     * Obtains notifications from Firebase.
+     */
     private void loadNotificationData() {
         db.collection(NOTIFICATIONS).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -111,6 +122,9 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
 
     }
 
+    /**
+     * Configures the filter button.
+     */
     private void configureFilterButton(){
         final Button filterButton = (Button) findViewById(R.id.filterButton);
 
@@ -119,12 +133,14 @@ public class NotificationActivity extends AppCompatActivity implements Notificat
             public void onClick(View view) {
                 NotificationFilterDialogFragment filter = NotificationFilterDialogFragment.newInstance(selectedSpinnerPosition);
                 filter.show(getFragmentManager(), "NotificationFilterDialogFragment");
-
             }
-
         });
     }
 
+    /**
+     * Gets the filter that the user selected, corresponding to the desired alert priority.
+     * @param type
+     */
     @Override
     public void getSelectedNotificationPriorityFilter(String type){
         //Log.i("getSelectedNotification", "returns " + type);

@@ -20,6 +20,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+/**
+ * This class is used to test user authentication in the app.
+ */
 @RunWith(AndroidJUnit4.class)
 public class LoginTest {
     FirebaseFirestore db;
@@ -35,21 +38,18 @@ public class LoginTest {
     public void testFireBaseToken(){
         if(firebaseAuth.getCurrentUser() != null) {
             assertNotNull(FirebaseInstanceId.getInstance());
-            //assertNotNull(firebaseAuth.getCurrentUser().getUid());
         }
-
         else{
             fail();
         }
 
     }
+
     @Test
     public void testFireBaseUuid(){
         if(firebaseAuth.getCurrentUser() != null) {
-            //assertNotNull(FirebaseInstanceId.getInstance());
             assertNotNull(firebaseAuth.getCurrentUser().getUid());
         }
-
         else{
             fail();
         }

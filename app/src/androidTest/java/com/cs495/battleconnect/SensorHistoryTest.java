@@ -30,6 +30,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the sensor history fragment.
+ */
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class SensorHistoryTest {
@@ -42,6 +45,9 @@ public class SensorHistoryTest {
     @Rule
     public ActivityTestRule<SensorActivity> mActivityRule = new ActivityTestRule<SensorActivity>(SensorActivity.class) {};
 
+    /**
+     * Tests that the sensor history fragment opens when a sensor item is selected when exploring sensor data.
+     */
     @Test
     public void openSensorActivity() {
         db.collection("sensors")

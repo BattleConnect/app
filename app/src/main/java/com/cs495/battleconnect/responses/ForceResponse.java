@@ -31,7 +31,6 @@ public class ForceResponse {
         this.status = status;
         this.Force_ID = id;
         this.Force_Type = type;
-
     }
 
     /**

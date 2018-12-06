@@ -1,23 +1,21 @@
 package com.cs495.battleconnect;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-
 import com.cs495.battleconnect.adapters.SensorAdapter;
 import com.cs495.battleconnect.fragments.SensorRecyclerViewFragment;
 import com.cs495.battleconnect.responses.SensorResponse;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Tests the ability to filter sensor data when exploring sensor data.
+ */
 @RunWith(AndroidJUnit4.class)
 public class SensorFilterTest {
     SensorRecyclerViewFragment fragment;
@@ -26,6 +24,9 @@ public class SensorFilterTest {
     SensorAdapter adapter;
     private Context instrumentationCtx;
 
+    /**
+     * Add example sensor data.
+     */
     @Before
     public void setUp(){
         fragment = new SensorRecyclerViewFragment();
@@ -44,8 +45,9 @@ public class SensorFilterTest {
 
     }
 
-
-    //sets up list with one heartrate sensor with a zero value and ensures it is the only thing left in the filtered list
+    /**
+     * Tests the ability to filter for dead heart rate sensors.
+     */
     @Test
     public void testHeartBeatZero(){
         filterList.add("Heartbeat=0");
@@ -54,7 +56,9 @@ public class SensorFilterTest {
         assertEquals((int)adapter.getFilteredList().get(0).getSensor_Val(), 0);
     }
 
-    //sets up list with one tripped vibration w/ value 10 and ensures it is the last thing in the filtered list
+    /**
+     * Tests the ability to filter for tripped vibration sensors.
+     */
     @Test
     public void testTrippedVibration(){
         filterList.add("Tripped Vibration Sensor");
@@ -63,7 +67,9 @@ public class SensorFilterTest {
         assertEquals((int)adapter.getFilteredList().get(0).getSensor_Val(), 10);
     }
 
-    //tests that the only sensor with a dead battery is left in filtered list
+    /**
+     * Tests the ability to filter for sensors with dead batteries.
+     */
     @Test
     public void testDeadBattery(){
         filterList.add("Dead Battery");
@@ -73,7 +79,9 @@ public class SensorFilterTest {
     }
 
 
-    //the next 5 tests test that when the list is filtered by sensor type, only the sensor type being filtered on appears in the list
+    /**
+     * Tests the ability to filter for heart rate sensors.
+     */
     @Test
     public void testHeartRate(){
         filterList.add("HeartRate");
@@ -82,6 +90,9 @@ public class SensorFilterTest {
         assertEquals(adapter.getFilteredList().get(0).getSensor_Type(), "HeartRate");
     }
 
+    /**
+     * Tests the ability to filter for vibration sensors.
+     */
     @Test
     public void testVibration(){
         filterList.add("Vibration");
@@ -91,6 +102,9 @@ public class SensorFilterTest {
         assertEquals(adapter.getFilteredList().get(1).getSensor_Type(), "Vibration");
     }
 
+    /**
+     * Tests the ability to filter for moisture sensors.
+     */
     @Test
     public void testMoisture(){
         filterList.add("Moisture");
@@ -101,6 +115,9 @@ public class SensorFilterTest {
         assertEquals(adapter.getFilteredList().get(2).getSensor_Type(), "Moisture");
     }
 
+    /**
+     * Tests the ability to filter for asset sensors.
+     */
     @Test
     public void testAsset(){
         filterList.add("Asset");
@@ -111,6 +128,9 @@ public class SensorFilterTest {
 
     }
 
+    /**
+     * Tests the ability to filter for temperature sensors.
+     */
     @Test
     public void testTemp(){
         filterList.add("Temp");

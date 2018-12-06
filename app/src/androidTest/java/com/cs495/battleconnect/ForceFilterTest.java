@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
 
+/**
+ * Tests the ability to filter force data when exploring force data.
+ */
 @RunWith(AndroidJUnit4.class)
 public class ForceFilterTest {
     ForceRecyclerViewFragment fragment;
@@ -22,6 +25,9 @@ public class ForceFilterTest {
     List<String> filterList = new ArrayList();
     ForceAdapter adapter;
 
+    /**
+     * Adds example force data.
+     */
     @Before
     public void setUp(){
         fragment = new ForceRecyclerViewFragment();
@@ -40,8 +46,9 @@ public class ForceFilterTest {
 
     }
 
-
-    //the next 5 tests test that when the list is filtered by force type, only the force type being filtered on appears in the list
+    /**
+     * Tests filtering for the company HQ.
+     */
     @Test
     public void testCompanyHQ(){
         filterList.add("Company HQ");
@@ -50,6 +57,9 @@ public class ForceFilterTest {
         assertEquals(adapter.getFilteredList().get(0).getForce_Type(), "Company HQ");
     }
 
+    /**
+     * Tests filtering for platoons.
+     */
     @Test
     public void testPlatoon(){
         filterList.add("Platoon");
@@ -58,6 +68,9 @@ public class ForceFilterTest {
         assertEquals(adapter.getFilteredList().get(0).getForce_Type(), "Platoon");
     }
 
+    /**
+     * Tests filtering for squads.
+     */
     @Test
     public void testSquad(){
         filterList.add("Squad");
@@ -68,6 +81,9 @@ public class ForceFilterTest {
         assertEquals(adapter.getFilteredList().get(2).getForce_Type(), "Squad");
     }
 
+    /**
+     * Tests filtering for preplanned targets.
+     */
     @Test
     public void testTarget(){
         filterList.add("Preplanned Target");
@@ -78,6 +94,9 @@ public class ForceFilterTest {
 
     }
 
+    /**
+     * Tests filtering for enemy units.
+     */
     @Test
     public void testEnemy(){
         filterList.add("Enemy Unit");
