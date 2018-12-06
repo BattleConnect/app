@@ -53,10 +53,6 @@ public class SensorFilterDialogFragment extends DialogFragment {
         builder.setView(v);
         builder.setTitle(R.string.filterButton);
 
-
-        
-
-
         loadListData();
         expListView = (ExpandableListView) v.findViewById(R.id.expandableFilter);
         checkedStates = getCheckedStatesFromActivity();
@@ -87,10 +83,9 @@ public class SensorFilterDialogFragment extends DialogFragment {
     }
 
     public interface FilterDialogFragmentListener{
-        public void getMultipleSelectedSensorFilters(List<String> filters);
-        public void getSelectedFilterIndicesBoolean(boolean[] indices);
-        public void getOtherSelectedFilterIndicesBoolean(boolean[] indices);
-
+        void getMultipleSelectedSensorFilters(List<String> filters);
+        void getSelectedFilterIndicesBoolean(boolean[] indices);
+        void getOtherSelectedFilterIndicesBoolean(boolean[] indices);
     }
     
     @Override

@@ -26,7 +26,7 @@ public class ForceActivity extends AppCompatActivity implements ForceFilterDialo
     }
 
     @Override
-    public void getMultipleSelectedSensorFilters(List<String> filters) {
+    public void getMultipleSelectedForceFilters(List<String> filters) {
         fragment.updateMultipleSelectedForceFilters(filters);
     }
 
