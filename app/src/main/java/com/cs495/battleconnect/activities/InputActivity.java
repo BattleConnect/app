@@ -24,6 +24,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This activity is for contributing data from the battlefield.
+ */
 public class InputActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -37,7 +40,11 @@ public class InputActivity extends AppCompatActivity {
 
         final Spinner tagSpinner = findViewById(R.id.inputTagSpinner);
         final Spinner conditionSpinner = findViewById(R.id.inputConditionSpinner);
+
+        //this array determines if the condition dropdown should be shown, based on the tag selected from the tag dropdown.
         final int[] showCondition = getResources().getIntArray(R.array.showCondition);
+
+        //hide the condition dropdown, only show it when it is necessary
         conditionSpinner.setVisibility(View.INVISIBLE);
 
         // Initializing an ArrayAdapter
@@ -47,7 +54,7 @@ public class InputActivity extends AppCompatActivity {
                 if(position == 0)
                 {
                     // Disable the first item from Spinner
-                    // First item will be use for hint
+                    // First item will be used for hint
                     return false;
                 }
                 else
@@ -80,6 +87,7 @@ public class InputActivity extends AppCompatActivity {
                 // If user change the default selection
                 // First item is disable and it is used for hint
                 if(position > 0){
+                    // Determine whether to show the condition dropdown or not, based on the tag selected.
                     if (showCondition[position] == 1)
                         conditionSpinner.setVisibility(View.VISIBLE);
                     else
@@ -152,6 +160,9 @@ public class InputActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     *  Configures the button for submitting one's report.
+     */
     private void configureSubmitButton(){
         Button submitButton = (Button) findViewById(R.id.inputSubmitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +173,9 @@ public class InputActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sends the data the user entered to Firebase.
+     */
     private void sendData(){
         EditText commentBox = (EditText) findViewById(R.id.inputComment);
         String comment = commentBox.getText().toString();
@@ -188,11 +202,14 @@ public class InputActivity extends AppCompatActivity {
         tagSpinner.setSelection(0);
         conditionSpinner.setSelection(0);
         commentBox.setText(null);
-        displayToast();
+        displaySuccessToast();
 
     }
 
-    private void displayToast(){
+    /**
+     * Notify the user when they have successfully submitted a report.
+     */
+    private void displaySuccessToast(){
         Context context = getApplicationContext();
         CharSequence toastText = "Request Submitted!";
         int duration = Toast.LENGTH_SHORT;

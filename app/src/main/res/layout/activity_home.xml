@@ -112,7 +112,7 @@
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <com.cs495.battleconnect.UI.RectangleButton
+            <Button
                 android:id="@+id/map_button"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"

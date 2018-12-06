@@ -18,16 +18,21 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 
+/**
+ * This activity manages the home screen.
+ */
 public class HomeActivity extends AppCompatActivity {
 
-
     private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         checkLoginStatus();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
+
+        //Configure the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -41,31 +46,33 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Handles toolbar actions.
+     * @param item The toolbar action that was selected.
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.actionClearCache:
                 clearCache();
                 return true;
-//            case R.id.action_settings:
-//                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
-//                return true;
             case R.id.actionLogout:
                 logout();
                 return true;
-
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Configures the buttons that lead to other activities.
+     */
     private void configureButtons(){
-        Button viewButton = (Button) findViewById(R.id.view_button);
-        Button inputButton = (Button) findViewById(R.id.input_button);
-        Button mapButton = (Button) findViewById(R.id.map_button);
-        Button alertsButton = (Button) findViewById(R.id.alerts_button);
-        Button forceButton = (Button) findViewById(R.id.soldier_button);
+        Button viewButton = findViewById(R.id.view_button);
+        Button inputButton = findViewById(R.id.input_button);
+        Button mapButton = findViewById(R.id.map_button);
+        Button alertsButton = findViewById(R.id.alerts_button);
+        Button forceButton = findViewById(R.id.soldier_button);
 
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +115,12 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Checks if the user is already logged in, if not, displays the login page.
+     * @return
+     */
     private  boolean checkLoginStatus(){
-            firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         if(firebaseAuth.getCurrentUser() != null) { //already logged in
             //Toast.makeText(this, "Empty Email", Toast.LENGTH_SHORT).show();
             firebaseAuth.updateCurrentUser(firebaseAuth.getCurrentUser());
@@ -120,11 +131,18 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Logs the user out.
+     */
     private void logout(){
 
         firebaseAuth.signOut();
         checkLoginStatus();
     }
+
+    /**
+     * Clears the app's cache. Sometimes the cache needs to be cleared since the app will cache data from Firebase, which may no longer be in Firebase.
+     */
     private void clearCache(){
         try {
             Context context = this;
@@ -135,6 +153,11 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Deletes directories/files in the app's cache.
+     * @param dir
+     * @return
+     */
     private static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -155,7 +178,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //setContentView(R.layout.activity_home);
         if(resultCode == 0){// creates loop so you cant back out of login into main
             checkLoginStatus();
         }

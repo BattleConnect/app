@@ -10,8 +10,12 @@ import com.cs495.battleconnect.fragments.ForceRecyclerViewFragment;
 
 import java.util.List;
 
+/**
+ *  This activity lets you explore and filter data about forces. "Explore force data" on the home screen.
+ */
 public class ForceActivity extends AppCompatActivity implements ForceFilterDialogFragment.FilterDialogFragmentListener {
     ForceRecyclerViewFragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +27,6 @@ public class ForceActivity extends AppCompatActivity implements ForceFilterDialo
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.frameLayout, fragment);
         transaction.commit();
-    }
-
-    @Override
-    public void getMultipleSelectedForceFilters(List<String> filters) {
-        fragment.updateMultipleSelectedForceFilters(filters);
     }
 
     @Override
