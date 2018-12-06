@@ -275,17 +275,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         for (Map.Entry<Long, SensorMarker> entry : sensorIdToSensorMarker.entrySet()) {
             SensorMarker sensorMarker = entry.getValue();
 
-            if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero)) && sensorMarker.getType().equals("Heart Rate")) {
-                hideIfNotDeadHeartRateSensor(sensorMarker);
+            if(otherFilters.contains(getApplication().getString(R.string.heartbeat_zero))) {
+                if(sensorMarker.getType().equals("HeartRate")) {
+                    hideIfNotDeadHeartRateSensor(sensorMarker);
+                } else {
+                    sensorMarker.getMarker().setVisible(false);
+                }
             }
 
-            if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration)) && sensorMarker.getType().equals("Vibration")) {
-                hideIfNotTrippedVibrationSensor(sensorMarker);
+            if(otherFilters.contains(getApplication().getString(R.string.tripped_vibration))) {
+                if(sensorMarker.getType().equals("Vibration")) {
+                    hideIfNotTrippedVibrationSensor(sensorMarker);
+                } else {
+                    sensorMarker.getMarker().setVisible(false);
+                }
             }
 
             if(otherFilters.contains(getApplication().getString(R.string.dead_battery))) {
                 hideIfNotDeadBattery(sensorMarker);
             }
+        }
+
+        for (Map.Entry<String, ForceMarker> entry : forceIdToForceMarker.entrySet()) {
+            ForceMarker forceMarker = entry.getValue();
+
+            forceMarker.getMarker().setVisible(false);
         }
     }
 
