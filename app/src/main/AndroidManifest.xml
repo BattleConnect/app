@@ -50,7 +50,7 @@
             android:name="com.cs495.battleconnect.activities.LoginActivity"
             android:label="Login" />
 
-        <service android:name="com.cs495.battleconnect.services.FireBaseMessagingService">
+        <service android:name=".services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

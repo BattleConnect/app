@@ -11,20 +11,18 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
 import com.cs495.battleconnect.R;
 import com.cs495.battleconnect.activities.HomeActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 /**
  * Class used to display notifications and register device tokens
  */
-public class FireBaseMessagingService extends FirebaseMessagingService {
+public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
     private final String USERS = "users";
     private final String ID = "id";
@@ -38,6 +36,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
+        Log.d(TAG, "Refreshed token: " + token);
 
         db = FirebaseFirestore.getInstance();
 
@@ -49,13 +48,13 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "Updated device id!");
+                            Log.d(TAG, "Updated device id.");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error updating device id!", e);
+                            Log.w(TAG, "Error updating device id.", e);
                         }
                     });
         }
@@ -67,6 +66,7 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
      */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        System.out.println("message received");
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
@@ -78,14 +78,14 @@ public class FireBaseMessagingService extends FirebaseMessagingService {
         }
 
         //display the notification to user
-        sendNotification(remoteMessage.getNotification().getBody());
+        showNotification(remoteMessage.getNotification().getBody());
     }
 
     /**
      * Displays the received notification on the screen
      * @param messageBody
      */
-    private void sendNotification(String messageBody) {
+    private void showNotification(String messageBody) {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
