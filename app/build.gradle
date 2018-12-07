@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.cs495.battleelite.battleelite"
+        applicationId "com.cs495.battleconnect"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1

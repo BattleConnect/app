@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:204328342410:android:7bcbdd236f3d90a0",
+        "mobilesdk_app_id": "1:204328342410:android:3d2960b97db03c3a",
         "android_client_info": {
-          "package_name": "com.cs495.battleelite.battleelite"
+          "package_name": "com.cs495.battleconnect"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "204328342410-ieor58dnnsls90kgsngmea64rrf34nca.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.cs495.battleelite.battleelite",
-            "certificate_hash": "6948b6592b248d3a760bf8d642b11b76a20ca95d"
-          }
-        },
         {
           "client_id": "204328342410-q126mf0s1bvsiocpeirao3u36igeklk1.apps.googleusercontent.com",
           "client_type": 3
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "204328342410-q126mf0s1bvsiocpeirao3u36igeklk1.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
